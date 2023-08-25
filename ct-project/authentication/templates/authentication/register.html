@@ -1,0 +1,56 @@
+{% extends 'authentication/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="card mt-5">
+            <div class="card-body">
+                <div class="card-title py-2">
+                    <h3>Registre-se</h3>
+                </div>
+                <form action="{% url 'home' %}" method="POST">
+                    <div class="form-group py-2">
+                        <input
+                            type="text"
+                            name="username" 
+                            id="username" 
+                            placeholder="Username"
+                            class="form-control form-control-sm"
+                         />
+                    </div>
+                    <div class="form-group py-2">
+                        <input
+                            type="email"
+                            name="email" 
+                            id="email" 
+                            placeholder="Email (exemplo@ctjunior.com.br)"
+                            class="form-control form-control-sm"
+                         />
+                    </div>
+                    <div class="form-group py-2">
+                        <input
+                            type="password"
+                            name="password" 
+                            id="password" 
+                            placeholder="Senha (mín. 8 caracteres)"
+                            class="form-control form-control-sm"
+                         />
+                    </div>
+                    <div class="form-group py-2 float-right">
+                        <small class="float-right py-2">SHOW</small>
+                    </div>
+                    <input type"submit" value="Registrar" class="btn btn-primary btn-block"/>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="col-md-4"></div>
+</div>
+    
+
+{% endblock %}
