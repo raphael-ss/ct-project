@@ -100,11 +100,16 @@
               Configurações
             </a>
           </li>
+          <!--DESCONECTAR-->
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="#"
+            onclick="document.getElementById('logout-form').submit();">
               <svg class="bi"><use xlink:href="#door-closed"/></svg>
               Desconectar
             </a>
+            <form method="POST" action="{% url 'logout' %}" id="logout-form">
+              {% csrf_token %}
+            </form>
           </li>
         </ul>
       </div>

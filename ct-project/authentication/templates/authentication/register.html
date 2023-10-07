@@ -14,27 +14,36 @@
                 <div class="card-title py-2">
                     <h3>Registre-se</h3>
                 </div>
-                <form action="{% url 'home' %}" method="POST">
+
+
+                <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+
+
+                {% include 'authentication/partials/_messages.html' %}
+
                     <div class="form-group">
                         <input
                             type="text"
-                            name="Username" 
+                            name="username" 
                             id="username" 
-                            placeholder="Username"
+                            placeholder="Nome de Usuário (joão.silva)"
                             class="form-control form-control-sm"
+                            value="{{fieldValues.username}}"
                          />
                     </div>
                     <div class="invalid-feedback invalid_feedback" style="display:none">
                         
                     </div>
                     <p class="text-sm text-success username-success"></p>
-                    <div class="form-group">
+                    <div class="form-group py-2">
                         <input
                             type="email"
                             name="email" 
                             id="email" 
                             placeholder="Email (exemplo@ctjunior.com.br)"
                             class="form-control form-control-sm"
+                            value="{{fieldValues.email}}"
                          />
                     </div>
                     <div class="invalid-feedback emailFeedbackArea" style="display:none">
@@ -49,8 +58,8 @@
                             id="passwordField" 
                             placeholder="Senha (mín. 8 caracteres)"
                             class="form-control form-control-sm"
-                         />          
-                        <small class="float-right py-3 showPasswordToggle">SHOW</small>
+                         />
+                         <div class="py-2 text-right "><small class="showPasswordToggle">VER</small></div>          
                     </div>
                         <!--<button type="submit" class="btn btn-primary">Registrar</button>-->
                         <input type="submit" value="Registrar" class="btn btn-block btn-primary submit-btn" />

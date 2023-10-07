@@ -78,3 +78,7 @@
 .showPasswordToggle:hover {
     transform: scale(1.2);
   }
+
+  .text-right {
+    text-align: right;
+}
