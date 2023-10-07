@@ -2,8 +2,24 @@ const usernameField = document.querySelector('#username');
 const feedBackArea=document.querySelector('.invalid-feedback');
 const emailField=document.querySelector('#email');
 const emailFeedBackArea=document.querySelector('.emailFeedbackArea');
+const passwordField=document.querySelector('#passwordField');
 const usernameSuccessOutput=document.querySelector(".username-success");
+const showPasswordToggle=document.querySelector(".showPasswordToggle");
 
+
+const handleToggleInput=(e)=>{
+    if (showPasswordToggle.textContent==="SHOW"){
+        showPasswordToggle.textContent = "HIDE";
+
+        passwordField.setAttribute("type", "text");
+    }else{
+        showPasswordToggle.textContent = "SHOW";
+
+        passwordField.setAttribute("type", "password");
+    }
+}
+
+showPasswordToggle.addEventListener("click", handleToggleInput);
 
 usernameField.addEventListener("keyup", (e) => {
 
