@@ -27,7 +27,7 @@
                             type="text"
                             name="username" 
                             id="username" 
-                            placeholder="Nome de Usuário (joão.silva)"
+                            placeholder="Nome de Usuário"
                             class="form-control form-control-sm"
                             value="{{fieldValues.username}}"
                          />
@@ -41,7 +41,7 @@
                             type="email"
                             name="email" 
                             id="email" 
-                            placeholder="Email (exemplo@ctjunior.com.br)"
+                            placeholder="Email"
                             class="form-control form-control-sm"
                             value="{{fieldValues.email}}"
                          />
@@ -50,13 +50,12 @@
                         
                     </div>
 
-
                     <div class="form-group py-2">
                         <input
                             type="password"
                             name="password" 
                             id="passwordField" 
-                            placeholder="Senha (mín. 8 caracteres)"
+                            placeholder="Senha"
                             class="form-control form-control-sm"
                          />
                          <div class="py-2 text-right "><small class="showPasswordToggle">VER</small></div>          
@@ -66,10 +65,12 @@
                 </form>
             </div>
         </div>
+       
 
 
 
     </div>
+    <a href="{% url 'login' %}" class="text-center py-4">Já tem conta registrada?</a>
     <div class="col-md-4"></div>
 </div>
 
