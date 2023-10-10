@@ -1,22 +1,30 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
 {% block content %}
+
 <div class="py-2"></div>
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Redes Sociais</li>
-    </ol>
-  </nav>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9 align-items-center">
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Redes Sociais</li>
+          </ol>
+        </nav>
+    </div>
 
+    <div>
+      <h1 class="d-inline">Métricas - <strong>Redes Sociais</strong></h1><span></span>
+      <a href="{% url 'add_sm_metric' %}" class="btn btn-primary ms-5">Adicionar Métrica</a>
+    </div>
+  </div>
+</div>
 
 {% include 'authentication/partials/_messages.html' %}
-
-<h1>Métricas - <strong>Redes Sociais</strong></h1>
-
-
-  <a href="{% url 'add_sm_metric' %}" class="btn btn-primary">Adicionar Métrica</a>
-
-
 {% endblock %}
