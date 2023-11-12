@@ -1,21 +1,24 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+
 {% block content %}
+
 <div class="py-2"></div>
+  <div class="row">
+    <div class="col-md-9 align-items-center">
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Membros</li>
+          </ol>
+        </nav>
+    </div>
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Membros</li>
-    </ol>
-  </nav>
+    <div>
+      <h1 class="d-inline">Dados - <strong>Membros</strong></h1><span></span>
+      <a href="{% url 'add_member_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
+    </div>
+  </div>
 
-
-{% include 'authentication/partials/_messages.html' %}
-
-<h1>Dados - <strong>Membros</strong></h1>
-
-
-
-
+{% include 'authentication/partials/_messages.html'%}
 {% endblock %}

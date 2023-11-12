@@ -46,3 +46,13 @@
   .navbar .form-control {
     padding: .75rem 1rem;
   }
+
+.auto-width-card {
+  display: inline-block;
+}
+
+.center {
+  margin: auto;
+  width: 80%;
+  padding: 25px;
+}

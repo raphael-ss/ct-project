@@ -1,21 +1,24 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+
 {% block content %}
+
 <div class="py-2"></div>
+  <div class="row">
+    <div class="col-md-9 align-items-center">
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Campanhas</li>
+          </ol>
+        </nav>
+    </div>
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Campanhas</li>
-    </ol>
-  </nav>
+    <div>
+      <h1 class="d-inline">Métricas - <strong>Campanhas</strong></h1><span></span>
+      <a href="{% url 'add_campaign_metric' %}" class="btn btn-primary ms-5">Adicionar Métrica</a>
+    </div>
+  </div>
 
-
-{% include 'authentication/partials/_messages.html' %}
-
-<h1>Métricas - <strong>Campanhas</strong></h1>
-
-
-
-
+{% include 'authentication/partials/_messages.html'%}
 {% endblock %}

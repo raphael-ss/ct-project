@@ -1,21 +1,24 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 <div class="py-2"></div>
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'clients' %}">Clientes</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Adicionar Dados - Clientes</li>
+      <li class="breadcrumb-item"><a href="{% url 'campaigns' %}">Campanhas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Adicionar Métrica - Campanha</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h3>Adicionar Dados de <strong>Cliente</strong></h3>
+<h3>Adicionar Métrica de <strong>Campanha</strong></h3>
 
 <div class="py-2"></div>
+
 <form action="" method="POST">
   {% csrf_token %}
   <div class="card center">

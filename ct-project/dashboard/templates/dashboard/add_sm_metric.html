@@ -1,6 +1,8 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 <div class="py-2"></div>
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -16,12 +18,11 @@
 <h3>Adicionar Métrica de <strong>Rede Social</strong></h3>
 
 <div class="py-2"></div>
-
+<!--
 <form method="POST" action="{% url 'home' %}">
     {% csrf_token %}
   <div class="card">
     <div class="card-body">
-      <!--DATA-->
       <div class="form-group">
         <label for="date">Data</label>
         <input type="date" class="form-control" name="date">
@@ -71,6 +72,18 @@
   </div>
 
 
+</form> -->
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="card center">
+    <div class="card-body text-center">
+      {{ form.as_p }}
+      <div class="form-group text-center">
+        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+      </div>
+    </div>
+  </div>
 </form>
 
 {% endblock %}

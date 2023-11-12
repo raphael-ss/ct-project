@@ -6,14 +6,14 @@
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'clients' %}">Clientes</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Adicionar Dados - Clientes</li>
+      <li class="breadcrumb-item"><a href="{% url 'members' %}">Membros</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Adicionar Dados - Membro</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h3>Adicionar Dados de <strong>Cliente</strong></h3>
+<h3>Adicionar Dados de <strong>Membro</strong></h3>
 
 <div class="py-2"></div>
 <form action="" method="POST">
