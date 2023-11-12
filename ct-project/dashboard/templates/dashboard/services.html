@@ -14,11 +14,45 @@
         </nav>
     </div>
 
+    {% include 'authentication/partials/_messages.html'%}
+
     <div>
       <h1 class="d-inline">Dados - <strong>Serviços</strong></h1><span></span>
       <a href="{% url 'add_service_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
   </div>
 
-{% include 'authentication/partials/_messages.html'%}
+  <div class="py-4"></div>
+
+  <table class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Membro</th>
+        <th>Projeto</th>
+        <th>Tempo Estimado</th>
+        <th>Tempo Real</th>
+        <th>N° de Consultores</th>
+        <th>Preço</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for service in object_list %}
+        <tr>
+          <td><a href="{% url 'update_service_data' pk=service.pk %}">{{ service.pk }}</a></td>
+          <td>{{ service.client_id.first_name }} {{ service.client_id.last_name }}</td>
+          <td>{{ service.member_id.first_name }} {{ service.member_id.last_name }}</td>
+          <td>{{ service.get_project_display }}</td>
+          <td>{{ service.estimated_time }}</td>
+          <td>{{ service.actual_time }}</td>
+          <td>{{ service.n_of_consultants }}</td>
+          <td>{{ service.price }}</td>
+          <td>{{ service.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

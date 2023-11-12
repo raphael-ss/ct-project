@@ -10,26 +10,24 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
       <li class="breadcrumb-item"><a href="{% url 'campaigns' %}">Campanhas</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Adicionar Métrica - Campanha</li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Métrica - Campanha</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h3>Adicionar Métrica de <strong>Campanha</strong></h3>
+<h3>Deletar Métrica de <strong>Campanha</strong>: {{ object }}</h3>
 
 <div class="py-2"></div>
 
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
-      </div>
-    </div>
-  </div>
-</form>
+  <form method="post" action="{% url 'delete_campaign_metric' object.id %}">
+    {% csrf_token %}
 
+    <p>Tem certeza que quer deletar a métrica de "{{ object }}"?</p>
+
+    <input type="submit" value="Deletar" class="btn btn-block btn-danger submit-btn" />
+
+  </form>
+
+  <a href="{% url 'campaigns' %}">Voltar</a>
 {% endblock %}

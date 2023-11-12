@@ -1,0 +1,35 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'clients' %}">Clientes</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Dados - Cliente</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<h3>Deletar Dados de <strong>Cliente</strong>: {{ object }}</h3>
+
+<div class="py-2"></div>
+
+  <form method="post" action="{% url 'delete_client_data' object.id %}">
+    {% csrf_token %}
+
+    <p>Tem certeza que quer deletar o registro de "{{ object }}"?</p>
+
+    <input type="submit" value="Deletar" class="btn btn-block btn-danger submit-btn" />
+
+  </form>
+
+  <a href="{% url 'clients' %}">Voltar</a>
+
+
+{% endblock %}

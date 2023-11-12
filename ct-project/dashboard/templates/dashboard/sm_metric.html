@@ -19,12 +19,43 @@
         </nav>
     </div>
 
+    {% include 'authentication/partials/_messages.html'%}
+
     <div>
       <h1 class="d-inline">Métricas - <strong>Redes Sociais</strong></h1><span></span>
       <a href="{% url 'add_sm_metric' %}" class="btn btn-primary ms-5">Adicionar Métrica</a>
     </div>
   </div>
 
+  <div class="py-4"></div>
 
-{% include 'authentication/partials/_messages.html' %}
+  <table class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Rede Social</th>
+        <th>Seguidores</th>
+        <th>Impressões</th>
+        <th>Alcance</th>
+        <th>Engajamento</th>
+        <th>Visitas</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for metric in object_list %}
+        <tr>
+          <td><a href="{% url 'update_sm_metric' pk=metric.pk %}">{{ metric.date }}</a></td>
+          <td>{{ metric.get_network_display }}</td>
+          <td>{{ metric.followers }}</td>
+          <td>{{ metric.impressions }}</td>
+          <td>{{ metric.reach }}</td>
+          <td>{{ metric.engagement }}</td>
+          <td>{{ metric.visits }}</td>
+          <td>{{ metric.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'services' %}">Serviços</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Dados - Serviço</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<h3>Deletar Dados de <strong>Serviço</strong>: {{ object }}</h3>
+
+<div class="py-2"></div>
+
+  <form method="post" action="{% url 'delete_service_data' object.id %}">
+    {% csrf_token %}
+
+    <p>Tem certeza que quer deletar o serviço de "{{ object }}"?</p>
+
+    <input type="submit" value="Deletar" class="btn btn-block btn-danger submit-btn" />
+
+  </form>
+
+  <a href="{% url 'services' %}">Voltar</a>
+
+{% endblock %}

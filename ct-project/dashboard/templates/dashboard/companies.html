@@ -14,11 +14,43 @@
         </nav>
     </div>
 
+    {% include 'authentication/partials/_messages.html'%}
+
     <div>
       <h1 class="d-inline">Dados - <strong>Empresas</strong></h1><span></span>
       <a href="{% url 'add_company_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
   </div>
 
-{% include 'authentication/partials/_messages.html'%}
+  <div class="py-4"></div>
+
+  <table class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Cliente</th>
+        <th>CNPJ</th>
+        <th>Área de Atuação</th>
+        <th>Faturamento Anual</th>
+        <th>N° de Funcionários</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for company in object_list %}
+        <tr>
+          <td><a href="{% url 'update_company_data' pk=company.pk %}">{{ company.pk }}</a></td>
+          <td>{{ company.company_name }}</td>
+          <td>{{ company.client_id.first_name }} {{ company.client_id.last_name }}</td>
+          <td>{{ company.cnpj }}</td>
+          <td>{{ company.field_of_action }}</td>
+          <td>{{ company.annual_revenue }}</td>
+          <td>{{ company.n_of_employees }}</td>
+          <td>{{ company.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

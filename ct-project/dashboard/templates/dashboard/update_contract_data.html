@@ -1,32 +1,31 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-
 <div class="py-2"></div>
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'campaigns' %}">Campanhas</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Adicionar Métrica - Campanha</li>
+      <li class="breadcrumb-item"><a href="{% url 'contracts' %}">Contratos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Atualizar Dados - Contratos</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h3>Adicionar Métrica de <strong>Campanha</strong></h3>
+<div>
+  <h3 class="d-inline">Atualizar Dados de <strong>Contrato</strong></h3>
+  <a href="{% url 'delete_contract_data' pk=object.pk %}" class="btn btn-danger ms-5">Deletar Registro</a>
+</div>
 
 <div class="py-2"></div>
-
 <form action="" method="POST">
   {% csrf_token %}
   <div class="card center">
     <div class="card-body text-center">
       {{ form.as_p }}
       <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+        <input type="submit" value="Atualizar Dados" class="btn btn-block btn-primary submit-btn" />
       </div>
     </div>
   </div>

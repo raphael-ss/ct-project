@@ -10,13 +10,16 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
       <li class="breadcrumb-item"><a href="{% url 'campaigns' %}">Campanhas</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Adicionar Métrica - Campanha</li>
+      <li class="breadcrumb-item active" aria-current="page">Atualizar Métrica - Campanha</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h3>Adicionar Métrica de <strong>Campanha</strong></h3>
+<div>
+  <h3 class="d-inline">Atualizar Métrica de <strong>Campanha</strong>: {{ object.date }}</h3>
+  <a href="{% url 'delete_campaign_metric' pk=object.pk %}" class="btn btn-danger ms-5">Deletar Registro</a>
+</div>
 
 <div class="py-2"></div>
 
@@ -26,7 +29,7 @@
     <div class="card-body text-center">
       {{ form.as_p }}
       <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+        <input type="submit" value="Atualizar Métrica" class="btn btn-block btn-secondary submit-btn" />
       </div>
     </div>
   </div>

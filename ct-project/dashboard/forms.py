@@ -1,8 +1,15 @@
 from django import forms
 from .models import Client, SocialMediaMetric, Contract, Company, CampaignMetric, Member, Service
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Field
 
+class BaseCreateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(BaseCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
 
-class ClientCreateForm(forms.ModelForm):
+class ClientCreateForm(BaseCreateForm):
     class Meta:
         model = Client
         fields = '__all__'
@@ -22,13 +29,14 @@ class ClientCreateForm(forms.ModelForm):
             'funnel_time': 'Tempo de Funil (Dias)',
             'notes': 'Notas',
         }
-        
 
-class CompanyCreateForm(forms.ModelForm):
+
+class CompanyCreateForm(BaseCreateForm):
     class Meta:
         model = Company
         fields = '__all__'
         labels = {
+            'client_id': 'Cliente',
             'company_name': 'Nome da Empresa',
             'cnpj': 'CNPJ',
             'field_of_action': 'Área de Atuação',
@@ -38,12 +46,14 @@ class CompanyCreateForm(forms.ModelForm):
             'proof_of_registration_link': 'Link da Prova de Registro',
             'notes': 'Notas',
         }
-        
-class ContractCreateForm(forms.ModelForm):
+
+       
+class ContractCreateForm(BaseCreateForm):
     class Meta:
         model = Contract
         fields = '__all__'
         labels = {
+            'client_id': 'Cliente',
             'sector': 'Setor',
             'total_value': 'Valor Total',
             'n_of_services': 'N° de Serviços',
@@ -52,7 +62,7 @@ class ContractCreateForm(forms.ModelForm):
             'notes': 'Notas',
         }
         
-class MemberCreateForm(forms.ModelForm):
+class MemberCreateForm(BaseCreateForm):
     class Meta:
         model = Member
         fields = '__all__'
@@ -72,11 +82,14 @@ class MemberCreateForm(forms.ModelForm):
         }
 
 
-class ServiceCreateForm(forms.ModelForm):
+class ServiceCreateForm(BaseCreateForm):
     class Meta:
         model = Service
         fields = '__all__'
         labels = {
+            'member_id': 'Membro',
+            'contract_id': 'Contrato',
+            'client_id': 'Cliente',
             'project': 'Projeto',
             'estimated_time': 'Tempo Estimado',
             'actual_time': 'Tempo Real',
@@ -86,7 +99,7 @@ class ServiceCreateForm(forms.ModelForm):
         }
 
 
-class CampaignMetricCreateForm(forms.ModelForm):
+class CampaignMetricCreateForm(BaseCreateForm):
     class Meta:
         model = CampaignMetric
         fields = '__all__'
@@ -100,7 +113,7 @@ class CampaignMetricCreateForm(forms.ModelForm):
         }
 
 
-class SocialMediaMetricCreateForm(forms.ModelForm):
+class SocialMediaMetricCreateForm(BaseCreateForm):
     class Meta:
         model = SocialMediaMetric
         fields = '__all__'

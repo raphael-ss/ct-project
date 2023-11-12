@@ -14,11 +14,44 @@
         </nav>
     </div>
 
+    {% include 'authentication/partials/_messages.html'%}
+
     <div>
       <h1 class="d-inline">Dados - <strong>Contratos</strong></h1><span></span>
       <a href="{% url 'add_contract_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
-  </div>
+</div>
 
-{% include 'authentication/partials/_messages.html'%}
+
+<div class="py-4"></div>
+
+  <table class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Setor</th>
+        <th>Valor Total</th>
+        <th>N° de Serviços</th>
+        <th>Data</th>
+        <th>Link</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contract in object_list %}
+        <tr>
+          <td><a href="{% url 'update_contract_data' pk=contract.pk %}">{{ contract.pk }}</a></td>
+          <td>{{ contract.client_id.first_name }} {{ contract.client_id.last_name }}</td>
+          <td>{{ contract.get_sector_display }}</td>
+          <td>{{ contract.total_value }}</td>
+          <td>{{ contract.n_of_services }}</td>
+          <td>{{ contract.date }}</td>
+          <td>{{ contract.link_of_contract }}</td>
+          <td>{{ contract.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

@@ -14,11 +14,45 @@
         </nav>
     </div>
 
+    {% include 'authentication/partials/_messages.html'%}
+
     <div>
       <h1 class="d-inline">Dados - <strong>Clientes</strong></h1><span></span>
       <a href="{% url 'add_client_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
   </div>
 
-{% include 'authentication/partials/_messages.html'%}
+    <div class="py-4"></div>
+
+  <table class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Sexo</th>
+        <th>Origem</th>
+        <th>E-mail</th>
+        <th>Telefone</th>
+        <th>Score</th>
+        <th>Tempo de Funil (Dias)</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for client in object_list %}
+        <tr>
+          <td><a href="{% url 'update_client_data' pk=client.pk %}">{{ client.pk }}</a></td>
+          <td>{{ client.first_name }} {{ client.last_name }}</td>
+          <td>{{ client.get_gender_display }}</td>
+          <td>{{ client.get_source_display }}</td>
+          <td>{{ client.email }}</td>
+          <td>{{ client.phone }}</td>
+          <td>{{ client.get_score_display }}</td>
+          <td>{{ client.funnel_time }}</td>
+          <td>{{ client.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

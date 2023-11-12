@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'companies' %}">Empresas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Dados - Empresas</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<h3>Deletar Dados de <strong>Empresa</strong>: {{ object }}</h3>
+
+<div class="py-2"></div>
+
+  <form method="post" action="{% url 'delete_company_data' object.id %}">
+    {% csrf_token %}
+
+    <p>Tem certeza que quer deletar a empresa de "{{ object }}"?</p>
+
+    <input type="submit" value="Deletar" class="btn btn-block btn-danger submit-btn" />
+
+  </form>
+
+  <a href="{% url 'companies' %}">Voltar</a>
+{% endblock %}

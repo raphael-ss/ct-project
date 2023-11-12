@@ -1,0 +1,33 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'social_media' %}">Redes Sociais</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Métrica - Redes Sociais</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<h3>Deletar Métrica de <strong>Rede Social</strong>: {{ object }}</h3>
+
+<div class="py-2"></div>
+
+  <form method="post" action="{% url 'delete_sm_metric' object.id %}">
+    {% csrf_token %}
+
+    <p>Tem certeza que quer deletar a métrica de "{{ object }}"?</p>
+
+    <input type="submit" value="Deletar" class="btn btn-block btn-danger submit-btn" />
+
+  </form>
+
+  <a href="{% url 'social_media' %}">Voltar</a>
+
+{% endblock %}
