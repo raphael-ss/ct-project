@@ -84,7 +84,7 @@ class Client(models.Model):
     monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5)
     funnel_time = models.PositiveIntegerField(default=20)
     score = models.CharField(default=A, choices=SCORE)
-    notes = models.CharField(max_length=100, default="Nada")
+    notes = models.CharField(max_length=100, default="-")
 
     def get_absolute_url(self):
         return "/clientes"

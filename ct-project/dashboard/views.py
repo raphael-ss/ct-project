@@ -5,13 +5,14 @@ from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member
 from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 '''
 @login_required(login_url='auth/login')
 def index(request):
     return render(request, 'dashboard/index.html')
 '''
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
   def get_context_data(self):
@@ -25,44 +26,44 @@ class IndexView(TemplateView):
     context["rede-social"] = SocialMediaMetric.objects.all()
     return context
 
-class ClientList(ListView):
+class ClientList(LoginRequiredMixin, ListView):
     model = Client
     template_name = "dashboard/clients.html"
     queryset = Client.objects.all().order_by('id')
 
-class CompanyList(ListView):
+class CompanyList(LoginRequiredMixin, ListView):
     model = Company
     template_name = "dashboard/companies.html"
     queryset = Company.objects.all()
 
-class ContractList(ListView):
+class ContractList(LoginRequiredMixin, ListView):
     model = Contract
     template_name = "dashboard/contracts.html"
     queryset = Contract.objects.all()
 
-class CampaignMetricList(ListView):
+class CampaignMetricList(LoginRequiredMixin, ListView):
     queryset = CampaignMetric.objects.all()
     model = CampaignMetric
     template_name = "dashboard/campaigns.html"
 
-class ServiceList(ListView):
+class ServiceList(LoginRequiredMixin, ListView):
     model = Service
     template_name = "dashboard/services.html"
     queryset = Service.objects.all()
 
-class MemberList(ListView):
+class MemberList(LoginRequiredMixin, ListView):
     model = Member
     template_name = "dashboard/members.html"
     queryset = Member.objects.all()
 
-class SocialMediaMetricList(ListView):
+class SocialMediaMetricList(LoginRequiredMixin, ListView):
     model = SocialMediaMetric
     template_name = "dashboard/sm_metric.html"
     queryset = SocialMediaMetric.objects.all()
 
 
 #-ADD DATA
-class ClientCreate(CreateView):
+class ClientCreate(LoginRequiredMixin, CreateView):
    model = Client
    template_name = 'dashboard/add_client_data.html'
    form_class = ClientCreateForm
@@ -72,7 +73,7 @@ class ClientCreate(CreateView):
         messages.success(self.request, 'Cliente adicionado com sucesso.')
         return response
 
-class CompanyCreate(CreateView):
+class CompanyCreate(LoginRequiredMixin, CreateView):
    model = Company
    template_name = 'dashboard/add_company_data.html'
    form_class = CompanyCreateForm
@@ -82,7 +83,7 @@ class CompanyCreate(CreateView):
         messages.success(self.request, 'Empresa adicionada com sucesso.')
         return response
 
-class ContractCreate(CreateView):
+class ContractCreate(LoginRequiredMixin, CreateView):
    model = Contract
    template_name = 'dashboard/add_contract_data.html'
    form_class = ContractCreateForm
@@ -92,7 +93,7 @@ class ContractCreate(CreateView):
         messages.success(self.request, 'Contrato adicionado com sucesso.')
         return response
 
-class CampaignMetricCreate(CreateView):
+class CampaignMetricCreate(LoginRequiredMixin, CreateView):
    model = CampaignMetric
    template_name = 'dashboard/add_campaign_metric.html'
    form_class = CampaignMetricCreateForm
@@ -102,7 +103,7 @@ class CampaignMetricCreate(CreateView):
         messages.success(self.request, 'Métrica adicionada com sucesso.')
         return response
 
-class ServiceCreate(CreateView):
+class ServiceCreate(LoginRequiredMixin, CreateView):
    model = Service
    template_name = 'dashboard/add_service_data.html'
    form_class = ServiceCreateForm
@@ -112,7 +113,7 @@ class ServiceCreate(CreateView):
         messages.success(self.request, 'Serviço adicionado com sucesso.')
         return response
 
-class MemberCreate(CreateView):
+class MemberCreate(LoginRequiredMixin, CreateView):
    model = Member
    template_name = 'dashboard/add_member_data.html'
    form_class = MemberCreateForm
@@ -122,7 +123,7 @@ class MemberCreate(CreateView):
         messages.success(self.request, 'Membro adicionado com sucesso.')
         return response
 
-class SocialMediaMetricCreate(CreateView):
+class SocialMediaMetricCreate(LoginRequiredMixin, CreateView):
    model = SocialMediaMetric
    template_name = 'dashboard/add_sm_metric.html'
    form_class = SocialMediaMetricCreateForm
@@ -133,7 +134,7 @@ class SocialMediaMetricCreate(CreateView):
         return response
 
 #-UPDATE DATA
-class ClientUpdate(UpdateView):
+class ClientUpdate(LoginRequiredMixin, UpdateView):
    model = Client
    template_name = 'dashboard/update_client_data.html'
    form_class = ClientCreateForm
@@ -143,7 +144,7 @@ class ClientUpdate(UpdateView):
         messages.success(self.request, 'Cliente atualizado com sucesso.')
         return response
 
-class CompanyUpdate(UpdateView):
+class CompanyUpdate(LoginRequiredMixin, UpdateView):
    model = Company
    template_name = 'dashboard/update_company_data.html'
    form_class = CompanyCreateForm
@@ -153,7 +154,7 @@ class CompanyUpdate(UpdateView):
         messages.success(self.request, 'Empresa atualizada com sucesso.')
         return response
 
-class ContractUpdate(UpdateView):
+class ContractUpdate(LoginRequiredMixin, UpdateView):
    model = Contract
    template_name = 'dashboard/update_contract_data.html'
    form_class = ContractCreateForm
@@ -163,7 +164,7 @@ class ContractUpdate(UpdateView):
         messages.success(self.request, 'Contrato atualizado com sucesso.')
         return response
 
-class CampaignMetricUpdate(UpdateView):
+class CampaignMetricUpdate(LoginRequiredMixin, UpdateView):
    model = CampaignMetric
    template_name = 'dashboard/update_campaign_metric.html'
    form_class = CampaignMetricCreateForm
@@ -173,7 +174,7 @@ class CampaignMetricUpdate(UpdateView):
         messages.success(self.request, 'Métrica atualizada com sucesso.')
         return response
 
-class ServiceUpdate(UpdateView):
+class ServiceUpdate(LoginRequiredMixin, UpdateView):
    model = Service
    template_name = 'dashboard/update_service_data.html'
    form_class = ServiceCreateForm
@@ -183,7 +184,7 @@ class ServiceUpdate(UpdateView):
         messages.success(self.request, 'Serviço atualizado com sucesso.')
         return response
 
-class MemberUpdate(UpdateView):
+class MemberUpdate(LoginRequiredMixin, UpdateView):
    model = Member
    template_name = 'dashboard/update_member_data.html'
    form_class = MemberCreateForm
@@ -193,7 +194,7 @@ class MemberUpdate(UpdateView):
         messages.success(self.request, 'Membro atualizado com sucesso.')
         return response
 
-class SocialMediaMetricUpdate(UpdateView):
+class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
    model = SocialMediaMetric
    template_name = 'dashboard/update_sm_metric.html'
    form_class = SocialMediaMetricCreateForm
@@ -204,7 +205,7 @@ class SocialMediaMetricUpdate(UpdateView):
         return response
 
 #-DELETE DATA
-class ClientDelete(DeleteView):
+class ClientDelete(LoginRequiredMixin, DeleteView):
    model = Client
    template_name = 'dashboard/delete_client_data.html'
    success_url = "/clientes"
@@ -214,7 +215,7 @@ class ClientDelete(DeleteView):
         messages.success(self.request, 'Cliente deletado com sucesso.')
         return response
 
-class CompanyDelete(DeleteView):
+class CompanyDelete(LoginRequiredMixin, DeleteView):
    model = Company
    template_name = 'dashboard/delete_company_data.html'
    success_url = "/empresas"
@@ -224,7 +225,7 @@ class CompanyDelete(DeleteView):
         messages.success(self.request, 'Empresa deletada com sucesso.')
         return response
 
-class ContractDelete(DeleteView):
+class ContractDelete(LoginRequiredMixin, DeleteView):
    model = Contract
    template_name = 'dashboard/delete_contract_data.html'
    success_url = "/contratos"
@@ -234,7 +235,7 @@ class ContractDelete(DeleteView):
         messages.success(self.request, 'Contrato deletado com sucesso.')
         return response
 
-class CampaignMetricDelete(DeleteView):
+class CampaignMetricDelete(LoginRequiredMixin, DeleteView):
    model = CampaignMetric
    template_name = 'dashboard/delete_campaign_metric.html'
    success_url = "/campanhas"
@@ -244,7 +245,7 @@ class CampaignMetricDelete(DeleteView):
         messages.success(self.request, 'Métrica deletada com sucesso.')
         return response
 
-class ServiceDelete(DeleteView):
+class ServiceDelete(LoginRequiredMixin, DeleteView):
    model = Service
    template_name = 'dashboard/delete_service_data.html'
    success_url = "/servicos"
@@ -254,7 +255,7 @@ class ServiceDelete(DeleteView):
         messages.success(self.request, 'Serviço deletado com sucesso.')
         return response
 
-class MemberDelete(DeleteView):
+class MemberDelete(LoginRequiredMixin, DeleteView):
    model = Member
    template_name = 'dashboard/delete_member_data.html'
    success_url = "/membros"
@@ -264,7 +265,7 @@ class MemberDelete(DeleteView):
         messages.success(self.request, 'Membro deletado com sucesso.')
         return response
 
-class SocialMediaMetricDelete(DeleteView):
+class SocialMediaMetricDelete(LoginRequiredMixin, DeleteView):
    model = SocialMediaMetric
    template_name = 'dashboard/delete_sm_metric.html'
    success_url = "/redes-sociais"
