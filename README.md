@@ -3,9 +3,9 @@
 Este reposítório consiste num projeto de uma série de aplicações web, de interação com banco de dados, registrador de escalas, visualização e geração de métricas, entre outros,
 como sistema interno de uma empresa.
 
-Aplicações do Projeto:
+## Aplicações do Projeto:
 
-Aplicação DBCT: 
+## Aplicação DBCT: 
 
 - Dashboard com visualizações gráficas interativas de metas;
 - Barra de pesquisa em tabelas para filtrar resultados;
@@ -13,7 +13,7 @@ Aplicação DBCT:
 - Sistema de autenticação de usuário, com interações baseadas em cargo (*role-based*);
 - Geração de métricas atualizadas com os dados;
 
-Aplicação ScaleTracker:
+## Aplicação ScaleTracker:
 
 - Registro de Escalas numa tabela;
 - Visualização da tabela com as escalas dos membros;
@@ -21,3 +21,25 @@ Aplicação ScaleTracker:
 - Visualizações de horas ao longo da semana;
 - Visualização de horas totais;
 
+## Instalação e Configuração
+
+1. Clone o repositório.
+
+   '''git clone https://github.com/seu-usuario/seu-projeto.git'''
+
+2. Caso não haja um ambiente virtual, crie um
+
+'''cd ct-project
+python -m venv venv'''
+
+3. Ative o ambiente virtual
+
+'''source venv/bin/activate  # ou "venv\Scripts\activate" no Windows'''
+
+4. Instale as dependências necessárias
+
+'''pip install -r requirements.txt'''
+
+5. Execute o projeto 
+
+''' python manage.py runserver '''
