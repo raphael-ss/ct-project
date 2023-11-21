@@ -1,12 +1,37 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
+from datetime import datetime
 # Create your models here.
+
+class Lead(models.Model):
+    
+    SINGLE = "SOLTEIRO"
+    MARRIED = "CASADO"
+    DIVORCED = "DIVORCIADO"
+    WIDOWED = "VIÚVO"
+    DATING = "UNIÃO ESTÁVEL"
+    STATUS = [
+        (SINGLE, 'Solteiro(a)'),
+        (MARRIED, "Casado(a)"),
+        (DIVORCED, "Divorciado(a)"),
+        (WIDOWED, "Viúvo(a)"),
+        (DATING, "União Estável"),
+    ]
+    
+    first_name = models.CharField(max_length=32, default="")
+    last_name = models.CharField(max_length=32, default="")
+    email = models.CharField(max_length=80, default="")
+    phone = models.CharField(max_length=16, default="")
+    profession = models.CharField(max_length=30, default="")
+    marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE)
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
 class Client(models.Model):
     MALE = "M"
     FEMALE = "F"
-    GENDER = [
+    SEX = [
         (MALE, "Homem"),
         (FEMALE, "Mulher")
     ]
@@ -31,18 +56,6 @@ class Client(models.Model):
         (EMINCOMPLETE, "Ensino Médio Incompleto"),
         (ESINCOMPLETE, "Ensino Superior Incompleto"),
         (ESCOMPLETE, "Ensino Superior Completo"),
-    ]
-    SINGLE = "SOLTEIRO"
-    MARRIED = "CASADO"
-    DIVORCED = "DIVORCIADO"
-    WIDOWED = "VIÚVO"
-    DATING = "UNIÃO ESTÁVEL"
-    STATUS = [
-        (SINGLE, 'Solteiro(a)'),
-        (MARRIED, "Casado(a)"),
-        (DIVORCED, "Divorciado(a)"),
-        (WIDOWED, "Viúvo(a)"),
-        (DATING, "União Estável"),
     ]
     UPTO_1 = "1"
     UPTO_1_5 = "1,5"
@@ -70,21 +83,17 @@ class Client(models.Model):
         (D, "D"),
         (E, "E"),
     ]
-    first_name = models.CharField(max_length=32, default="")
-    last_name = models.CharField(max_length=32, default="")
-    gender = models.CharField(max_length=1, choices=GENDER, default="")
+    
+    sex = models.CharField(max_length=1, choices=SEX, default="")
     source = models.CharField(max_length=10, choices=SOURCE, default="")
-    email = models.CharField(max_length=80, default="")
-    phone = models.CharField(max_length=16, default="")
     cpf = models.CharField(max_length=14, default="123-456-789-12")
     birth_date = models.DateField(null=False, default=datetime.datetime.now)
-    profession = models.CharField(max_length=30, default="")
     education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE)
-    marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE)
     monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5)
     funnel_time = models.PositiveIntegerField(default=20)
     score = models.CharField(default=A, choices=SCORE)
     notes = models.CharField(max_length=100, default="-")
+    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True, related_name='clients')
 
     def get_absolute_url(self):
         return "/clientes"
@@ -92,7 +101,7 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}" 
 
-    
+
 class Company(models.Model):
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=80)
