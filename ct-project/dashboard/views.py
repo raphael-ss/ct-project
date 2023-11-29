@@ -7,11 +7,7 @@ from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric
 from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
-'''
-@login_required(login_url='auth/login')
-def index(request):
-    return render(request, 'dashboard/index.html')
-'''
+
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
@@ -19,11 +15,25 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context = super().get_context_data()
     context["clientes"] = Client.objects.all()
     context["empresas"] = Company.objects.all()
-    context["contratos"] = Contract.objects.all()
+    context["contracts"] = Contract.objects.all()
     context["campanhas"] = CampaignMetric.objects.all()
     context["servicos"] = Service.objects.all()
     context["membros"] = Member.objects.all()
     context["rede-social"] = SocialMediaMetric.objects.all()
+    sum = 0
+    for contract in Contract.objects.all():
+       sum += contract.total_value
+    context["sum"] = sum
+    
+    projects_sold = Service.objects.count()
+    context["projects_sold"] = projects_sold
+    
+    active_members = Member.objects.count()
+    context["active_members"] = active_members
+    
+    goal = 96000
+    context["goal"] = goal / 12
+       
     return context
 
 class ClientList(LoginRequiredMixin, ListView):
@@ -50,6 +60,23 @@ class ServiceList(LoginRequiredMixin, ListView):
     model = Service
     template_name = "dashboard/services.html"
     queryset = Service.objects.all()
+    
+    def get_context_data(self):
+      context = super().get_context_data()
+      context["contracts"] = Contract.objects.all()
+         
+      civil_total = 0
+      tec_total = 0
+      
+      for contract in Contract.objects.filter(sector="CIV"):
+         civil_total += contract.total_value
+      for contract in Contract.objects.filter(sector="TEC"):
+         tec_total += contract.total_value
+         
+      context["tecTotal"] = tec_total
+      context["civilTotal"] = civil_total
+      
+      return context
 
 class MemberList(LoginRequiredMixin, ListView):
     model = Member

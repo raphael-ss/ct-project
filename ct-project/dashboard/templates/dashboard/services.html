@@ -55,4 +55,45 @@
     </tbody>
   </table>
 
+
+
+  <div class="py-3"></div>
+
+  <body>
+    <div style="width: 30%; margin: auto;">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <!-- Use a container div for better layout control -->
+    <div id="donutChartContainer">
+        <canvas id="donutChart"></canvas>
+    <script>
+      var data = {
+          labels: ['Construção Civil', 'Tecnologia'],
+          datasets: [{
+              data: [{{ civilTotal }}, {{ tecTotal }}],
+              backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)'],
+              hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)'],
+          }]
+      };
+  
+      // Use Chart.js to create a donut chart
+      var ctx = document.getElementById('donutChart').getContext('2d');
+      var donutChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: {
+              cutout: '70%', // Adjust the cutout percentage for the donut hole
+              plugins: {
+                  legend: {
+                      display: true,
+                      position: 'top'
+                  }
+              }
+          }
+      });
+  </script>
+</div>
+  </div>
+</body>
+  
 {% endblock %}
