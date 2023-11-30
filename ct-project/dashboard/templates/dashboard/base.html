@@ -28,7 +28,7 @@
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
 
     </head>
-  <body>
+  <body class="h-100">
     
 
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -134,7 +134,10 @@
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="{% url 'home' %}">CT Junior</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="{% url 'home' %}">
+    <img src="{% static 'img/logo.png' %}" alt="CT Junior Logo" class="me-2" width="30" height="25">
+    CT Junior
+</a>
 
   <ul class="navbar-nav flex-row d-md-none">
     <li class="nav-item text-nowrap">
@@ -154,8 +157,8 @@
   </div>
 </header>
 
-<div class="container-fluid">
-  <div class="row">
+<div class="container-fluid h-100">
+  <div class="row h-100">
     {% include 'dashboard/partials/_sidebar.html' %}
     
 

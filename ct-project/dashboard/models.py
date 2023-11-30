@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import datetime
 # Create your models here.
 
-class Client(models.Model):
+class Lead(models.Model):
     MALE = "M"
     FEMALE = "F"
     GENDER = [
@@ -22,6 +22,16 @@ class Client(models.Model):
         (ACTIVE, "Prospecção Ativa"),
         (PASSIVE, "Prospecção Passiva"),
     ]
+    first_name = models.CharField(max_length=32, default="")
+    last_name = models.CharField(max_length=32, default="")
+    gender = models.CharField(max_length=1, choices=GENDER, default="")
+    source = models.CharField(max_length=10, choices=SOURCE, default="")
+    email = models.CharField(max_length=80, default="")
+    phone = models.CharField(max_length=16, default="")
+    profession = models.CharField(max_length=30, default="")
+
+
+class Client(models.Model):
     EFCOMPLETE = "EF-COMPLETO"
     EMINCOMPLETE = "EM-INCOMPLETO"
     ESINCOMPLETE = "ES-INCOMPLETO"
@@ -70,15 +80,9 @@ class Client(models.Model):
         (D, "D"),
         (E, "E"),
     ]
-    first_name = models.CharField(max_length=32, default="")
-    last_name = models.CharField(max_length=32, default="")
-    gender = models.CharField(max_length=1, choices=GENDER, default="")
-    source = models.CharField(max_length=10, choices=SOURCE, default="")
-    email = models.CharField(max_length=80, default="")
-    phone = models.CharField(max_length=16, default="")
+    lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE)
     cpf = models.CharField(max_length=14, default="123-456-789-12")
     birth_date = models.DateField(null=False, default=datetime.datetime.now)
-    profession = models.CharField(max_length=30, default="")
     education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE)
     marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE)
     monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5)
