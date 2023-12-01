@@ -1,5 +1,5 @@
 from django import forms
-from .models import Client, SocialMediaMetric, Contract, Company, CampaignMetric, Member, Service
+from .models import Client, SocialMediaMetric, Contract, Company, CampaignMetric, Member, Service, Lead
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field
 
@@ -9,20 +9,30 @@ class BaseCreateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
 
-class ClientCreateForm(BaseCreateForm):
+class LeadCreateForm(BaseCreateForm):
     class Meta:
-        model = Client
+        model = Lead
         fields = '__all__'
         labels = {
             'first_name': 'Nome',
             'last_name': 'Sobrenome',
             'gender': 'Sexo',
+            'status': 'Etap do Funil',
             'source': 'Origem',
             'email': 'E-mail',
             'phone': 'Telefone',
+            'field_of_action': 'Área de Atuação',
+            'date': 'Data',
+            'notes': 'Notas',
+        }
+class ClientCreateForm(BaseCreateForm):
+    class Meta:
+        model = Client
+        fields = '__all__'
+        labels = {
+            'lead_id': 'Lead',
             'cpf': 'CPF',
             'birth_date': 'Data de Nascimento',
-            'profession': 'Profissão',
             'education': 'Nível Educacional',
             'marital_status': 'Estado Civil',
             'monthly_income': 'Renda Mensal',

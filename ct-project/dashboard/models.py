@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import datetime
 # Create your models here.
 
-class Client(models.Model):
+class Lead(models.Model):
     MALE = "M"
     FEMALE = "F"
     GENDER = [
@@ -22,6 +22,41 @@ class Client(models.Model):
         (ACTIVE, "Prospecção Ativa"),
         (PASSIVE, "Prospecção Passiva"),
     ]
+    PRED = "PRÉ-DIAGNÓSTICO"
+    PPD = "PERDIDO PRÉ-DIAG"
+    PREP = "PRÉ-PROPOSTA"
+    PPREP = "PERDIDO PRÉ-PROP"
+    POSTP = "PÓS-PROPOSTA"
+    PPOSP = "PERDIDO PÓS-PROP"
+    CLOSED = "CONTRATO FECHADO"
+    
+    STATUS = [
+        (PRED, "Pré-Diagnóstico"),
+        (PPD, "Perdido Pré-Diagnóstico"),
+        (PREP, "Pré-Proposta"),
+        (PPREP, "Perdido Pré-Proposta"),
+        (POSTP, "Pós-Proposta"),
+        (PPOSP, "Perdido Pós-Proposta"),
+        (CLOSED, "Contrato Fechado"),
+    ]
+    first_name = models.CharField(max_length=32, default="")
+    last_name = models.CharField(max_length=32, default="")
+    gender = models.CharField(max_length=1, choices=GENDER, default="")
+    status = models.CharField(max_length=20, choices=STATUS, default=PRED)
+    source = models.CharField(max_length=10, choices=SOURCE, default="")
+    email = models.CharField(max_length=80, default="")
+    phone = models.CharField(max_length=16, default="")
+    field_of_action = models.CharField(max_length=30, default="")
+    date = models.DateField()
+    notes = models.CharField(max_length=150, default="")
+    
+    def get_absolute_url(self):
+        return "/leads"
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.status}"
+    
+class Client(models.Model):
     EFCOMPLETE = "EF-COMPLETO"
     EMINCOMPLETE = "EM-INCOMPLETO"
     ESINCOMPLETE = "ES-INCOMPLETO"
@@ -70,27 +105,21 @@ class Client(models.Model):
         (D, "D"),
         (E, "E"),
     ]
-    first_name = models.CharField(max_length=32, default="")
-    last_name = models.CharField(max_length=32, default="")
-    gender = models.CharField(max_length=1, choices=GENDER, default="")
-    source = models.CharField(max_length=10, choices=SOURCE, default="")
-    email = models.CharField(max_length=80, default="")
-    phone = models.CharField(max_length=16, default="")
-    cpf = models.CharField(max_length=14, default="123-456-789-12")
+    lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True)
+    cpf = models.CharField(max_length=14, default="")
     birth_date = models.DateField(null=False, default=datetime.datetime.now)
-    profession = models.CharField(max_length=30, default="")
     education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE)
     marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE)
     monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5)
-    funnel_time = models.PositiveIntegerField(default=20)
+    funnel_time = models.PositiveIntegerField(default=0)
     score = models.CharField(default=A, choices=SCORE)
-    notes = models.CharField(max_length=100, default="-")
+    notes = models.CharField(max_length=100, default="")
 
     def get_absolute_url(self):
         return "/clientes"
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name}" 
+        return f"{self.lead_id.first_name} {self.lead_id.last_name}" 
 
     
 class Company(models.Model):

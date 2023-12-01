@@ -55,44 +55,43 @@
     </tbody>
   </table>
 
-
+  <div class="pagination justify-content-center">
+    <ul class="pagination">
+        {% if items.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ items.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+  
+        <li class="page-item disabled">
+            <span class="page-link">Página {{ items.number }} de {{ items.paginator.num_pages }}</span>
+        </li>
+  
+        {% if items.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ items.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ items.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+  </div>
 
   <div class="py-3"></div>
 
-  <body>
-    <div style="width: 30%; margin: auto;">
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <!-- Use a container div for better layout control -->
-    <div id="donutChartContainer">
-        <canvas id="donutChart"></canvas>
-    <script>
-      var data = {
-          labels: ['Construção Civil', 'Tecnologia'],
-          datasets: [{
-              data: [{{ civilTotal }}, {{ tecTotal }}],
-              backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)'],
-              hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)'],
-          }]
-      };
-  
-      // Use Chart.js to create a donut chart
-      var ctx = document.getElementById('donutChart').getContext('2d');
-      var donutChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: data,
-          options: {
-              cutout: '70%', // Adjust the cutout percentage for the donut hole
-              plugins: {
-                  legend: {
-                      display: true,
-                      position: 'top'
-                  }
-              }
-          }
-      });
-  </script>
-</div>
+ 
   </div>
 </body>
   

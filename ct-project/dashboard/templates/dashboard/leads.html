@@ -9,7 +9,7 @@
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Clientes</li>
+            <li class="breadcrumb-item active" aria-current="page">Leads</li>
           </ol>
         </nav>
     </div>
@@ -17,8 +17,8 @@
     {% include 'authentication/partials/_messages.html'%}
 
     <div>
-      <h1 class="d-inline">Dados - <strong>Clientes</strong></h1><span></span>
-      <a href="{% url 'add_client_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
+      <h1 class="d-inline">Dados - <strong>Leads</strong></h1><span></span>
+      <a href="{% url 'add_lead' %}" class="btn btn-primary ms-5">Adicionar Lead</a>
     </div>
   </div>
 
@@ -30,26 +30,24 @@
         <th>ID</th>
         <th>Nome</th>
         <th>Sexo</th>
+        <th>Etapa</th>
         <th>Origem</th>
         <th>E-mail</th>
         <th>Telefone</th>
-        <th>Score</th>
-        <th>Tempo de Funil (Dias)</th>
         <th>Notas</th>
       </tr>
     </thead>
     <tbody>
-      {% for client in object_list %}
+      {% for lead in object_list %}
         <tr>
-          <td><a href="{% url 'update_client_data' pk=client.pk %}">{{ client.pk }}</a></td>
-          <td>{{ client.lead_id.first_name }} {{ client.lead_id.last_name }}</td>
-          <td>{{ client.lead_id.get_gender_display }}</td>
-          <td>{{ client.lead_id.get_source_display }}</td>
-          <td>{{ client.lead_id.email }}</td>
-          <td>{{ client.lead_id.phone }}</td>
-          <td>{{ client.get_score_display }}</td>
-          <td>{{ client.funnel_time }}</td>
-          <td>{{ client.notes }}</td>
+          <td><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.pk }}</a></td>
+          <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+          <td>{{ lead.get_gender_display }}</td>
+          <td>{{ lead.get_status_display }}</td>
+          <td>{{ lead.get_source_display }}</td>
+          <td>{{ lead.email }}</td>
+          <td>{{ lead.phone }}</td>
+          <td>{{ lead.notes }}</td>
         </tr>
       {% endfor %}
       {% for item in items %}

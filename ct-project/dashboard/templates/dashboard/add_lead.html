@@ -1,0 +1,32 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'leads' %}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Adicionar Lead</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<h3>Adicionar <strong>Lead</strong></h3>
+
+<div class="py-2"></div>
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="card center">
+    <div class="card-body text-center">
+      {{ form.as_p }}
+      <div class="form-group text-center">
+        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock %}
