@@ -6,14 +6,33 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead
 from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm, LeadCreateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-import datetime
-from collections import defaultdict
-from django.db.models import Sum
-from django.db.models.functions import TruncMonth
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
+import json
+import csv
+from django.http import JsonResponse, HttpResponse
+from django.db.models import Q
+import datetime
 # Create your views here.
 
+def search_lead(request):
+   if request.method == "POST":
+      search_string = json.loads(request.body).get("searchText")
+      
+      leads = Lead.objects.filter(
+         Q(first_name__icontains=search_string) |
+         Q(last_name__icontains=search_string) |
+         Q(gender__icontains=search_string) |
+         Q(status__icontains=search_string) |
+         Q(email__icontains=search_string) |
+         Q(phone__icontains=search_string) |
+         Q(field_of_action__icontains=search_string) |
+         Q(last_name__icontains=search_string) |
+         Q(date__icontains=search_string) |
+         Q(notes__icontains=search_string))
+      
+      data = leads.values()
+      return JsonResponse(list(data), safe=False)
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
@@ -66,14 +85,18 @@ class IndexView(LoginRequiredMixin, TemplateView):
     
     civil_total = 0
     tec_total = 0
+    con_total = 0
       
     for contract in Contract.objects.filter(sector="CIV"):
       civil_total += contract.total_value
     for contract in Contract.objects.filter(sector="TEC"):
       tec_total += contract.total_value
+    for contract in Contract.objects.filter(sector="CON"):
+      con_total += contract.total_value
          
     context["tecTotal"] = tec_total
     context["civilTotal"] = civil_total
+    context["consulTotal"] = con_total
     
     return context
 
@@ -103,6 +126,55 @@ class LeadList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        
+        #-Data for the Source Chart
+        total_leads = queryset.count()
+        percentage = lambda total, amount: (amount / total) * 100 if amount > 0 else 0
+        filter_query = lambda source: Lead.objects.filter(source=source).count()
+        indication = filter_query('INDICAÇÃO')
+        faceads = filter_query('FBADS')
+        googleads = filter_query('GOOGLEADS')
+        active = filter_query('ATIVA')
+        passive = filter_query('PASSIVA')
+        context['indication'] = indication
+        context['faceads'] = faceads
+        context['googleads'] = googleads
+        context['active'] = active
+        context['passive'] = passive
+        
+        leads_over_time = list()
+    
+        months = ['01', '02', '03', '04', 
+               '05', '06', '07', '08', 
+               '09', '10', '11', '12']
+        
+        for month in months:
+            sum = 0
+            leads_in_month = Lead.objects.filter(date__month=month)
+            if leads_in_month.count() is 0:
+               if leads_over_time:
+                  leads_over_time.append(leads_over_time[-1])
+               else:
+                  leads_over_time.append(0)
+            else:
+               for lead in leads_in_month:
+                  if leads_over_time: sum = leads_over_time[-1]
+                  sum += 1
+                  leads_over_time.append(sum)
+                  
+        context['leads_over_time'] = leads_over_time
+        
+        context['leads'] = queryset.count()
+        
+        context['cpl'] = 40
+        
+        leads_goal = list()
+        goal_per_month = 60
+        for i in range(12):
+           leads_goal.append(goal_per_month*i)
+           
+        context['leads_goal'] = leads_goal
+        
         return context
 class ClientList(LoginRequiredMixin, ListView):
     model = Client
@@ -536,3 +608,28 @@ class SocialMediaMetricDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Métrica deletada com sucesso.')
         return response
+     
+def export_leads_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Leads-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Nome', 'Sobrenome', 'Sexo', 'Etapa', 'Origem', 'Email', 'Telefone', 'Área de Atuação', 'Data', 'Notas'])
+   
+   leads = Lead.objects.all()
+   
+   for lead in leads:
+      writer.writerow([
+         lead.first_name,
+         lead.last_name,
+         lead.gender,
+         lead.status,
+         lead.source,
+         lead.email,
+         lead.phone,
+         lead.field_of_action,
+         lead.date,
+         lead.notes,
+      ])
+      
+   return response

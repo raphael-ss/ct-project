@@ -105,7 +105,9 @@ class Client(models.Model):
         (D, "D"),
         (E, "E"),
     ]
-    lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True)
+    lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE, limit_choices_to={
+        'status': 'CONTRATO FECHADO'
+    }, null=True)
     cpf = models.CharField(max_length=14, default="")
     birth_date = models.DateField(null=False, default=datetime.datetime.now)
     education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE)
@@ -142,9 +144,11 @@ class Company(models.Model):
 class Contract(models.Model):
     TEC = "TEC"
     CIV = "CIV"
+    CON = "CON"
     SECTORS = [
         (TEC, "Tecnologia"),
-        (CIV, "Construção Civil")
+        (CIV, "Construção Civil"),
+        (CON, "Consultoria"),
     ]
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     sector = models.CharField(max_length=3, choices=SECTORS)
@@ -158,7 +162,7 @@ class Contract(models.Model):
         return "/contratos"
 
     def __str__(self):
-        return f"{self.client_id.first_name} {self.client_id.last_name} - {self.sector}" 
+        return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.sector}" 
 
 class Member(models.Model):
     ADVISOR = "ASS"
@@ -178,6 +182,7 @@ class Member(models.Model):
     COM = "COM"
     RH = "RH"
     ADMFIN = "ADM"
+    CON = "CON"
 
     SECTORS = [
         (TEC, "Tecnologia"),
@@ -217,6 +222,7 @@ class Service(models.Model):
     ELE = "Elétrico"
     CAP = "Captação"
     INC = "Incêndio"
+    MAP = "Mapeamento"
     SER = [
         (SYS, "Sistema Web"),
         (SITE, "Website"),
@@ -229,6 +235,7 @@ class Service(models.Model):
         (ELE, "Proj. Elétrico"),
         (CAP, "Proj. de Captação"),
         (INC, "Proj. de Combate à Incêndio"),
+        (MAP, "Mapeamento de Processos"),
     ]
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
     contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
@@ -244,15 +251,17 @@ class Service(models.Model):
         return "/servicos"
 
     def __str__(self):
-        return f"{self.client_id.first_name} {self.client_id.last_name} - {self.project}"
+        return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.project}"
     
 class CampaignMetric(models.Model):
 
     TEC = "TEC"
     CIV = "CIV"
+    CON = "CON"
     SECTORS = [
         (TEC, "Tecnologia"),
-        (CIV, "Construção Civil")
+        (CIV, "Construção Civil"),
+        (CON, "Consultoria"),
     ]
     GOOGLE = "GOOGLEADS"
     FCBK = "FBADS"

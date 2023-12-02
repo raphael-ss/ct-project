@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='home'),
@@ -38,4 +39,7 @@ urlpatterns = [
     path('membros/excluir-dados/<pk>', views.MemberDelete.as_view(), name='delete_member_data'),
     path('servicos/excluir-dados/<pk>', views.ServiceDelete.as_view(), name='delete_service_data'),
     path('empresas/excluir-dados/<pk>', views.CompanyDelete.as_view(), name='delete_company_data'),
+    
+    path('leads/pesquisar-leads', csrf_exempt(views.search_lead), name='search_lead'),
+    path('leads/exportar-leads', views.export_leads_csv, name='export_leads_csv'),
 ]

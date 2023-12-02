@@ -78,7 +78,7 @@
                     label: 'Meta Prevista',
                     data: goalArray,
                     fill: false,
-                    borderColor: 'rgba(255, 0, 0, 1)',
+                    borderColor: 'rgba(0, 51, 51, 1)',
                     borderWidth: 2,
                     borderDash: [5, 5],  // Add a dashed border to distinguish the goal line
                     spanGaps: true,
@@ -113,11 +113,11 @@
 
 <script>
   var data = {
-      labels: ['Construção Civil', 'Tecnologia'],
+      labels: ['Construção Civil', 'Tecnologia', 'Consultoria'],
       datasets: [{
-          data: [{{ civilTotal }}, {{ tecTotal }}],
-          backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)'],
-          hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)'],
+          data: [{{ civilTotal }}, {{ tecTotal }}, {{ consulTotal }}],
+          backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)', 'rgba(0, 102, 102, 0.8)'],
+          hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)', 'rgba(0, 255, 255, 0.8)'],
       }]
   };
 

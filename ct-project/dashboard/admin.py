@@ -3,7 +3,7 @@ from .models import SocialMediaMetric, Client, CampaignMetric, Company, Contract
 # Register your models here.
 
 admin.site.register(Client)
-#admin.site.register(Lead)
+admin.site.register(Lead)
 admin.site.register(Company)
 admin.site.register(Contract)
 admin.site.register(Member)

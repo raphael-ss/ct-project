@@ -42,7 +42,7 @@
       {% for contract in object_list %}
         <tr>
           <td><a href="{% url 'update_contract_data' pk=contract.pk %}">{{ contract.pk }}</a></td>
-          <td>{{ contract.client_id.first_name }} {{ contract.client_id.last_name }}</td>
+          <td>{{ contract.client_id.lead_id.first_name }} {{ contract.client_id.lead_id.last_name }}</td>
           <td>{{ contract.get_sector_display }}</td>
           <td>{{ contract.total_value }}</td>
           <td>{{ contract.n_of_services }}</td>

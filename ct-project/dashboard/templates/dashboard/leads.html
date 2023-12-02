@@ -22,40 +22,306 @@
     </div>
   </div>
 
+  <div class="py-4"></div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+              <h3><strong>Funil de Vendas</strong></h3>
+              <div class="py-2"></div>
+              <canvas id="salesFunnelChart" width="400" height="200"></canvas>
+            </div>
+          </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+              <h3><strong>Homens x Mulheres</strong></h3>
+              <div class="py-2"></div>
+                <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                <div style="max-width: 75%; max-height: 75%;">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+  
     <div class="py-4"></div>
 
-  <table class="table table-striped table-hover table-sm">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Sexo</th>
-        <th>Etapa</th>
-        <th>Origem</th>
-        <th>E-mail</th>
-        <th>Telefone</th>
-        <th>Notas</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for lead in object_list %}
-        <tr>
-          <td><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.pk }}</a></td>
-          <td>{{ lead.first_name }} {{ lead.last_name }}</td>
-          <td>{{ lead.get_gender_display }}</td>
-          <td>{{ lead.get_status_display }}</td>
-          <td>{{ lead.get_source_display }}</td>
-          <td>{{ lead.email }}</td>
-          <td>{{ lead.phone }}</td>
-          <td>{{ lead.notes }}</td>
-        </tr>
-      {% endfor %}
-      {% for item in items %}
-    <!-- Your item rendering logic goes here -->
-{% endfor %}
-    </tbody>
-  </table>
+    <div class="row">
+      <div class="col-lg-6">
+          <div class="card">
+              <div class="card-body text-center">
+                <h3><strong>Chegada de Leads</strong></h3>
+                <div class="py-2"></div>
+                  <canvas id="lineChart"></canvas>
+                  <div class="py-3"></div>
+                    <h5><strong>Total de Leads:</strong> {{ leads }}</h5>
+                    <div class="py-1"></div>
+                    <h5><strong>CPL:</strong> R${{ cpl }},00</h5>
+              </div>
+          </div>
+      </div>
 
+      <div class="col-lg-6">
+          <div class="card">
+              <div class="card-body text-center">
+                <h3><strong>Origem dos Leads</strong></h3>
+                <div class="py-2"></div>
+                  <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                  <div style="max-width: 100%; max-height: 100%;">
+                      <canvas id="pieChart"></canvas>
+                  </div>
+              </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Sales funnel data
+        var salesData = {
+            labels: ['Pré-Diagnóstico', 'Pré-Proposta', 'Pós-Proposta', 'Contrato Fechado'],
+            datasets: [{
+                label: 'Leads',
+                data: [50, 30, 20, 10], // Adjust these values based on your data
+                backgroundColor: [
+                    'rgba(51, 25, 0, 0.7)',
+                    'rgba(153, 76, 0, 0.7)', 
+                    'rgba(255, 128, 0, 0.7)', 
+                    'rgba(255, 178, 102, 0.7)'  
+                ],
+                hoverBackgroundColor: [
+                    'rgba(102, 51, 0, 7)', 
+                    'rgba(204, 102, 0, 7)', 
+                    'rgba(255, 153, 51, 0.7)',
+                    'rgba(255, 204, 153, 0.7)'
+                ]
+            }]
+        };
+
+        // Chart configuration
+        var chartConfig = {
+            type: 'bar', // Set to horizontal bar chart
+            data: salesData,
+            options: {
+                indexAxis: 'y', // Set the index axis to 'y' for horizontal chart
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                }
+            }
+        };
+
+        // Get chart canvas and render the chart
+        var ctx = document.getElementById('salesFunnelChart').getContext('2d');
+        new Chart(ctx, chartConfig);
+    });
+</script>
+  <script>
+    var data = {
+        labels: ['Indicação', 'Facebook Ads', 'Google Ads', 'Prospec. Ativa', 'Prospec. Passiva'],
+        datasets: [{
+            data: [{{ indication }}, {{ faceads }}, {{ googleads }}, {{ active }}, {{ passive }}],
+            backgroundColor: [
+            'rgba(204, 102, 0, 0.8)',
+            'rgba(255, 128, 0, 0.8)', 
+            'rgba(0, 153, 153, 0.8)', 
+            'rgba(0, 102, 102, 0.8)'],
+            hoverBackgroundColor: [
+            'rgba(255, 150, 30, 0.8)', 
+            'rgba(255, 178, 102, 0.8)', 
+            'rgba(153, 255, 255, 0.8)', 
+            'rgba(0, 255, 255, 0.8)'],
+        }]
+    };
+  
+    // Use Chart.js to create a pie chart (pizza graph)
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctx, {
+        type: 'polarArea',
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                r: {
+                  pointLabels: {
+                    display: true,
+                    centerPointLabels: true,
+                    font: {
+                      size: 10
+                    }
+                  }
+                }
+              },
+            plugins: {
+              legend: {
+                position: 'top',
+              }
+            }
+          },
+    });
+  </script>
+    <script>
+      var labels = ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', '2023-05-01', '2023-06-01', '2023-07-01', '2023-08-01', '2023-09-01', '2023-10-01', '2023-11-01', '2023-12-01']
+      var data = {{ leads_over_time }};
+      var ctx = document.getElementById('lineChart').getContext('2d');
+      var lineChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Leads',
+                  data: data,
+                  fill: true,
+                  borderColor: 'rgba(255, 128, 0, 1)',
+                  borderWidth: 2
+              },
+              {
+                label: 'Meta de Leads',
+                data: {{ leads_goal }},
+                fill: false,
+                borderColor: 'rgba(0, 51, 51, 1)',
+                borderWidth: 2,
+                borderDash: [5, 5],  // Add a dashed border to distinguish the goal line
+                spanGaps: true,
+            },]
+          },
+          options: {
+              scales: {
+                  x: {
+                      type: 'time',
+                      time: {
+                          unit: 'month',
+                          tooltipFormat: 'yyyy-mm-dd',
+                      }
+                  },
+                  y: {
+                      beginAtZero: true
+                  }
+              }
+          },
+          plugins: {
+              legend: {
+                  display: true,
+                  position: 'top'
+              }
+          },
+            
+      });
+  </script>
+  <script>
+    var data = {
+        labels: ['Homem', 'Mulher'],
+        datasets: [{
+            data: [20, 13],
+            backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)'],
+            hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)'],
+        }]
+    };
+  
+    // Use Chart.js to create a donut chart
+    var ctx = document.getElementById('donutChart').getContext('2d');
+    var donutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: {
+            cutout: '50%', // Adjust the cutout percentage for the donut hole
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+  </script>
+    
+    <div class="py-3"></div>
+
+
+
+
+
+  <div class="container-fluid">
+    <a href="{% url 'export_leads_csv' %}" class="btn btn-info">Exportar CSV</a>
+    <form class="d-flex" role="search" style="width: 50%; float: right;">
+      <input class="form-control me-2" type="text" placeholder="Pesquisar" id="searchField" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+    </form>
+  </div>
+
+  <div class="py-3"></div>
+
+  <div class="app-table">
+    <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Sexo</th>
+            <th>Etapa</th>
+            <th>Origem</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lead in object_list %}
+            <tr>
+              <td><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.pk }}</a></td>
+              <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+              <td>{{ lead.get_gender_display }}</td>
+              <td>{{ lead.get_status_display }}</td>
+              <td>{{ lead.get_source_display }}</td>
+              <td>{{ lead.email }}</td>
+              <td>{{ lead.phone }}</td>
+              <td>{{ lead.notes }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+
+  <div class="table-output">
+    <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Sexo</th>
+            <th>Etapa</th>
+            <th>Origem</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+            
+        </tbody>
+      </table>
+  </div>
+
+<div class="pagination-container">
 <div class="pagination justify-content-center">
   <ul class="pagination">
       {% if items.has_previous %}
@@ -89,6 +355,12 @@
       {% endif %}
   </ul>
 </div>
+</div>
+
+<script src={% static 'js/leadSearchBar.js' %}></script>
+<script>
+    const updateLeadUrl = "{% url 'update_lead' pk='PLACEHOLDER' %}";
+</script>
 
 
 {% endblock %}
