@@ -1,125 +1,156 @@
 {% load static %}
 
-
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
     <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="sidebarMenuLabel">CT Junior</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="{% url 'home' %}">
-              <svg class="bi"><use xlink:href="#house-fill"/></svg>
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'leads' %}">
-              Leads
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'clients' %}">
-              Clientes
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'members' %}">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">CT Junior</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto" style="background: linear-gradient(to right, rgba(51, 204, 255, 0.25) 0%, rgba(0, 76, 153, 0.15) 75%);">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#speedometer2"/></svg>
+                    Dashboard
+                </button>
+                
+                    <div class="collapse show" id="dashboard">
+                        <ul class="nav flex-column" style="margin-left: 15px;">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'home' %}">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#comercial" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#rocket"/></svg>
+                    Comercial
+                </button>
+                
+                    <div class="collapse show" id="comercial">
+                        <ul class="nav flex-column" style="margin-left: 15px;">
+                            <li class="nav-item">
+                                <a class="nav-link"  style="color: #606060;" href="#">Funil de Vendas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"  style="color: #606060;" href="{% url 'leads' %}">Leads</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'clients' %}">Clientes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'companies' %}">Empresas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'contracts' %}">Contratos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'services' %}">Projetos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'campaigns' %}">Campanhas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'social_media' %}">Redes Socias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#rh" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#people"/></svg>
+                    Recursos Humanos
+                </button>
+                
+                    <div class="collapse show" id="rh">
+                        <ul class="nav flex-column" style="margin-left: 15px;">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="{% url 'members' %}">Membros</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Pesquisa de Clima</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Plano de Carreira</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Turnover</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#financeiro" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#money"/></svg>
+                    Financeiro
+                </button>
+                
+                    <div class="collapse show" id="financeiro">
+                        <ul class="nav flex-column" style="margin-left: 15px;">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Transparência Financeira</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                            </li>
+                            <!-- Add other dashboard links as needed -->
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#projetos" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#coffee"/></svg>
+                    Projetos
+                </button>
+                
+                    <div class="collapse show" id="projetos">
+                        <ul class="nav flex-column" style="margin-left: 15px;">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Status dos Projetos</a>
+                            </li>
+                            <!-- Add other dashboard links as needed -->
+                        </ul>
+                    </div>
+                </li>
+                
+            </ul>
+    
+            <hr class="my-3">
+    
+            <ul class="nav flex-column mb-auto">
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" style="color: #004C99;" href="#">
+                  <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
+                  Configurações
+                </a>
+              </li>
               
-              Membros
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'services' %}">
-              
-              Serviços
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'campaigns' %}">
-              
-              Campanhas
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" style="color: #004C99;" href="#"
+                onclick="document.getElementById('logout-form').submit();">
+                  <svg class="bi"><use xlink:href="#door-closed"/></svg>
+                  Desconectar
+                </a>
+                <form method="POST" action="{% url 'logout' %}" id="logout-form">
+                  {% csrf_token %}
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'social_media' %}">
-              Redes Sociais
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'contracts' %}">
-              
-              Contratos
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'companies' %}">
-              
-              Empresas
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
-          <span>Análises</span>
-          <a class="link-secondary" href="#" aria-label="Add a new report">
-            <svg class="bi"><use xlink:href="#plus-circle"/></svg>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-auto">
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Público Alvo
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Persona
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Instagram
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Vendas
-            </a>
-          </li>
-        </ul>
-
-        <hr class="my-3">
-
-        <ul class="nav flex-column mb-auto">
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
-              Configurações
-            </a>
-          </li>
-          <!--DESCONECTAR-->
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#"
-            onclick="document.getElementById('logout-form').submit();">
-              <svg class="bi"><use xlink:href="#door-closed"/></svg>
-              Desconectar
-            </a>
-            <form method="POST" action="{% url 'logout' %}" id="logout-form">
-              {% csrf_token %}
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  
+        </div>

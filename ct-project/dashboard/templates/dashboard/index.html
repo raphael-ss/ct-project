@@ -113,11 +113,11 @@
 
 <script>
   var data = {
-      labels: ['Construção Civil', 'Tecnologia', 'Consultoria'],
+      labels: ['Tecnologia', 'Construção Civil', 'Consultoria'],
       datasets: [{
-          data: [{{ civilTotal }}, {{ tecTotal }}, {{ consulTotal }}],
-          backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)', 'rgba(0, 102, 102, 0.8)'],
-          hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)', 'rgba(0, 255, 255, 0.8)'],
+          data: {{ revenue_per_sector }},
+          backgroundColor: ['rgba(0, 153, 153, 0.8)','rgba(255, 128, 0, 0.8)', 'rgba(0, 102, 102, 0.8)'],
+          hoverBackgroundColor: ['rgba(153, 255, 255, 1)','rgba(255, 178, 102, 1)', 'rgba(0, 255, 255, 0.8)'],
       }]
   };
 
@@ -170,7 +170,7 @@
     <div class="col-md-6">
         <div class="card">
           <div class="card-body text-center">
-            <h4><strong>Total de Leads:</strong> 15</h4>
+            <h4><strong>Total de Leads:</strong> {{ total_leads }}</h4>
           </div>
         </div>
     </div>

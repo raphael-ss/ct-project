@@ -41,5 +41,10 @@ urlpatterns = [
     path('empresas/excluir-dados/<pk>', views.CompanyDelete.as_view(), name='delete_company_data'),
     
     path('leads/pesquisar-leads', csrf_exempt(views.search_lead), name='search_lead'),
+    
+    
     path('leads/exportar-leads', views.export_leads_csv, name='export_leads_csv'),
+    
+    
+    path('gerar-teste', views.gen_test, name='gen_test'),
 ]

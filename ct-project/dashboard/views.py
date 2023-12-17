@@ -1,5 +1,3 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -13,6 +11,8 @@ import csv
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import datetime
+from .utils import analysis_utils
+from io import BytesIO
 # Create your views here.
 
 def search_lead(request):
@@ -33,6 +33,8 @@ def search_lead(request):
       
       data = leads.values()
       return JsonResponse(list(data), safe=False)
+  
+  
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
@@ -45,58 +47,15 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["servicos"] = Service.objects.all()
     context["membros"] = Member.objects.all()
     context["rede-social"] = SocialMediaMetric.objects.all()
+    context["projects_sold"] = Service.objects.count()
+    context["active_members"] = Member.objects.count()
+    context["goal"] = 127000 / 12
+    context["revenue"] = analysis_utils.revenue_per_month()  
+    context['sum'] = analysis_utils.total_revenue()
+    context['yearly_goal'] = 127000
+    context["revenue_per_sector"] = analysis_utils.revenue_per_sector()
+    context['total_leads'] = analysis_utils.total_leads()
     
-    projects_sold = Service.objects.count()
-    context["projects_sold"] = projects_sold
-    
-    active_members = Member.objects.count()
-    context["active_members"] = active_members
-       
-    context["goal"] = 96000 / 12
-    
-    revenue = list()
-    
-    months = ['01', '02', '03', '04', 
-              '05', '06', '07', '08', 
-              '09', '10', '11', '12']
-    for month in months:
-      sum = 0
-      contracts_in_month = Contract.objects.filter(date__month=month)
-      if contracts_in_month.count() is 0:
-         if revenue:
-            revenue.append(revenue[-1])
-         else:
-            revenue.append(0)
-      else:
-         for contract in contracts_in_month:
-            sum = revenue[-1]
-            sum += contract.total_value
-            revenue.append(sum)
-      
-    context["revenue"] = revenue
-    
-    total_revenue = 0
-    for contract in Contract.objects.all():
-       total_revenue += contract.total_value
-       
-    context['sum'] = round(total_revenue)
-    
-    context['yearly_goal'] = 96000
-    
-    civil_total = 0
-    tec_total = 0
-    con_total = 0
-      
-    for contract in Contract.objects.filter(sector="CIV"):
-      civil_total += contract.total_value
-    for contract in Contract.objects.filter(sector="TEC"):
-      tec_total += contract.total_value
-    for contract in Contract.objects.filter(sector="CON"):
-      con_total += contract.total_value
-         
-    context["tecTotal"] = tec_total
-    context["civilTotal"] = civil_total
-    context["consulTotal"] = con_total
     
     return context
 
@@ -151,7 +110,7 @@ class LeadList(LoginRequiredMixin, ListView):
         for month in months:
             sum = 0
             leads_in_month = Lead.objects.filter(date__month=month)
-            if leads_in_month.count() is 0:
+            if leads_in_month.count() == 0:
                if leads_over_time:
                   leads_over_time.append(leads_over_time[-1])
                else:
@@ -170,7 +129,9 @@ class LeadList(LoginRequiredMixin, ListView):
         
         leads_goal = list()
         goal_per_month = 60
-        for i in range(12):
+        for i in range(13):
+           if i == 0:
+              continue
            leads_goal.append(goal_per_month*i)
            
         context['leads_goal'] = leads_goal
@@ -314,7 +275,7 @@ class ServiceList(LoginRequiredMixin, ListView):
 class MemberList(LoginRequiredMixin, ListView):
     model = Member
     template_name = "dashboard/members.html"
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().order_by('role')
     context_object_name = 'items'
     paginate_by = 8 
 
@@ -633,3 +594,31 @@ def export_leads_csv(request):
       ])
       
    return response
+
+def gen_test(request):
+    
+    civil_total = 0
+    tec_total = 0
+    con_total = 0
+      
+    for contract in Contract.objects.filter(sector="CIV"):
+      civil_total += contract.total_value
+    for contract in Contract.objects.filter(sector="TEC"):
+      tec_total += contract.total_value
+    for contract in Contract.objects.filter(sector="CON"):
+      con_total += contract.total_value
+      
+    data = [tec_total, civil_total, con_total]
+    labels = ['Tecnologia', 'Civil', 'Consultoria']
+         
+    #buffer = chart_utils.gen_test(data=data, labels=labels, date=datetime.datetime.today(), max="Construção Civil")
+
+    # Set the buffer's file pointer to the beginning of the buffer
+    #buffer.seek(0)
+
+    # Create an HTTP response with the PDF as the content
+    #response = HttpResponse(buffer, content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename=Test-'+ str(datetime.datetime.today().date())+ '.pdf'
+
+    # Return the HTTP response
+    return #response

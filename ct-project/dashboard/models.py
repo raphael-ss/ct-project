@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
-import datetime
+from django.utils.timezone import now
 # Create your models here.
-
 class Lead(models.Model):
     MALE = "M"
     FEMALE = "F"
@@ -39,16 +37,34 @@ class Lead(models.Model):
         (PPOSP, "Perdido Pós-Proposta"),
         (CLOSED, "Contrato Fechado"),
     ]
+    TEC = "TEC"
+    CIV = "CIV"
+    CON = "CON"
+    SECTORS = [
+        (TEC, "Tecnologia"),
+        (CIV, "Construção Civil"),
+        (CON, "Consultoria"),
+    ]
     first_name = models.CharField(max_length=32, default="")
     last_name = models.CharField(max_length=32, default="")
+    sector = models.CharField(max_length=3, choices=SECTORS, default=TEC)
     gender = models.CharField(max_length=1, choices=GENDER, default="")
     status = models.CharField(max_length=20, choices=STATUS, default=PRED)
     source = models.CharField(max_length=10, choices=SOURCE, default="")
-    email = models.CharField(max_length=80, default="")
+    email = models.CharField(max_length=80, default="", null=True)
     phone = models.CharField(max_length=16, default="")
-    field_of_action = models.CharField(max_length=30, default="")
+    field_of_action = models.CharField(max_length=30, default="", null=True)
+    score = models.CharField(max_length=1)
     date = models.DateField()
-    notes = models.CharField(max_length=150, default="")
+    notes = models.CharField(max_length=150, default="-")
+    
+    #-LEAD SCORING
+    budget = models.IntegerField()
+    authority = models.IntegerField()
+    need = models.IntegerField()
+    timing = models.IntegerField()
+    time_to_respond = models.IntegerField()
+    behavior = models.IntegerField()
     
     def get_absolute_url(self):
         return "/leads"
@@ -93,29 +109,16 @@ class Client(models.Model):
         (ABOVE_9, "Acima de 9 salários mínimos"),
     ]
 
-    A = "A"
-    B = "B"
-    C = "C"
-    D = "D"
-    E = "E"
-    SCORE = [
-        (A, "A"),
-        (B, "B"),
-        (C, "C"),
-        (D, "D"),
-        (E, "E"),
-    ]
     lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE, limit_choices_to={
         'status': 'CONTRATO FECHADO'
     }, null=True)
     cpf = models.CharField(max_length=14, default="")
-    birth_date = models.DateField(null=False, default=datetime.datetime.now)
-    education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE)
-    marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE)
-    monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5)
-    funnel_time = models.PositiveIntegerField(default=0)
-    score = models.CharField(default=A, choices=SCORE)
-    notes = models.CharField(max_length=100, default="")
+    birth_date = models.DateField(null=False)
+    education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE, null=True)
+    marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE, null=True)
+    monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5, null=True)
+    funnel_time = models.PositiveIntegerField(default=15)
+    notes = models.CharField(max_length=100, default="-")
 
     def get_absolute_url(self):
         return "/clientes"
@@ -129,40 +132,17 @@ class Company(models.Model):
     company_name = models.CharField(max_length=80)
     cnpj = models.CharField(max_length=18)
     field_of_action = models.CharField(max_length=100)
-    annual_revenue = models.FloatField()
-    n_of_locations = models.PositiveSmallIntegerField()
-    n_of_employees = models.PositiveSmallIntegerField()
+    annual_revenue = models.FloatField(null=True)
+    n_of_locations = models.PositiveSmallIntegerField(null=True)
+    n_of_employees = models.PositiveSmallIntegerField(null=True)
     proof_of_registration_link = models.CharField(max_length=150)
-    notes = models.CharField(max_length=100)
+    notes = models.CharField(max_length=10, default="-")
 
     def get_absolute_url(self):
         return "/empresas"
 
     def __srt__(self):
         return f"{self.client_id.first_name} - {self.client_id.last_name} - {self.company_name}"
-
-class Contract(models.Model):
-    TEC = "TEC"
-    CIV = "CIV"
-    CON = "CON"
-    SECTORS = [
-        (TEC, "Tecnologia"),
-        (CIV, "Construção Civil"),
-        (CON, "Consultoria"),
-    ]
-    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
-    sector = models.CharField(max_length=3, choices=SECTORS)
-    total_value = models.FloatField(null=False)
-    n_of_services = models.PositiveSmallIntegerField()
-    date = models.DateField()
-    link_of_contract = models.CharField(max_length=150)
-    notes = models.CharField(max_length=100)
-
-    def get_absolute_url(self):
-        return "/contratos"
-
-    def __str__(self):
-        return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.sector}" 
 
 class Member(models.Model):
     ADVISOR = "ASS"
@@ -194,14 +174,17 @@ class Member(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     sector = models.CharField(max_length=3, choices=SECTORS)
-    email = models.CharField(max_length=80)
-    phone = models.CharField(max_length=16)
-    cpf = models.CharField(max_length=14)
-    degree = models.CharField(max_length=40)
-    date_of_birth = models.DateField()
     role = models.CharField(max_length=3, choices=ROLE)
     date_of_entry = models.DateField(null=False)
     date_of_leave = models.DateField(null=True)
+    professional_email = models.CharField(max_length=80)
+    academic_email = models.CharField(max_length=80)
+    phone = models.CharField(max_length=16)
+    cpf = models.CharField(max_length=14)
+    rg = models.CharField(max_length=9)
+    degree = models.CharField(max_length=40)
+    date_of_birth = models.DateField()
+    address = models.CharField(max_length=300)
     notes = models.CharField(max_length=100)
 
     def get_absolute_url(self):
@@ -210,6 +193,29 @@ class Member(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}" 
 
+class Contract(models.Model):
+    TEC = "TEC"
+    CIV = "CIV"
+    CON = "CON"
+    SECTORS = [
+        (TEC, "Tecnologia"),
+        (CIV, "Construção Civil"),
+        (CON, "Consultoria"),
+    ]
+    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
+    member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
+    sector = models.CharField(max_length=3, choices=SECTORS)
+    total_value = models.FloatField(null=False)
+    n_of_services = models.PositiveSmallIntegerField()
+    date = models.DateField()
+    link_of_contract = models.CharField(max_length=250)
+    notes = models.CharField(max_length=100, default="-")
+
+    def get_absolute_url(self):
+        return "/contratos"
+
+    def __str__(self):
+        return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.sector}" 
 class Service(models.Model):
     SYS = "Sistema"
     SITE = "Website"
@@ -239,10 +245,10 @@ class Service(models.Model):
     ]
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
     contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    client_id = models.ForeignKey(Client, on_delete=models.CASCADE, default="")
+    #client_id = models.ForeignKey(Client, on_delete=models.CASCADE, default="")
     project = models.CharField(max_length=18, choices=SER)
     estimated_time = models.PositiveSmallIntegerField(null=False)
-    actual_time = models.PositiveSmallIntegerField()
+    actual_time = models.PositiveSmallIntegerField(null=True)
     n_of_consultants = models.PositiveSmallIntegerField()
     price = models.FloatField()
     notes = models.CharField(max_length=100)
@@ -254,7 +260,6 @@ class Service(models.Model):
         return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.project}"
     
 class CampaignMetric(models.Model):
-
     TEC = "TEC"
     CIV = "CIV"
     CON = "CON"
@@ -272,17 +277,22 @@ class CampaignMetric(models.Model):
     LOW = "FUNDO"    
     MEDIUM = "MEIO"
     HIGH = "TOPO"
+    ALL = "GERAL"
     POSITION = [
         (HIGH, "Topo de Funil"),
         (MEDIUM, "Meio de Funil"),
         (LOW, "Fundo de Funil"),
+        (ALL, "Geral")
     ]
-    date = models.DateField(null=False, default=datetime.datetime.now, primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+    date = models.DateField(null=False, default=now)
     platform = models.CharField(max_length=10, choices=PLATFORM)
     campaign_sector = models.CharField(max_length=3, choices=SECTORS)
     funnel_position = models.CharField(max_length=5, choices=POSITION)
+    clicks = models.IntegerField()
+    conversions = models.IntegerField()
     weekly_cost = models.FloatField()
-    notes = models.CharField(max_length=100)
+    notes = models.CharField(max_length=100, default="-")
 
     def get_absolute_url(self):
         return "/campanhas"
@@ -303,14 +313,14 @@ class SocialMediaMetric(models.Model):
         (FACEBOOK, "Facebook"),
         (TIKTOK, "TikTok"),
     ]
-    date = models.DateField(null=False, default=datetime.datetime.now, primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+    date = models.DateField(null=False, default=now)
     network = models.CharField(max_length=2, choices=NETWORKS, null=False)
     followers = models.PositiveIntegerField(null=False)
     impressions = models.PositiveIntegerField()
     reach = models.PositiveIntegerField()
     engagement = models.PositiveIntegerField()
-    visits = models.PositiveIntegerField()
-    notes = models.CharField(max_length=100)
+    notes = models.CharField(max_length=100, default="-")
 
     def get_absolute_url(self):
         return "/redes-sociais"

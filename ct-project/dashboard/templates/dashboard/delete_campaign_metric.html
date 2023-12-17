@@ -20,7 +20,7 @@
 
 <div class="py-2"></div>
 
-  <form method="post" action="{% url 'delete_campaign_metric' object.id %}">
+  <form method="post" action="{% url 'delete_campaign_metric' pk=object.pk %}">
     {% csrf_token %}
 
     <p>Tem certeza que quer deletar a métrica de "{{ object }}"?</p>

@@ -42,7 +42,7 @@
       {% for service in object_list %}
         <tr>
           <td><a href="{% url 'update_service_data' pk=service.pk %}">{{ service.pk }}</a></td>
-          <td>{{ service.client_id.lead_id.first_name }} {{ service.client_id.lead_id.last_name }}</td>
+          <td>{{ service.contract_id.client_id.lead_id.first_name }} {{ service.contract_id.client_id.lead_id.last_name }}</td>
           <td>{{ service.member_id.first_name }} {{ service.member_id.last_name }}</td>
           <td>{{ service.get_project_display }}</td>
           <td>{{ service.estimated_time }}</td>
