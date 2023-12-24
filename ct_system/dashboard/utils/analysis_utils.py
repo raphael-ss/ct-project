@@ -87,13 +87,16 @@ def average_ticket(sector=None):
             df = services.merge(contracts, how="inner", on="contract_id_id")
             if sector == "TEC":
                 avg_ticket = df.loc[df.sector == "TEC"].price.sum() / df.loc[df.sector == "TEC"].shape[0]
-                return round(avg_ticket)
+                if avg_ticket:
+                    return round(avg_ticket)
             elif sector == "CIV":
                 avg_ticket = df.loc[df.sector == "CIV"].price.sum() / df.loc[df.sector == "CIV"].shape[0]
-                return round(avg_ticket)
+                if avg_ticket:
+                    return round(avg_ticket)
             elif sector == "CON":
                 avg_ticket = df.loc[df.sector == "CON"].price.sum() / df.loc[df.sector == "CON"].shape[0]
-                return round(avg_ticket)
+                if avg_ticket:
+                    return round(avg_ticket)
     return 0
         
 def leads_per_sector():
