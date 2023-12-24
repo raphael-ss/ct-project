@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0(vx2sm+a-p6l!_1hct0lu8@%cej@)ahsa_$pz+ezxnaulom+0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['ct-system-3483ded07683.herokuapp.com/',]
 
@@ -79,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ct_system_django.wsgi.application'
+WSGI_APPLICATION = 'ct_system.wsgi.application'
 
 
 # Database
