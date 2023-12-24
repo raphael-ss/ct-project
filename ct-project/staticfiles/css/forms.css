@@ -1,0 +1,6 @@
+.custom-radio label {
+    display: inline-block;
+    margin-bottom: 10px; /* Adjust as needed for spacing between choices */
+    margin-right: 15px; /* Adjust as needed for spacing between the button and text */
+    color:blue;
+}
