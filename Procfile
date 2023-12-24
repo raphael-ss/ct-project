@@ -1,1 +1,1 @@
-web: gunicorn ct_system.wsgi
+web: gunicorn --pythonpath ct_system ct_system.wsgi
