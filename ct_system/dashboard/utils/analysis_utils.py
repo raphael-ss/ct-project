@@ -20,6 +20,7 @@ def revenue_per_sector():
     return [tec_total, civil_total, con_total]
 
 def total_leads():
+    print(df.columns)
     df = pd.DataFrame.from_records(Lead.objects.values())
     df['date'] = pd.to_datetime(df['date'])
     current_year_leads = df[df['date'].dt.year == datetime.now().year].shape[0]
