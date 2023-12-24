@@ -2,6 +2,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+  .custom-radio label {
+      display: flex;
+      align-items: center;
+  }
+  .custom-radio input[type="radio"] {
+      margin-right: 5px; /* Adjust as needed for spacing between the button and text */
+  }
+</style>
+
 <div class="py-2"></div>
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -21,7 +31,7 @@
   {% csrf_token %}
   <div class="card center">
     <div class="card-body text-center">
-      {{ form.as_p }}
+      {% crispy form %}
       <div class="form-group text-center">
         <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
       </div>

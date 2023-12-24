@@ -94,5 +94,5 @@ class LoginView(View):
 class LogoutView(View):
     def post(self, request):
         auth.logout(request)
-        messages.info(request, f"Você foi desconectado(a) com sucesso! Até mais.")
+        messages.info(request, f"Você foi desconectado(a) com sucesso!")
         return redirect('login')

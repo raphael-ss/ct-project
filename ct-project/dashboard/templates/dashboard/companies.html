@@ -42,7 +42,7 @@
         <tr>
           <td><a href="{% url 'update_company_data' pk=company.pk %}">{{ company.pk }}</a></td>
           <td>{{ company.company_name }}</td>
-          <td>{{ company.client_id.first_name }} {{ company.client_id.last_name }}</td>
+          <td>{{ company.client_id.lead_id.first_name }} {{ company.client_id.lead_id.last_name }}</td>
           <td>{{ company.cnpj }}</td>
           <td>{{ company.field_of_action }}</td>
           <td>{{ company.annual_revenue }}</td>
@@ -86,5 +86,87 @@
         {% endif %}
     </ul>
   </div>
+
+  <div class="grey-bg container-fluid">
+    <section id="minimal-statistics">
+      <div class="row">
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h4><strong>R${{average_company_revenue}}</strong></h4>
+                    <span class="text-enlarge">Faturamento Médio</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#money"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+            <div class="card purple-stat-card">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex">
+                    <div class="media-body text-left">
+                      <h4><strong>{{average_company_size}}</strong></h4>
+                      <span class="text-enlarge">N° de Func. Médio</span>
+                    </div>
+                    <div class="align-self-center">
+                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#people"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-xl-3 col-sm-6 col-12">
+          <div class="card blue-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h5><strong>{{most_frequent_sector_for_companies}}</strong></h5>
+                    <span class="text-enlarge">Diretoria</span>
+                    <h6>Mais Cotada</h6>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#coffee"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card red-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h6><strong>{{most_frequent_company_field}}</strong></h6>
+                    <span class="text-enlarge">Área</span>
+                    <h6>Mais Comum</h6>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#suitcase"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
 
 {% endblock %}

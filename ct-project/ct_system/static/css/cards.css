@@ -1,0 +1,534 @@
+/** CARDS AZUIS
+  *  STAT
+  *  TOP-BOTTOM
+*/
+
+.blue-stat-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Position relative for absolute positioning of the border */
+  
+    /* Card title style */
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .blue-stat-card:before {
+    content: ""; /* Create a pseudo-element for the border */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px; /* Adjust the width of the border as needed */
+    background-color: #2c7ac9; /* Color of the SVG icon */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px 0 0 8px; /* Border radius to match the card */
+  }
+  
+  .blue-stat-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .blue-stat-card .media {
+    align-items: center;
+  }
+  
+  .blue-stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply shine effect on hover for the border */
+  .blue-stat-card:hover:before{
+    filter: brightness(1.8);
+  }
+
+  /* BORDERED (TOP-BOTTOM) */
+
+  .blue-bordered-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.blue-bordered-card:before,
+.blue-bordered-card:after {
+    content: ""; /* Create pseudo-elements for the borders */
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px; /* Adjust the height of the border as needed */
+    background-color: #004c99; /* Color of the border */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px; /* Border radius to match the card */
+}
+
+.blue-bordered-card:before {
+    top: 0;
+}
+
+.blue-bordered-card:after {
+    bottom: 0;
+}
+
+.blue-bordered-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.blue-bordered-card .media {
+    align-items: center;
+}
+
+.blue-bordered-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.blue-bordered-card:hover:before,
+.blue-bordered-card:hover:after {
+    filter: brightness(1.8);
+}
+
+/** CARDS LARANJAS
+  *  STAT
+  *  TOP-BOTTOM
+*/
+  .orange-stat-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Position relative for absolute positioning of the border */
+  
+    /* Card title style */
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .orange-stat-card:before {
+    content: ""; /* Create a pseudo-element for the border */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px; /* Adjust the width of the border as needed */
+    background-color: #ff9933; /* Color of the SVG icon */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px 0 0 8px; /* Border radius to match the card */
+  }
+  
+  .orange-stat-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .orange-stat-card .media {
+    align-items: center;
+  }
+  
+  .orange-stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply shine effect on hover for the border */
+  .orange-stat-card:hover:before {
+    filter: brightness(1.8);
+  }
+
+
+  /* BORDERED (TOP-BOTTOM) */
+
+  .orange-bordered-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.orange-bordered-card:before,
+.orange-bordered-card:after {
+    content: ""; /* Create pseudo-elements for the borders */
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px; /* Adjust the height of the border as needed */
+    background-color: #cc6600; /* Color of the border */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px; /* Border radius to match the card */
+}
+
+.orange-bordered-card:before {
+    top: 0;
+}
+
+.orange-bordered-card:after {
+    bottom: 0;
+}
+
+.orange-bordered-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.orange-bordered-card .media {
+    align-items: center;
+}
+
+.orange-bordered-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.orange-bordered-card:hover:before,
+.orange-bordered-card:hover:after {
+    filter: brightness(1.8);
+}
+
+  
+
+/** CARDS VERDES
+  *  STAT
+  *  TOP-BOTTOM
+*/
+  .green-stat-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Position relative for absolute positioning of the border */
+  
+    /* Card title style */
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .green-stat-card:before {
+    content: ""; /* Create a pseudo-element for the border */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px; /* Adjust the width of the border as needed */
+    background-color: #00cc00; /* Color of the SVG icon */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px 0 0 8px; /* Border radius to match the card */
+  }
+  
+  .green-stat-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .green-stat-card .media {
+    align-items: center;
+  }
+  
+  .green-stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply shine effect on hover for the border */
+  .green-stat-card:hover:before {
+    filter: brightness(1.8);
+  }
+
+
+  /* BORDERED (TOP-BOTTOM) */
+
+  .green-bordered-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.green-bordered-card:before,
+.green-bordered-card:after {
+    content: ""; /* Create pseudo-elements for the borders */
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px; /* Adjust the height of the border as needed */
+    background-color: #006600; /* Color of the border */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px; /* Border radius to match the card */
+}
+
+.green-bordered-card:before {
+    top: 0;
+}
+
+.green-bordered-card:after {
+    bottom: 0;
+}
+
+.green-bordered-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.green-bordered-card .media {
+    align-items: center;
+}
+
+.green-bordered-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.green-bordered-card:hover:before,
+.green-bordered-card:hover:after {
+    filter: brightness(1.8);
+}
+
+
+/** CARDS VERMELHOS
+  *  STAT
+  *  TOP-BOTTOM
+*/
+  .red-stat-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Position relative for absolute positioning of the border */
+  
+    /* Card title style */
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .red-stat-card:before {
+    content: ""; /* Create a pseudo-element for the border */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px; /* Adjust the width of the border as needed */
+    background-color: #cc0000; /* Color of the SVG icon */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px 0 0 8px; /* Border radius to match the card */
+  }
+  
+  .red-stat-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .red-stat-card .media {
+    align-items: center;
+  }
+  
+  .red-stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply shine effect on hover for the border */
+  .red-stat-card:hover:before {
+    filter: brightness(1.8);
+  }
+
+
+  /* BORDERED (TOP-BOTTOM) */
+
+  .red-bordered-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.red-bordered-card:before,
+.red-bordered-card:after {
+    content: ""; /* Create pseudo-elements for the borders */
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px; /* Adjust the height of the border as needed */
+    background-color: #660000; /* Color of the border */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px; /* Border radius to match the card */
+}
+
+.red-bordered-card:before {
+    top: 0;
+}
+
+.red-bordered-card:after {
+    bottom: 0;
+}
+
+.red-bordered-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.red-bordered-card .media {
+    align-items: center;
+}
+
+.red-bordered-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.red-bordered-card:hover:before,
+.red-bordered-card:hover:after {
+    filter: brightness(1.8);
+}
+
+
+
+/** CARDS ROXOS
+  *  STAT
+  *  TOP-BOTTOM
+*/
+  .purple-stat-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Position relative for absolute positioning of the border */
+  
+    /* Card title style */
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .purple-stat-card:before {
+    content: ""; /* Create a pseudo-element for the border */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px; /* Adjust the width of the border as needed */
+    background-color: #4c0099; /* Color of the SVG icon */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px 0 0 8px; /* Border radius to match the card */
+  }
+  
+  .purple-stat-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .purple-stat-card .media {
+    align-items: center;
+  }
+  
+  .purple-stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply shine effect on hover for the border */
+  .purple-stat-card:hover:before {
+    filter: brightness(1.8);
+  }
+
+
+  /* BORDERED (TOP-BOTTOM) */
+
+  .purple-bordered-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.purple-bordered-card:before,
+.purple-bordered-card:after {
+    content: ""; /* Create pseudo-elements for the borders */
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px; /* Adjust the height of the border as needed */
+    background-color: #220066; /* Color of the border */
+    filter: brightness(1.2); /* Shine effect on the border */
+    border-radius: 8px; /* Border radius to match the card */
+}
+
+.purple-bordered-card:before {
+    top: 0;
+}
+
+.purple-bordered-card:after {
+    bottom: 0;
+}
+
+.purple-bordered-card svg {
+    width: 45px;
+    height: 45px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.purple-bordered-card .media {
+    align-items: center;
+}
+
+.purple-bordered-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.purple-bordered-card:hover:before,
+.purple-bordered-card:hover:after {
+    filter: brightness(1.8);
+}

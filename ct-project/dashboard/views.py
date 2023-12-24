@@ -11,7 +11,7 @@ import csv
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import datetime
-from .utils import analysis_utils
+from .utils import analysis_utils, pdf_utils
 from io import BytesIO
 # Create your views here.
 
@@ -27,13 +27,49 @@ def search_lead(request):
          Q(email__icontains=search_string) |
          Q(phone__icontains=search_string) |
          Q(field_of_action__icontains=search_string) |
-         Q(last_name__icontains=search_string) |
+         Q(source__icontains=search_string) |
          Q(date__icontains=search_string) |
          Q(notes__icontains=search_string))
       
       data = leads.values()
       return JsonResponse(list(data), safe=False)
   
+def search_client(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        clients = Client.objects.filter(
+            Q(lead_id__first_name__icontains=search_string) |
+            Q(lead_id__last_name__icontains=search_string) |
+            Q(lead_id__gender__icontains=search_string) |
+            Q(lead_id__email__icontains=search_string) |
+            Q(lead_id__phone__icontains=search_string) |
+            Q(lead_id__field_of_action__icontains=search_string) |
+            Q(lead_id__source__icontains=search_string) |
+            Q(cpf__icontains=search_string) |
+            Q(notes__icontains=search_string)
+        )
+
+        data = []
+        for client in clients:
+            client_info = {
+                'id': client.id,
+                'lead_id': client.lead_id.id,
+                'first_name': client.lead_id.first_name,
+                'last_name': client.lead_id.last_name,
+                'gender': client.lead_id.gender,
+                'email': client.lead_id.email,
+                'phone': client.lead_id.phone,
+                'field_of_action': client.lead_id.field_of_action,
+                'source': client.lead_id.source,
+                'cpf': client.cpf,
+                'score': client.lead_id.score,
+                'funnel_time': client.funnel_time,
+                'notes': client.notes,
+            }
+            data.append(client_info)
+
+        return JsonResponse(data, safe=False)
   
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
@@ -49,12 +85,13 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["rede-social"] = SocialMediaMetric.objects.all()
     context["projects_sold"] = Service.objects.count()
     context["active_members"] = Member.objects.count()
-    context["goal"] = 127000 / 12
+    context["goal"] = 96000 / 12
     context["revenue"] = analysis_utils.revenue_per_month()  
     context['sum'] = analysis_utils.total_revenue()
-    context['yearly_goal'] = 127000
+    context['yearly_goal'] = 96000
     context["revenue_per_sector"] = analysis_utils.revenue_per_sector()
     context['total_leads'] = analysis_utils.total_leads()
+    context['current_year'] = datetime.datetime.now().date().year
     
     
     return context
@@ -85,58 +122,22 @@ class LeadList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        
-        #-Data for the Source Chart
-        total_leads = queryset.count()
-        percentage = lambda total, amount: (amount / total) * 100 if amount > 0 else 0
-        filter_query = lambda source: Lead.objects.filter(source=source).count()
-        indication = filter_query('INDICAÇÃO')
-        faceads = filter_query('FBADS')
-        googleads = filter_query('GOOGLEADS')
-        active = filter_query('ATIVA')
-        passive = filter_query('PASSIVA')
-        context['indication'] = indication
-        context['faceads'] = faceads
-        context['googleads'] = googleads
-        context['active'] = active
-        context['passive'] = passive
-        
-        leads_over_time = list()
-    
-        months = ['01', '02', '03', '04', 
-               '05', '06', '07', '08', 
-               '09', '10', '11', '12']
-        
-        for month in months:
-            sum = 0
-            leads_in_month = Lead.objects.filter(date__month=month)
-            if leads_in_month.count() == 0:
-               if leads_over_time:
-                  leads_over_time.append(leads_over_time[-1])
-               else:
-                  leads_over_time.append(0)
-            else:
-               for lead in leads_in_month:
-                  if leads_over_time: sum = leads_over_time[-1]
-                  sum += 1
-                  leads_over_time.append(sum)
-                  
-        context['leads_over_time'] = leads_over_time
-        
-        context['leads'] = queryset.count()
-        
-        context['cpl'] = 40
-        
-        leads_goal = list()
-        goal_per_month = 60
-        for i in range(13):
-           if i == 0:
-              continue
-           leads_goal.append(goal_per_month*i)
-           
-        context['leads_goal'] = leads_goal
+        context['leads_per_source'] = analysis_utils.leads_per_source()
+        context['leads_over_time'] = analysis_utils.leads_per_time()
+        context['leads'] = analysis_utils.total_leads()
+        context['cpl'] = analysis_utils.cpl()
+        context['leads_goal'] = analysis_utils.leads_goal(60)
+        context['leads_per_gender'] = analysis_utils.leads_per_gender()
+        context["sales_funnel"] = analysis_utils.sales_funnel()
+        context["leads_per_sector"] = analysis_utils.leads_per_sector()
+        context["leads_per_score"] = analysis_utils.leads_per_score()
+        context['most_frequent_score'] = analysis_utils.most_frequent_lead_score()
+        context['most_frequent_source'] = analysis_utils.most_frequent_lead_source()
+        context['conversion_rate_diag_prop'] = analysis_utils.conversion_rate_diagnostic_to_proposition()
+        context['conversion_rate_prop_closed'] = analysis_utils.conversion_rate_proposition_to_closed()
         
         return context
+
 class ClientList(LoginRequiredMixin, ListView):
     model = Client
     template_name = "dashboard/clients.html"
@@ -162,6 +163,17 @@ class ClientList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        
+        context['cac'] = analysis_utils.cac()
+        context['client_education_distribution'] = analysis_utils.client_education_distribution()
+        context['client_income_distribution'] = analysis_utils.client_income_distribution()
+        context['client_civil_state_distribution'] = analysis_utils.client_civil_state_distribution()
+        context['client_age_distribution'] = analysis_utils.client_age_distribution()
+        context['current_year'] = datetime.datetime.now().date().year
+        context['mean_funnel_time'] = analysis_utils.client_mean_funnel_time()
+        context['client_count'] = analysis_utils.client_count()
+        context['conversion_rate'] = analysis_utils.conversion_rate_general()
+
         return context
 
 class CompanyList(LoginRequiredMixin, ListView):
@@ -189,6 +201,13 @@ class CompanyList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        context['average_company_revenue'] = analysis_utils.average_company_revenue()
+        context['average_company_size'] = analysis_utils.average_company_size()
+        context['most_frequent_sector_for_companies'] = analysis_utils.most_frequent_sector_for_companies()
+        context['most_frequent_company_field'] = analysis_utils.most_frequent_company_field()
+        
+        
+        
         return context
 
 class ContractList(LoginRequiredMixin, ListView):
@@ -216,6 +235,11 @@ class ContractList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        context['avg_ticket'] = analysis_utils.average_ticket()
+        context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="TEC")
+        context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="CIV")
+        context['con_avg_ticket'] = analysis_utils.average_ticket(sector="CON")
+        
         return context
 
 class CampaignMetricList(LoginRequiredMixin, ListView):
@@ -595,30 +619,134 @@ def export_leads_csv(request):
       
    return response
 
-def gen_test(request):
+def export_clients_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Clientes-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Nome', 'Sobrenome', 'Sexo', 'Etapa', 
+                    'Origem', 'Email', 'Telefone', 'Área de Atuação', 
+                    'Data', 'CPF', 'Data de Nascimento', 'Nível Educacional',
+                    'Estado Civil', 'Renda Mensal', 'Tempo de Funil',
+                    'Notas'])
+   
+   clients = Client.objects.all()
+   
+   for client in clients:
+      writer.writerow([
+         client.lead_id.first_name,
+         client.lead_id.last_name,
+         client.lead_id.gender,
+         client.lead_id.status,
+         client.lead_id.source,
+         client.lead_id.email,
+         client.lead_id.phone,
+         client.lead_id.field_of_action,
+         client.lead_id.date,
+         client.cpf,
+         client.birth_date,
+         client.education,
+         client.marital_status,
+         client.income,
+         client.funnel_time,
+         client.notes,
+      ])
+      
+   return response
+
+def generate_target_analysis(request):
     
-    civil_total = 0
-    tec_total = 0
-    con_total = 0
-      
-    for contract in Contract.objects.filter(sector="CIV"):
-      civil_total += contract.total_value
-    for contract in Contract.objects.filter(sector="TEC"):
-      tec_total += contract.total_value
-    for contract in Contract.objects.filter(sector="CON"):
-      con_total += contract.total_value
-      
-    data = [tec_total, civil_total, con_total]
-    labels = ['Tecnologia', 'Civil', 'Consultoria']
-         
-    #buffer = chart_utils.gen_test(data=data, labels=labels, date=datetime.datetime.today(), max="Construção Civil")
+    chart_configs:list = [
+    {
+        'type': 'pie',
+        'kwargs': {
+            'data': analysis_utils.revenue_per_sector(),
+            'labels': ['Tecnologia', 'Construção Civil', 'Consultoria'],
+            'title': 'Faturamento por Diretoria',
+        },
+    },
+    {
+        'type': 'pie',
+        'kwargs': {
+            'data': analysis_utils.leads_per_sector(),
+            'labels': ['Construção Civil', 'Consultoria', 'Tecnologia'],
+            'title': 'Leads por Diretoria',
+        },
+    },
+    {
+        'type': 'pie',
+        'kwargs': {
+            'data': analysis_utils.leads_per_source(),
+            'labels': ['Prospec. Ativa', 'Facebook Ads', 'Google Ads', 'Indicação', 'Prospec. Passiva'],
+            'title': 'Leads por Canal',
+        },
+    },
+    {
+        'type': 'bar',
+        'kwargs': {
+            'data': analysis_utils.client_age_distribution(),
+            'labels': ['Até 25', '25-40', '40-60', '+60'],
+            'title': 'Distribuição da Idade dos Clientes',
+        },
+    },
+    {
+        'type': 'bar',
+        'kwargs': {
+            'data': analysis_utils.client_civil_state_distribution(),
+            'labels': ['Solteiro(a)', 'Casado(a)', 'Divorciado(a)', 'União Estável', 'Outro'],
+            'title': 'Distribuição do Estado Civil dos Clientes',
+        },
+    },
+    {
+        'type': 'bar',
+        'kwargs': {
+            'data': analysis_utils.client_education_distribution(),
+            'labels': ['EF-Completo', 'EM-Completo', 'ES-Completo'],
+            'title': 'Distribuição do Nível Educacional dos Clientes',
+        },
+    },
+    {
+        'type': 'bar',
+        'kwargs': {
+            'data': analysis_utils.client_income_distribution(),
+            'labels': ['Até 3 S.M', 'Até 6 S.M.', 'Até 9 S.M.', '+9 S.M.'],
+            'title': 'Distribuição da Renda Mensal dos Clientes',
+        },
+    },
+    {
+        'type': 'bar',
+        'kwargs': {
+            'data': analysis_utils.most_frequent_area_in_closing_leads_count(),
+            'labels': analysis_utils.most_frequent_area_in_closing_leads(),
+            'title': 'Áreas de Trabalho Mais Frequentes em Clientes',
+        },
+    },
+    {
+        'type': 'radar',
+        'kwargs': {
+            'data': analysis_utils.lead_scoring_radar_data(),
+            'labels':  ['Orçamento', 'Autoridade', 'Necessidade', 'Timing', 'Tempo de Resposta', 'Comportamento'],
+            'title': 'Radar da Média dos Atributos do Lead Scoring',
+        },
+    },
+    {
+        'type': 'parallel',
+        'kwargs': {
+            'data': analysis_utils.get_lead_scoring_data(),
+            #'labels':  ['Orçamento', 'Autoridade', 'Necessidade', 'Timing', 'Tempo de Resposta', 'Comportamento'],
+            'title': 'Coordenadas Paralelas: Parametros do Lead Scoring',
+        },
+    },
+    ]
+
+    buffer = pdf_utils.gen_target_analysis(chart_configs)
 
     # Set the buffer's file pointer to the beginning of the buffer
-    #buffer.seek(0)
+    buffer.seek(0)
 
     # Create an HTTP response with the PDF as the content
-    #response = HttpResponse(buffer, content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename=Test-'+ str(datetime.datetime.today().date())+ '.pdf'
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Público-Alvo-'+ str(datetime.datetime.today().date())+ '.pdf'
 
     # Return the HTTP response
-    return #response
+    return response

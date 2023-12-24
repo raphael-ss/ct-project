@@ -1,6 +1,7 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 
+
 {% block content %}
 
 <div class="py-2"></div>
@@ -127,9 +128,91 @@
 </script>
 
 
+<div class="grey-bg container-fluid">
+  <section id="minimal-statistics">
+    <div class="row">
+      
+      <div class="col-xl-3 col-sm-6 col-12"> 
+        <div class="card orange-stat-card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="media d-flex">
+                <div class="media-body text-left">
+                  <h2><strong>R${{cpl}}</strong></h2>
+                  <span class="text-enlarge">Custo por Lead (CPL)</span>
+                </div>
+                <div class="align-self-center">
+                  <svg class="shine-effect" fill="#ff9933"><use xlink:href="#coin"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>{{most_frequent_score}}</strong></h2>
+                    <span class="text-enlarge">Score Mais Frequente</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#thumbs-up"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card blue-stat-card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="media d-flex">
+                <div class="media-body text-left">
+                  <h3><strong>{{conversion_rate_diag_prop}}%</strong></h3>
+                  <span class="text-enlarge">Conversão</span>
+                  <span class="text-enlarge">Diag->Prop</span>
+                </div>
+                <div class="align-self-center">
+                  <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#next"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-sm-6 col-12">
+      <div class="card purple-stat-card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="media d-flex">
+                <div class="media-body text-left">
+                  <h3><strong>{{ conversion_rate_prop_closed }}%</strong></h3>
+                  <span class="text-enlarge">Conversão</span>
+                  <span class="text-enlarge">Prop->Fech</span>
+                </div>
+                <div class="align-self-center">
+                  <svg class="shine-effect" fill="#4c0099"><use xlink:href="#plane"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
     <div class="row">
       <div class="col-lg-6">
-        <div class="card">
+        <div class="card orange-bordered-card">
             <div class="card-body text-center">
               <h3><strong>Funil de Vendas</strong></h3>
               <div class="py-2"></div>
@@ -139,25 +222,21 @@
       </div>
 
       <div class="col-lg-6">
-        <div class="card">
+        <div class="card green-bordered-card">
             <div class="card-body text-center">
-              <h3><strong>Homens x Mulheres</strong></h3>
+              <h3><strong>Leads por Score</strong></h3>
               <div class="py-2"></div>
-                <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
-                <div style="max-width: 75%; max-height: 75%;">
-                    <canvas id="donutChart"></canvas>
+                  <canvas id="leadsPerScoreChart" width="400" height="200"></canvas>
                 </div>
             </div>
             </div>
-        </div>
-    </div>
     </div>
   
     <div class="py-4"></div>
 
     <div class="row">
       <div class="col-lg-6">
-          <div class="card">
+          <div class="card blue-bordered-card">
               <div class="card-body text-center">
                 <h3><strong>Chegada de Leads</strong></h3>
                 <div class="py-2"></div>
@@ -165,25 +244,58 @@
                   <div class="py-3"></div>
                     <h5><strong>Total de Leads:</strong> {{ leads }}</h5>
                     <div class="py-1"></div>
-                    <h5><strong>CPL:</strong> R${{ cpl }},00</h5>
               </div>
           </div>
       </div>
 
       <div class="col-lg-6">
-          <div class="card">
+          <div class="card purple-bordered-card">
               <div class="card-body text-center">
                 <h3><strong>Origem dos Leads</strong></h3>
                 <div class="py-2"></div>
                   <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
                   <div style="max-width: 100%; max-height: 100%;">
-                      <canvas id="pieChart"></canvas>
+                      <canvas id="polarChart"></canvas>
                   </div>
               </div>
               </div>
           </div>
       </div>
   </div>
+
+  <div class="py-4"></div>
+
+  <div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+              <h3><strong>Leads por Área</strong></h3>
+              <div class="py-2"></div>
+              <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                <div style="max-width: 75%; max-height: 75%;">
+                <canvas id="pieChart:Lead-Per-Sector"></canvas>
+                <div class="py-3"></div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+              <h3><strong>Homens x Mulheres</strong></h3>
+              <div class="py-2"></div>
+                <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                <div style="max-width: 75%; max-height: 75%;">
+                    <canvas id="donutChart"></canvas>
+                    <div class="py-3"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
@@ -194,7 +306,7 @@
             labels: ['Pré-Diagnóstico', 'Pré-Proposta', 'Pós-Proposta', 'Contrato Fechado'],
             datasets: [{
                 label: 'Leads',
-                data: [50, 30, 20, 10], // Adjust these values based on your data
+                data: {{ sales_funnel }}, // Adjust these values based on your data
                 backgroundColor: [
                     'rgba(51, 25, 0, 0.7)',
                     'rgba(153, 76, 0, 0.7)', 
@@ -240,9 +352,9 @@
 </script>
   <script>
     var data = {
-        labels: ['Indicação', 'Facebook Ads', 'Google Ads', 'Prospec. Ativa', 'Prospec. Passiva'],
+        labels: ['Prospec. Ativa', 'Facebook Ads', 'Google Ads', 'Indicação', 'Prospec. Passiva'],
         datasets: [{
-            data: [{{ indication }}, {{ faceads }}, {{ googleads }}, {{ active }}, {{ passive }}],
+            data: {{ leads_per_source }},
             backgroundColor: [
             'rgba(204, 102, 0, 0.8)',
             'rgba(255, 128, 0, 0.8)', 
@@ -257,7 +369,7 @@
     };
   
     // Use Chart.js to create a pie chart (pizza graph)
-    var ctx = document.getElementById('pieChart').getContext('2d');
+    var ctx = document.getElementById('polarChart').getContext('2d');
     var pieChart = new Chart(ctx, {
         type: 'polarArea',
         data: data,
@@ -332,11 +444,11 @@
   </script>
   <script>
     var data = {
-        labels: ['Homem', 'Mulher'],
+        labels: ['Mulher', 'Homem'],
         datasets: [{
-            data: [20, 13],
-            backgroundColor: ['rgba(255, 128, 0, 0.8)', 'rgba(0, 153, 153, 0.8)'],
-            hoverBackgroundColor: ['rgba(255, 178, 102, 1)', 'rgba(153, 255, 255, 1)'],
+            data: {{ leads_per_gender }},
+            backgroundColor: ['rgba(0, 153, 153, 0.8)','rgba(255, 128, 0, 0.8)'],
+            hoverBackgroundColor: ['rgba(153, 255, 255, 1)','rgba(255, 178, 102, 1)'],
         }]
     };
   
@@ -356,6 +468,83 @@
         }
     });
   </script>
+
+  <script>
+    var data = {
+        labels: ['Construção Civil','Consultoria','Tecnologia'],
+        datasets: [{
+            data: {{ leads_per_sector }},
+            backgroundColor: ['rgba(255, 128, 0, 0.8)','rgba(0, 102, 102, 0.8)','rgba(0, 153, 153, 0.8)'],
+            hoverBackgroundColor: ['rgba(255, 178, 102, 1)','rgba(153, 255, 255, 1)','rgba(153, 255, 255, 1)'],
+        }]
+    };
+  
+    // Use Chart.js to create a donut chart
+    var ctx = document.getElementById('pieChart:Lead-Per-Sector').getContext('2d');
+    var donutChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var data = {
+            labels: ['A', 'B', 'C', 'D'],
+            datasets: [{
+              label: 'Leads',
+                data: {{ leads_per_score }}, 
+                backgroundColor: [
+                    'rgba(0, 153, 0, 0.7)',
+                    'rgba(76, 153, 0, 0.7)', 
+                    'rgba(153, 153, 0, 0.7)', 
+                    'rgba(153, 76, 0, 0.7)'  
+                ],
+                hoverBackgroundColor: [
+                    'rgba(0, 255, 0, 0.7)', 
+                    'rgba(128, 255, 0, 0.7)', 
+                    'rgba(255, 255, 0, 0.7)',
+                    'rgba(255, 128, 0, 0.7)'
+                ]
+            }]
+        };
+
+        // Chart configuration
+        var chartConfig = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                }
+            }
+        };
+
+          // Get chart canvas and render the chart
+          var ctx = document.getElementById('leadsPerScoreChart').getContext('2d');
+          new Chart(ctx, chartConfig);
+      });
+  </script>
+    
     
     <div class="py-3"></div>
 

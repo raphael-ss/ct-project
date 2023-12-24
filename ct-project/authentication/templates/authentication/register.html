@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row justify-content-center align-items-center vh-100">
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <div class="card mt-5">
@@ -65,14 +65,12 @@
                         <!--<button type="submit" class="btn btn-primary">Registrar</button>-->
                         <input type="submit" value="Registrar" class="btn btn-block btn-primary submit-btn" />
                 </form>
+                <div class="py-2"></div>
+
+                <a href="{% url 'login' %}" class="text-center py-4">Já tem conta registrada?</a>
             </div>
         </div>
-       
-
-
-
     </div>
-    <a href="{% url 'login' %}" class="text-center py-4">Já tem conta registrada?</a>
     <div class="col-md-4"></div>
 </div>
 

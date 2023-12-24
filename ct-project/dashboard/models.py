@@ -72,39 +72,37 @@ class Lead(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.status}"
     
+    class Meta:
+        ordering: ['-date']
+    
 class Client(models.Model):
     EFCOMPLETE = "EF-COMPLETO"
-    EMINCOMPLETE = "EM-INCOMPLETO"
-    ESINCOMPLETE = "ES-INCOMPLETO"
+    EMCOMPLETE = "EM-COMPLETO"
     ESCOMPLETE = "ES-COMPLETO"
     EDUCATION = [
         (EFCOMPLETE, "Ensino Fundamental Completo"),
-        (EMINCOMPLETE, "Ensino Médio Incompleto"),
-        (ESINCOMPLETE, "Ensino Superior Incompleto"),
+        (EMCOMPLETE, "Ensino Médio Completo"),
         (ESCOMPLETE, "Ensino Superior Completo"),
     ]
     SINGLE = "SOLTEIRO"
     MARRIED = "CASADO"
     DIVORCED = "DIVORCIADO"
-    WIDOWED = "VIÚVO"
+    OTHER = "OUTRO"
     DATING = "UNIÃO ESTÁVEL"
     STATUS = [
         (SINGLE, 'Solteiro(a)'),
         (MARRIED, "Casado(a)"),
         (DIVORCED, "Divorciado(a)"),
-        (WIDOWED, "Viúvo(a)"),
         (DATING, "União Estável"),
+        (OTHER, "Outro"),
     ]
-    UPTO_1 = "1"
-    UPTO_1_5 = "1,5"
-    UPTO_6_5 = "6,5"
+    UPTO_3 = "3"
+    UPTO_6 = "6"
     UPTO_9 = "9"
     ABOVE_9 = "+9"
-
     INCOME = [
-        (UPTO_1, "Até 1 salário mínimo"),
-        (UPTO_1_5, "Até 1,5 salários mínimos"),
-        (UPTO_6_5, "Até 6,5 salários mínimos"),
+        (UPTO_3, "Até 3 salários mínimos"),
+        (UPTO_6, "Até 6 salários mínimos"),
         (UPTO_9, "Até 9 salários mínimos"),
         (ABOVE_9, "Acima de 9 salários mínimos"),
     ]
@@ -116,7 +114,7 @@ class Client(models.Model):
     birth_date = models.DateField(null=False)
     education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE, null=True)
     marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE, null=True)
-    monthly_income = models.CharField(max_length=5, choices=INCOME, default=UPTO_6_5, null=True)
+    income = models.CharField(max_length=5, choices=INCOME, default="", null=True)
     funnel_time = models.PositiveIntegerField(default=15)
     notes = models.CharField(max_length=100, default="-")
 

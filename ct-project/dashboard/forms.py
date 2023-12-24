@@ -1,9 +1,11 @@
 from django import forms
 from .models import Client, SocialMediaMetric, Contract, Company, CampaignMetric, Member, Service, Lead
-from crispy_forms.helper import FormHelper
 #from crispy_forms.layout import Layout, Submit, Field
 from .utils.analysis_utils import lead_scoring
 from django.template.loader import render_to_string
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Submit
+from crispy_forms.bootstrap import PrependedText
 
 class BaseCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -12,6 +14,14 @@ class BaseCreateForm(forms.ModelForm):
         self.helper.form_method = 'post'
 
 class LeadCreateForm(BaseCreateForm):
+    TEC = "TEC"
+    CIV = "CIV"
+    CON = "CON"
+    SECTORS = [
+        (TEC, "Tecnologia"),
+        (CIV, "Construção Civil"),
+        (CON, "Consultoria"),
+    ]
     def save(self, commit=True):
         instance = super(LeadCreateForm, self).save(commit=False)
         instance.score = lead_scoring(instance)
@@ -62,6 +72,12 @@ class LeadCreateForm(BaseCreateForm):
         widget=forms.Select,
         label='Comportamento: (o Lead é educado?)'
     )
+    
+    sector = forms.ChoiceField(
+        choices=SECTORS,
+        widget=forms.RadioSelect(attrs={'class': 'form-radio'}),
+        label="Área/Diretoria"
+    )
     class Meta:
         model = Lead
         fields = '__all__'
@@ -79,6 +95,7 @@ class LeadCreateForm(BaseCreateForm):
             'date': 'Data',
             'notes': 'Notas',
         }
+        
 class ClientCreateForm(BaseCreateForm):
     class Meta:
         model = Client

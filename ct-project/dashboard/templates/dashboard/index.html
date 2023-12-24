@@ -5,18 +5,28 @@
 
 {% include 'authentication/partials/_messages.html' %}
 
-<h1>Dashboard</h1>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+
+<h1 class="shine-animation">Overview de {{ current_year }}</h1>
+
 <div class="py-2"></div>
 <body>
     <div class="row">
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
+                    <div class="text-center">
+                    <h3><strong>Faturamento</strong></h3>
                     <canvas id="lineChart"></canvas>
                     <div class="py-3"></div>
-                    <h5><strong>Faturamento de 2023:</strong> R${{ sum }},00</h5>
+                    <h5>A meta de faturamento prevista</h5>
+                    <h5>para 2023 é <strong>R$96.000</strong> reais.</h5>
                     <div class="py-1"></div>
-                    <h5><strong>Meta 2023:</strong> R${{ yearly_goal }},00</h5>
+                    <h5><strong>Vamos ao trabalho!</strong></h5>
+                    </div>
                 </div>
             </div>
         </div>
@@ -26,6 +36,7 @@
                 <div class="card-body">
                     <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
                     <div style="max-width: 100%; max-height: 100%;">
+                        <h3><strong>Faturamento Por Diretoria</strong></h3>
                         <canvas id="donutChart"></canvas>
                     </div>
                 </div>
@@ -34,151 +45,191 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <!-- Your Chart.js code goes here -->
+    <div class="py-3"></div>
 
-    <script>
-        Chart.register({
-            id: 'pt-BR',
-            options: {
-                date: {
-                    months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                    weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
-                }
-            }
-        });
-        // Fetch data from Django backend (you can use Django template tags to embed the data)
-        var labels = ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', '2023-05-01', '2023-06-01', '2023-07-01', '2023-08-01', '2023-09-01', '2023-10-01', '2023-11-01', '2023-12-01']
-        //[{% for contract in contracts %}"{{ contract.date|date:'Y-m-d' }}",{% endfor %}];
-        var data = {{ revenue }};
-        //[{% for contract in contracts %}{{ contract.total_value }},{% endfor %}];
-        var goal = {{ goal }};
+<div class="grey-bg container-fluid">
+    <section id="minimal-statistics">
+      <div class="row">
         
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card blue-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>{{projects_sold}}</strong></h2>
+                    <span class="text-enlarge">Projetos Vendidos</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#check"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+            <div class="card orange-stat-card">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex">
+                    <div class="media-body text-left">
+                      <h2><strong>{{active_members}}</strong></h2>
+                      <span class="text-enlarge">Membros Ativos</span>
+                    </div>
+                    <div class="align-self-center">
+                      <svg class="shine-effect" fill="#ff9933"><use xlink:href="#people"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        // Create an array with the same length as data, filled with an increasing sequence
-        var goalArray = [];
-        for (var i = 0; i < 12; i++) {
-            goalArray.push((i + 1) * goal); // Assuming the increase is by 8,000 each time
-        }
-        // Use Chart.js to create a line chart
-        var ctx = document.getElementById('lineChart').getContext('2d');
-        var lineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Faturamento Anual',
-                    data: data,
-                    fill: true,
-                    borderColor: 'rgba(255, 128, 0, 1)',
-                    borderWidth: 2
-                },
-                {
-                    label: 'Meta Prevista',
-                    data: goalArray,
-                    fill: false,
-                    borderColor: 'rgba(0, 51, 51, 1)',
-                    borderWidth: 2,
-                    borderDash: [5, 5],  // Add a dashed border to distinguish the goal line
-                    spanGaps: true,
-                },]
-                
-                
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month',
-                            tooltipFormat: 'yyyy-mm-dd',
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                }
-            },
-            locale: 'pt-BR' // Set the locale to Poruguese
-               
-        });
-    </script>
+          <div class="col-xl-3 col-sm-6 col-12">
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>{{total_leads}}</strong></h2>
+                    <span class="text-enlarge">Leads Obtidos</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#person"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<script>
-  var data = {
-      labels: ['Tecnologia', 'Construção Civil', 'Consultoria'],
-      datasets: [{
-          data: {{ revenue_per_sector }},
-          backgroundColor: ['rgba(0, 153, 153, 0.8)','rgba(255, 128, 0, 0.8)', 'rgba(0, 102, 102, 0.8)'],
-          hoverBackgroundColor: ['rgba(153, 255, 255, 1)','rgba(255, 178, 102, 1)', 'rgba(0, 255, 255, 0.8)'],
-      }]
-  };
-
-  // Use Chart.js to create a donut chart
-  var ctx = document.getElementById('donutChart').getContext('2d');
-  var donutChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: data,
-      options: {
-          cutout: '70%', // Adjust the cutout percentage for the donut hole
-          plugins: {
-              legend: {
-                  display: true,
-                  position: 'top'
-              }
-          }
-      }
-  });
-</script>
-
-<div class="py-3"></div>
-
-<div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body text-center">
-          <h4><strong>Projetos Vendidos:</strong> {{ projects_sold }}</h4>
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card red-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>3</strong></h2>
+                    <span class="text-enlarge">Cluster Atual</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#up"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body text-center">
-          <h4><strong>Cluster 2023:</strong> CLUSTER 3</h4>
-        </div>
-      </div>
-    </div>
+    </section>
   </div>
   
   <div class="py-3"></div>
-  
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body text-center">
-          <h4><strong>Membros Ativos:</strong> {{ active_members }}</h4>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-          <div class="card-body text-center">
-            <h4><strong>Total de Leads:</strong> {{ total_leads }}</h4>
-          </div>
-        </div>
-    </div>
-  </div>
-  
-
-<div class="py-3"></div>
-
 </body>
+
+
+
+
+
+
+<script>
+    Chart.register({
+        id: 'pt-BR',
+        options: {
+            date: {
+                months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
+            }
+        }
+    });
+    var labels = ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', 
+    '2023-05-01', '2023-06-01', '2023-07-01', '2023-08-01', '2023-09-01', 
+    '2023-10-01', '2023-11-01', '2023-12-01']
+    var data = {{ revenue }};
+    var goal = {{ goal }};
+    
+
+    var goalArray = [];
+    for (var i = 0; i < 12; i++) {
+        goalArray.push((i + 1) * goal);
+    }
+
+    var ctx = document.getElementById('lineChart').getContext('2d');
+    var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Faturamento Anual',
+                data: data,
+                fill: true,
+                borderColor: 'rgba(255, 128, 0, 1)',
+                borderWidth: 2
+            },
+            {
+                label: 'Meta Prevista',
+                data: goalArray,
+                fill: false,
+                borderColor: 'rgba(0, 51, 51, 1)',
+                borderWidth: 2,
+                borderDash: [5, 5],  // Add a dashed border to distinguish the goal line
+                spanGaps: true,
+            },]
+            
+            
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'month',
+                        tooltipFormat: 'yyyy-mm-dd',
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        },
+           
+    });
+</script>
+
+<script>
+var data = {
+  labels: ['Tecnologia', 'Construção Civil', 'Consultoria'],
+  datasets: [{
+      data: {{ revenue_per_sector }},
+      backgroundColor: ['rgba(0, 153, 153, 0.7)','rgba(255, 128, 0, 0.7)', 'rgba(0, 102, 102, 0.7)'],
+      hoverBackgroundColor: ['rgba(153, 255, 255, 0.7)','rgba(255, 178, 102, 0.7)', 'rgba(0, 255, 255, 0.7)'],
+  }]
+};
+
+// Use Chart.js to create a donut chart
+var ctx = document.getElementById('donutChart').getContext('2d');
+var donutChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: data,
+  options: {
+      cutout: '70%', // Adjust the cutout percentage for the donut hole
+      plugins: {
+          legend: {
+              display: true,
+              position: 'top'
+          }
+      }
+  }
+});
+</script>
+
 
 {% endblock %}

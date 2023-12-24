@@ -7,23 +7,20 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-4"></div>
+<div class="row justify-content-center align-items-center vh-100">
     <div class="col-md-4">
         <div class="card mt-5">
             <div class="card-body">
                 <div class="py-2"></div>
-                <img class="mb-4" src="{% static 'img/logo_verde.svg' %}"/  width="72" height="72">
+                <img class="mb-4" src="{% static 'img/logo_verde.svg' %}" width="72" height="72">
                 <div class="card-title py-2">
                     <h3>Conecte-se</h3>
                 </div>
 
-
                 <form action="{% url 'login' %}" method="POST">
-                {% csrf_token %}
-
-
-                {% include 'authentication/partials/_messages.html' %}
+                    {% csrf_token %}
+                    
+                    {% include 'authentication/partials/_messages.html' %}
 
                     <div class="form-group">
                         <input
@@ -33,9 +30,8 @@
                             placeholder="Usuário"
                             class="form-control form-control-sm"
                             value="{{fieldValues.username}}"
-                         />
+                        />
                     </div>
-
 
                     <div class="form-group py-2">
                         <input
@@ -44,21 +40,17 @@
                             id="passwordField" 
                             placeholder="Senha"
                             class="form-control form-control-sm"
-                         />
-                         <div class="py-2 text-right"><small class="showPasswordToggle">VER</small></div>          
+                        />
+                        <div class="py-2 text-right"><small class="showPasswordToggle">VER</small></div>          
                     </div>
-                        
-                        <input type="submit" value="Conectar" class="btn btn-block btn-primary submit-btn" />
-                    </div>
+                    
+                    <input type="submit" value="Conectar" class="btn btn-block btn-primary submit-btn" />
                 </form>
+                <div class="py-2"></div>
+                <a href="{% url 'register' %}" class="text-center py-4">Não está registrado?</a>
             </div>
-           
         </div>
-        <a href="{% url 'register' %}" class="text-center py-4">Não está registrado?</a>
-
-
     </div>
-    <div class="col-md-4"></div>
 </div>
 
 <script src="{% static 'js/register.js' %}"></script>

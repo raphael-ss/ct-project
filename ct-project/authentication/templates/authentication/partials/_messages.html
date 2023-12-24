@@ -2,6 +2,7 @@
 <div class="messages">
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-sm alert-{{ message.tags }}"{% endif %}>
+        <svg class="bi flex-shrink-0 me-2" role="img"><use xlink:href="#check-circle-fill"/></svg>
         {{ message }}
     </div>
     {% endfor %}

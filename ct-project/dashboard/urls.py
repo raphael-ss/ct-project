@@ -41,10 +41,12 @@ urlpatterns = [
     path('empresas/excluir-dados/<pk>', views.CompanyDelete.as_view(), name='delete_company_data'),
     
     path('leads/pesquisar-leads', csrf_exempt(views.search_lead), name='search_lead'),
+    path('clientes/pesquisar-clientes', csrf_exempt(views.search_client), name='search_client'),
     
     
-    path('leads/exportar-leads', views.export_leads_csv, name='export_leads_csv'),
+    path('leads/exportar-leads-csv', views.export_leads_csv, name='export_leads_csv'),
+    path('clientes/exportar-clientes-csv', views.export_clients_csv, name='export_clients_csv'),
     
     
-    path('gerar-teste', views.gen_test, name='gen_test'),
+    path('gerar-analise-publico-alvo', views.generate_target_analysis, name='generate_target_analysis'),
 ]
