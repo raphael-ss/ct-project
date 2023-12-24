@@ -3,8 +3,6 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-#-suh dude
-
 def revenue_per_sector():
     civil_total = 0
     tec_total = 0
@@ -143,7 +141,8 @@ def conversion_rate_diagnostic_to_proposition():
     if not leads.empty:
         diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG") | (leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
         proposition = leads.loc[(leads.status == "PÓS-PROPOSTA")].shape[0]
-        return round(proposition/diagnostic, 1)*100
+        if diagnostic > 0:
+            return round(proposition/diagnostic, 1)*100
     return 0
 
 def conversion_rate_proposition_to_closed():
@@ -151,7 +150,8 @@ def conversion_rate_proposition_to_closed():
     if not leads.empty:
         proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
-        return round(closed/proposition, 1)*100
+        if proposition > 0:
+            return round(closed/proposition, 1)*100
     return 0
 
 def cpl_per_platform():
