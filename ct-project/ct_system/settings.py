@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from django.contrib import messages
+import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,6 +84,7 @@ WSGI_APPLICATION = 'ct_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -92,6 +95,19 @@ DATABASES = {
         'PORT': '5431',
     }
 }
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd3pqpkqda9bh8r',
+        'USER':'ixlomfyoubrigd',
+        'PASSWORD':'943210cc1b394fedbc027a125792755ba3e233659761f83e5d236852dadc51f6',
+        'HOST': 'ec2-3-232-218-211.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
+
 
 
 # Password validation
@@ -143,3 +159,5 @@ MESSAGE_TAGS={
 }
 
 LOGIN_URL = 'auth/login'
+
+django_heroku.settings(locals())
