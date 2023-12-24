@@ -34,8 +34,11 @@ def generate_chart(chart_configs:list):
             ax.plot(kwargs.get('x_axis', []), kwargs.get('y_axis', []), marker=kwargs.get('marker', 'o'), linestyle=kwargs.get('linestyle', '-'))
             plt.title(kwargs.get('title', ''), fontsize='xx-large', fontstyle="oblique", weight="bold")
         elif chart_type == 'pie':
-            ax.pie(kwargs.get('data', []), labels=kwargs.get('labels', []), colors=kwargs.get('colors'), autopct='%1.1f%%', pctdistance=0.85)
-            plt.title(kwargs.get('title', ''), fontsize='xx-large', fontstyle="oblique", weight="bold")
+            try:
+                ax.pie(kwargs.get('data', []), labels=kwargs.get('labels', []), colors=kwargs.get('colors'), autopct='%1.1f%%', pctdistance=0.85)
+                plt.title(kwargs.get('title', ''), fontsize='xx-large', fontstyle="oblique", weight="bold")
+            except ValueError:
+                plt.title('ERRO AO GERAR GRÁFICO: DADOS INSUFICIENTES', fontsize='xx-large', fontstyle="oblique", weight="bold")
         elif chart_type == 'bar':
             ax.bar(kwargs.get('labels', []), kwargs.get('data', []), color=kwargs.get('colors'))
             plt.title(kwargs.get('title', ''), fontsize='xx-large', fontstyle="oblique", weight="bold")

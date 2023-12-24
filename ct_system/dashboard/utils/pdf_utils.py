@@ -11,8 +11,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 import os
 from . import chart_utils
 
-#xfont_path = './font/Lato-Regular.ttf'
-#pdfmetrics.registerFont(TTFont('Lato', font_path))
+font_path = 'ct_system/dashboard/utils/font/Lato-Regular.ttf'
+pdfmetrics.registerFont(TTFont('Lato', font_path))
 
 def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):
     buffer = BytesIO()
@@ -20,13 +20,13 @@ def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):
 
     def on_each_page(canvas, doc):
         # Set the font
-        #canvas.setFont('Lato', 16)
+        canvas.setFont('Lato', 16)
 
         # Add borders to the page
         canvas.rect(10, 10, letter[0] - 20, letter[1] - 20)
 
         # Add image as watermark
-        logo_path = os.path.abspath('ct_system/static/img/logo_verde.png')
+        logo_path = 'ct_system/ct_system/static/img/logo_verde.png'
         logo_width = 2.5 * inch
         logo_height = 2.5 * inch
         center_x = (letter[0] - logo_width) / 2
@@ -42,7 +42,7 @@ def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):
     custom_style = ParagraphStyle(
         'CustomStyle',
         parent=getSampleStyleSheet()['BodyText'],
-        #fontName='Lato',
+        fontName='Lato',
         fontSize=13,
     )
     pdf.build(
