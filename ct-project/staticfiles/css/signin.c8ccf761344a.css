@@ -1,0 +1,71 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  background-color: #CCFFFF;
+}
+
+#bg-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#bg-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gradient-rect {
+  width: 100%;
+  height: 100%;
+}
+
+.Gradient1 {
+  fill: url(#Gradient1);
+  transform-origin: 50% 50%;
+  animation: animateGradient1 34s linear infinite;
+}
+
+.Gradient2 {
+  fill: url(#Gradient2);
+  transform-origin: 50% 50%;
+  animation: animateGradient2 23.5s linear infinite;
+}
+
+.Gradient3 {
+  fill: url(#Gradient3);
+  transform-origin: 50% 50%;
+  animation: animateGradient3 21.5s linear infinite;
+}
+
+@keyframes animateGradient1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animateGradient2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animateGradient3 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
