@@ -85,7 +85,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["rede-social"] = SocialMediaMetric.objects.all()
     context["projects_sold"] = Service.objects.count()
     context["active_members"] = Member.objects.count()
-    context["goal"] = 96000 / 12
+    context["goal"] = round(96000 / 12)
     context["revenue"] = analysis_utils.revenue_per_month()  
     context['sum'] = analysis_utils.total_revenue()
     context['yearly_goal'] = 96000
