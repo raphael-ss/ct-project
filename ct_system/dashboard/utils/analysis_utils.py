@@ -76,27 +76,26 @@ def average_ticket_per_sector():
 def average_ticket(sector=None):
     services = pd.DataFrame.from_records(Service.objects.values())
     contracts = pd.DataFrame.from_records(Contract.objects.values())
+
     if not services.empty and not contracts.empty:
-        if sector == None:
-            avg_ticket = services.price.mean()
+        # Merge services and contracts
+        contracts.rename(columns={'id': 'contract_id_id'}, inplace=True)
+        df = services.merge(contracts, how="inner", on="contract_id_id")
+
+        # Filter by sector if provided
+        if sector is not None:
+            sector_df = df[df['sector'] == sector]
+            if not sector_df.empty:
+                avg_ticket = sector_df['price'].mean()
+                if not pd.isna(avg_ticket):
+                    return round(avg_ticket)
+
+        # If no sector specified or sector data is empty
+        avg_ticket = df['price'].mean()
+        if not pd.isna(avg_ticket):
             return round(avg_ticket)
-        else:
-            contracts.rename(columns={
-            'id': 'contract_id_id'},
-            inplace=True)
-            df = services.merge(contracts, how="inner", on="contract_id_id")
-            if sector == "TEC":
-                avg_ticket = df.loc[df.sector == "TEC"].price.sum() / df.loc[df.sector == "TEC"].shape[0]
-                if avg_ticket:
-                    return round(avg_ticket)
-            elif sector == "CIV":
-                avg_ticket = df.loc[df.sector == "CIV"].price.sum() / df.loc[df.sector == "CIV"].shape[0]
-                if avg_ticket:
-                    return round(avg_ticket)
-            elif sector == "CON":
-                avg_ticket = df.loc[df.sector == "CON"].price.sum() / df.loc[df.sector == "CON"].shape[0]
-                if avg_ticket:
-                    return round(avg_ticket)
+
+    # Return 0 if no data or calculation is not possible
     return 0
         
 def leads_per_sector():
