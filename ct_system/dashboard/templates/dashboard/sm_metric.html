@@ -92,4 +92,85 @@
     </ul>
   </div>
 
+  <div class="py-3"></div>
+
+  <div class="grey-bg container-fluid">
+    <section id="minimal-statistics">
+      <div class="row">
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card blue-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>{{total_followers}}</strong></h3>
+                    <span class="text-enlarge">Total de Seguidores</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#people"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+            <div class="card purple-stat-card">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex">
+                    <div class="media-body text-left">
+                      <h3><strong>{{social_media_growth}}%</strong></h3>
+                      <span class="text-enlarge">Crescimento das Redes</span>
+                    </div>
+                    <div class="align-self-center">
+                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#graph-up"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-xl-3 col-sm-6 col-12">
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>{{mean_engagement}}</strong></h3>
+                    <span class="text-enlarge">Engajamento Médio</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#thumbs-up"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card red-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>{{most_impact_network}}</strong></h3>
+                    <span class="text-enlarge">Rede de Maior Alcance</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#fire"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
 {% endblock %}

@@ -123,6 +123,9 @@ class Client(models.Model):
     
     def __str__(self):
         return f"{self.lead_id.first_name} {self.lead_id.last_name}" 
+    
+    class Meta:
+        ordering: ['-lead_id.date']
 
     
 class Company(models.Model):
@@ -141,6 +144,9 @@ class Company(models.Model):
 
     def __srt__(self):
         return f"{self.client_id.first_name} - {self.client_id.last_name} - {self.company_name}"
+    
+    class Meta:
+        ordering: ['-client_id.lead_id.date']
 
 class Member(models.Model):
     ADVISOR = "ASS"
@@ -190,6 +196,9 @@ class Member(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}" 
+    
+    class Meta:
+        ordering: ['-role']
 
 class Contract(models.Model):
     TEC = "TEC"
@@ -214,6 +223,8 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.sector}" 
+    class Meta:
+        ordering: ['-date']
 class Service(models.Model):
     SYS = "Sistema"
     SITE = "Website"
@@ -257,6 +268,9 @@ class Service(models.Model):
     def __str__(self):
         return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.project}"
     
+    class Meta:
+        ordering: ['-contract_id.date']
+    
 class CampaignMetric(models.Model):
     TEC = "TEC"
     CIV = "CIV"
@@ -297,6 +311,8 @@ class CampaignMetric(models.Model):
 
     def __srt__(self):
         return f"{self.platform} - {self.date}"
+    class Meta:
+        ordering: ['-date']
 
 
     

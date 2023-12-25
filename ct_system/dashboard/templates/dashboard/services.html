@@ -17,7 +17,7 @@
     {% include 'authentication/partials/_messages.html'%}
 
     <div>
-      <h1 class="d-inline">Dados - <strong>Serviços</strong></h1><span></span>
+      <h1 class="d-inline">Dados - <strong>Projetos</strong></h1><span></span>
       <a href="{% url 'add_service_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
   </div>
@@ -29,7 +29,7 @@
       <tr>
         <th>ID</th>
         <th>Cliente</th>
-        <th>Membro</th>
+        <th>Gerente</th>
         <th>Projeto</th>
         <th>Tempo Estimado</th>
         <th>Tempo Real</th>
@@ -90,6 +90,107 @@
   </div>
 
   <div class="py-3"></div>
+
+  <div class="grey-bg container-fluid">
+    <section id="minimal-statistics">
+      <div class="row">
+
+        {% if mean_delay >= 0%}
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card red-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>{{mean_delay}} Dias</strong></h3>
+                    <span class="text-enlarge">Atraso Médio</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#clock"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if mean_delay < 0%}
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h4><strong>{{mean_delay}} Dias</strong></h4>
+                    <span class="text-enlarge">Atraso Médio</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#clock"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+            <div class="card purple-stat-card">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex">
+                    <div class="media-body text-left">
+                      <h3><strong>{{real_mean_deadline}} Dias</strong></h3>
+                      <span class="text-enlarge">Prazo Médio Real</span>
+                    </div>
+                    <div class="align-self-center">
+                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#graph-up"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-xl-3 col-sm-6 col-12">
+          <div class="card green-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>{{projects_on_time}}%</strong></h3>
+                    <span class="text-enlarge">Projetos no Prazo</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#thumbs-up"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card blue-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h3><strong>XY</strong></h3>
+                    <span class="text-enlarge">NPS Generalizado</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#people"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
  
   </div>

@@ -53,9 +53,6 @@
                                 <a class="nav-link" style="color: #606060;" href="{% url 'contracts' %}">Contratos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'services' %}">Projetos</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" style="color: #606060;" href="{% url 'campaigns' %}">Campanhas</a>
                             </li>
                             <li class="nav-item">
@@ -67,6 +64,27 @@
                         </ul>
                     </div>
                 </li>
+
+                <li class="nav-item">
+                    <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#projetos" aria-expanded="false" style="padding-left: 15px;">
+                      <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#coffee"/></svg>
+                      Projetos
+                  </button>
+                  
+                      <div class="collapse show" id="projetos">
+                          <ul class="nav flex-column" style="margin-left: 15px;">
+                              <li class="nav-item">
+                                  <a class="nav-link" style="color: #606060;" href="{% url 'services' %}">Projetos</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link" style="color: #606060;" href="#">Status dos Projetos</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                              </li>
+                          </ul>
+                      </div>
+                  </li>
 
                 <li class="nav-item">
                   <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#rh" aria-expanded="false" style="padding-left: 15px;">
@@ -104,29 +122,10 @@
                     <div class="collapse show" id="financeiro">
                         <ul class="nav flex-column" style="margin-left: 15px;">
                             <li class="nav-item">
+                                <a class="nav-link" style="color: #606060;" href="#">Movimentações</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" style="color: #606060;" href="#">Transparência Financeira</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Indicadores</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
-                            </li>
-                            <!-- Add other dashboard links as needed -->
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#projetos" aria-expanded="false" style="padding-left: 15px;">
-                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#coffee"/></svg>
-                    Projetos
-                </button>
-                
-                    <div class="collapse show" id="projetos">
-                        <ul class="nav flex-column" style="margin-left: 15px;">
-                            <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Status dos Projetos</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>

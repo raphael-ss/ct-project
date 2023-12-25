@@ -8,7 +8,6 @@ from reportlab.lib.units import inch
 from reportlab.lib import utils
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-import os
 from . import chart_utils
 
 font_path = 'ct_system/dashboard/utils/font/Lato-Regular.ttf'

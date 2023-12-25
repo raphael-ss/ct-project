@@ -471,3 +471,142 @@ def get_lead_scoring_data():
         return data
     
     return {}
+
+#-CAMPANHAS
+def cpc():
+    campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
+    if not campaigns.empty:
+        clicks = campaigns.clicks.sum()
+        cost = campaigns.weekly_cost.sum()
+        return round(cost/clicks,2) if clicks != 0 else 0
+    return 0
+
+def conversion_rate_campaign():
+    campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
+    if not campaigns.empty:
+        clicks = campaigns.clicks.sum()
+        conversions = campaigns.conversions.sum()
+        return round(conversions/clicks,2)*100 if clicks != 0 else 0
+    return 0
+
+def most_efficient_platform():
+    campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
+    if not campaigns.empty:
+        google = campaigns.loc[campaigns.platform == "GOOGLEADS"]
+        facebook = campaigns.loc[campaigns.platform == "FBADS"]
+        if (facebook.empty) or (google.empty):
+            if facebook.empty:
+                return "Google"
+            elif google.empty:
+                return "Facebook"
+        conversion_google = google.clicks.sum() / google.conversions.sum()
+        conversion_face = facebook.clicks.sum() / facebook.conversions.sum()
+        if conversion_google > conversion_face:
+            return "Google"
+        else:
+            return "Facebook"
+    return 0
+
+def avg_weekly_cost():
+    campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
+    if not campaigns.empty:
+        cost = campaigns.weekly_cost.sum()
+        total = campaigns.shape[0]
+        return round(cost/total,2) if total != 0 else 0
+    return 0
+
+#-SOCIAL MEDIA
+def total_followers():
+    sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
+    total = 0
+    if not sm_metrics.empty:
+        instagram = sm_metrics.loc[sm_metrics.network == "IG"].followers.values
+        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].followers.values
+        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].followers.values
+        facebook = sm_metrics.loc[sm_metrics.network == "FC"].followers.values
+        network_list = [instagram, linkedin, tiktok, facebook]
+        followers = [net[-1] for net in network_list if net.any()]
+        for value in followers:
+            total += value
+        return total
+    return 0
+
+def social_media_growth():
+    sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
+    growth = []
+    mean_growth = 0
+    if not sm_metrics.empty:
+        instagram = sm_metrics.loc[sm_metrics.network == "IG"].reach.values
+        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].reach.values
+        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].reach.values
+        facebook = sm_metrics.loc[sm_metrics.network == "FC"].reach.values
+        network_list = [instagram, linkedin, tiktok, facebook]
+        current_reachs = [net[-1] for net in network_list if net.any()]
+        last_reachs = []
+        for i,net in enumerate(network_list):
+            if net.any():
+                try:
+                    last_reachs.append(net[-2])
+                except IndexError:
+                    last_reachs.append(current_reachs[i])
+                
+        for i, reach in enumerate(current_reachs):
+                growth.append(1 - (reach / last_reachs[i]))
+                
+        for percent in growth:
+            mean_growth += percent
+            
+        return round(mean_growth/len(growth), 2)*100
+    return 0
+    
+def mean_engagement():
+    sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
+    if not sm_metrics.empty:
+        return round(sm_metrics.engagement.sum() / sm_metrics.shape[0])
+    return 0
+
+def most_impact_network():
+    sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
+    if not sm_metrics.empty:
+        instagram = sm_metrics.loc[sm_metrics.network == "IG"].reach.sum()
+        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].reach.sum()
+        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].reach.sum()
+        facebook = sm_metrics.loc[sm_metrics.network == "FC"].reach.sum()
+        network_list = [instagram, linkedin, tiktok, facebook]
+        network_list.sort()
+        most_impact = network_list[-1]
+        if most_impact == instagram:
+            return "Instagram"
+        elif most_impact == linkedin:
+            return "LinkedIn"
+        elif most_impact == tiktok:
+            return "TikTok"
+        elif most_impact == facebook:
+            return "Facebook"
+    return ""
+
+
+#-PROJETOS
+def mean_delay():
+    projects = pd.DataFrame.from_records(Service.objects.values())
+    if not projects.empty:
+        projects['delay'] = projects.actual_time - projects.estimated_time
+        return round(projects.delay.mean(), 1)
+    return 0
+
+def real_mean_deadline():
+    projects = pd.DataFrame.from_records(Service.objects.values())
+    if not projects.empty:
+        return round(projects.actual_time.mean())
+    return 0
+
+def projects_on_time():
+    projects = pd.DataFrame.from_records(Service.objects.values())
+    if not projects.empty:
+        projects_inside_deadline = projects.loc[projects.actual_time <= projects.estimated_time].shape[0]
+        all_projects = projects.shape[0]
+        return round(projects_inside_deadline / all_projects, 1)*100
+    return 0
+    
+
+    

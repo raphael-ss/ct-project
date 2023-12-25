@@ -9,7 +9,7 @@
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Membros</li>
+            <li class="breadcrumb-item active" aria-current="page">Movimentações</li>
           </ol>
         </nav>
     </div>
@@ -17,8 +17,8 @@
     {% include 'authentication/partials/_messages.html'%}
 
     <div>
-      <h1 class="d-inline">Dados - <strong>Membros</strong></h1><span></span>
-      <a href="{% url 'add_member_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
+      <h1 class="d-inline">Movimentações de <strong>Caixa</strong></h1><span></span>
+      <a href="{% url 'add_movement' %}" class="btn btn-primary ms-5">Adicionar Registro</a>
     </div>
   </div>
 
@@ -27,29 +27,13 @@
   <table class="table table-striped table-hover table-sm">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Setor</th>
-        <th>Cargo</th>
-        <th>E-mail</th>
-        <th>Telefone</th>
-        <th>Curso</th>
-        <th>Data de Entrada</th>
-        <th>Notas</th>
+       
       </tr>
     </thead>
     <tbody>
-      {% for member in object_list %}
+      {% for movement in object_list %}
         <tr>
-          <td><a href="{% url 'update_member_data' pk=member.pk %}">{{ member.pk }}</a></td>
-          <td>{{ member.first_name }} {{ member.last_name }}</td>
-          <td>{{ member.get_sector_display }}</td>
-          <td>{{ member.get_role_display }}</td>
-          <td>{{ member.email }}</td>
-          <td>{{ member.phone }}</td>
-          <td>{{ member.degree }}</td>
-          <td>{{ member.date_of_entry }}</td>
-          <td>{{ member.notes }}</td>
+          
         </tr>
       {% endfor %}
     </tbody>
@@ -96,16 +80,16 @@
       <div class="row">
         
         <div class="col-xl-3 col-sm-6 col-12"> 
-          <div class="card blue-stat-card">
+          <div class="card red-stat-card">
             <div class="card-content">
               <div class="card-body">
                 <div class="media d-flex">
                   <div class="media-body text-left">
-                    <h3><strong>X</strong></h3>
-                    <span class="text-enlarge">A Decidir</span>
+                    <h3><strong>4 Dias</strong></h3>
+                    <span class="text-enlarge">Atraso Médio</span>
                   </div>
                   <div class="align-self-center">
-                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#people"/></svg>
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#clock"/></svg>
                   </div>
                 </div>
               </div>
@@ -119,11 +103,11 @@
                 <div class="card-body">
                   <div class="media d-flex">
                     <div class="media-body text-left">
-                      <h3><strong>X</strong></h3>
-                      <span class="text-enlarge">A Decidir</span>
+                      <h3><strong>65 Dias</strong></h3>
+                      <span class="text-enlarge">Prazo Médio Real</span>
                     </div>
                     <div class="align-self-center">
-                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#people"/></svg>
+                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#graph-up"/></svg>
                     </div>
                   </div>
                 </div>
@@ -137,11 +121,11 @@
               <div class="card-body">
                 <div class="media d-flex">
                   <div class="media-body text-left">
-                    <h3><strong>x</strong></h3>
-                    <span class="text-enlarge">A Decidir</span>
+                    <h3><strong>79,6%</strong></h3>
+                    <span class="text-enlarge">Projetos no Prazo</span>
                   </div>
                   <div class="align-self-center">
-                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#people"/></svg>
+                    <svg class="shine-effect" fill="#00cc00"><use xlink:href="#thumbs-up"/></svg>
                   </div>
                 </div>
               </div>
@@ -155,8 +139,8 @@
               <div class="card-body">
                 <div class="media d-flex">
                   <div class="media-body text-left">
-                    <h3><strong>X</strong></h3>
-                    <span class="text-enlarge">A Decidir</span>
+                    <h3><strong>88</strong></h3>
+                    <span class="text-enlarge">NPS Generalizado</span>
                   </div>
                   <div class="align-self-center">
                     <svg class="shine-effect" fill="#cc0000"><use xlink:href="#people"/></svg>
@@ -170,4 +154,8 @@
     </section>
   </div>
 
+ 
+  </div>
+</body>
+  
 {% endblock %}

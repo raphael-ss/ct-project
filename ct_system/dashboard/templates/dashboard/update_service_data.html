@@ -6,15 +6,15 @@
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'services' %}">Serviços</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Atualizar Dados - Serviço</li>
+      <li class="breadcrumb-item"><a href="{% url 'services' %}">Projetos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Atualizar Dados - Projetos</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
 <div>
-  <h3 class="d-inline">Atualizar Dados de <strong>Serviço</strong></h3>
+  <h3 class="d-inline">Atualizar Dados de <strong>Projeto</strong></h3>
   <a href="{% url 'delete_service_data' pk=object.pk %}" class="btn btn-danger ms-5">Deletar Registro</a>
 </div>
 

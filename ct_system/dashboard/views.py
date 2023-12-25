@@ -267,6 +267,10 @@ class CampaignMetricList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        context['cpc'] = analysis_utils.cpc()
+        context['conversion'] = analysis_utils.conversion_rate_campaign()
+        context['most_efficient_platform'] = analysis_utils.most_efficient_platform()
+        context['avg_weekly_cost'] = analysis_utils.avg_weekly_cost()
         return context
 
 class ServiceList(LoginRequiredMixin, ListView):
@@ -294,6 +298,9 @@ class ServiceList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        context['mean_delay'] = analysis_utils.mean_delay()
+        context['real_mean_deadline'] = analysis_utils.real_mean_deadline()
+        context['projects_on_time'] = analysis_utils.projects_on_time()
         return context
 
 class MemberList(LoginRequiredMixin, ListView):
@@ -348,6 +355,10 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        context['total_followers'] = analysis_utils.total_followers()
+        context['social_media_growth'] = analysis_utils.social_media_growth()
+        context['mean_engagement'] = analysis_utils.mean_engagement()
+        context['most_impact_network'] = analysis_utils.most_impact_network()
         return context
 
 
@@ -655,7 +666,6 @@ def export_clients_csv(request):
    return response
 
 def generate_target_analysis(request):
-    
     chart_configs:list = [
     {
         'type': 'pie',

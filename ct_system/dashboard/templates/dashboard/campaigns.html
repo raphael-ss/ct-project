@@ -85,4 +85,86 @@
     </ul>
   </div>
 
+  <div class="py-3"></div>
+
+  <div class="grey-bg container-fluid">
+    <section id="minimal-statistics">
+      <div class="row">
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+          <div class="card orange-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>R${{cpc}}</strong></h2>
+                    <span class="text-enlarge">CPC Geral</span>
+                    <span class="text-enlarge">(Custo por Clique)</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#ff9933"><use xlink:href="#mouse"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-xl-3 col-sm-6 col-12"> 
+            <div class="card purple-stat-card">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex">
+                    <div class="media-body text-left">
+                      <h2><strong>{{conversion}}%</strong></h2>
+                      <span class="text-enlarge">Taxa de Conversão Média</span>
+                    </div>
+                    <div class="align-self-center">
+                      <svg class="shine-effect" fill="#4c0099"><use xlink:href="#next"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-sm-6 col-12">
+          <div class="card blue-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>{{most_efficient_platform}}</strong></h2>
+                    <span class="text-enlarge">Plataforma Mais Eficiente</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#2c7ac9"><use xlink:href="#up"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card red-stat-card">
+            <div class="card-content">
+              <div class="card-body">
+                <div class="media d-flex">
+                  <div class="media-body text-left">
+                    <h2><strong>R${{avg_weekly_cost}}</strong></h2>
+                    <span class="text-enlarge">Custo Semanal Médio</span>
+                  </div>
+                  <div class="align-self-center">
+                    <svg class="shine-effect" fill="#cc0000"><use xlink:href="#money"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
 {% endblock %}
