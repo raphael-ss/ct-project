@@ -173,4 +173,208 @@
     </section>
   </div>
 
+  <div class="py-3"></div>
+
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card purple-bordered-card">
+          <div class="card-body text-center">
+            <h3><strong>Engajamento por Tempo</strong></h3>
+            <div class="py-2"></div>
+            <canvas id="engagementOverTime" width="400" height="200"></canvas>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card purple-bordered-card">
+          <div class="card-body text-center">
+              <h3><strong>Alcance por Tempo</strong></h3>
+              <div class="py-2"></div>
+              <canvas id="reachOverTime" width="400" height="200"></canvas>
+            </div>
+          </div>
+          </div>
+  </div>
+
+  <div class="py-4"></div>
+
+  <div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+        <div class="card cyan-bordered-card">
+            <div class="card-body">
+                <div class="text-center">
+                <h3><strong>Seguidores Por Tempo</strong></h3>
+                <canvas id="followersOverTime"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+</div>
+
+<div class="py-4"></div>
+
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+                {
+                  label: "Instagram",
+                  data: {{ig_engagement_over_time}},
+                  borderColor: 'rgba(153, 0, 153, 1)',
+                  fill: false
+              },
+              {
+                  label: "Facebook",
+                  data: {{face_engagement_over_time}},
+                  borderColor: 'rgba(0, 0, 204, 1)',
+                  fill: false
+              },
+              {
+                label: "LinkedIn",
+                data: {{linkedin_engagement_over_time}},
+                borderColor: 'rgba(102, 0, 204, 1)',
+                fill: false
+            },
+            {
+                label: "TikTok",
+                data: {{tiktok_engagement_over_time}},
+                borderColor: 'rgba(0, 76, 153, 1)',
+                fill: false
+            },
+          
+      ]
+  };
+
+  var ctx = document.getElementById('engagementOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+            {
+              label: "Instagram",
+              data: {{ig_reach_over_time}},
+              borderColor: 'rgba(153, 0, 153, 1)',
+              fill: false
+          },
+          {
+              label: "Facebook",
+              data: {{face_reach_over_time}},
+              borderColor: 'rgba(0, 0, 204, 1)',
+              fill: false
+          },
+          {
+            label: "LinkedIn",
+            data: {{linkedin_reach_over_time}},
+            borderColor: 'rgba(102, 0, 204, 1)',
+            fill: false
+        },
+        {
+            label: "TikTok",
+            data: {{tiktok_reach_over_time}},
+            borderColor: 'rgba(0, 76, 153, 1)',
+            fill: false
+        },
+      ]
+  };
+
+  var ctx = document.getElementById('reachOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+            {
+              label: "Instagram",
+              data: {{ig_followers_over_time}},
+              borderColor: 'rgba(153, 0, 153, 1)',
+              fill: false
+          },
+            {
+                label: "Facebook",
+                data: {{face_followers_over_time}},
+                borderColor: 'rgba(0, 0, 204, 1)',
+                fill: false
+            },
+            {
+              label: "LinkedIn",
+              data: {{linkedin_followers_over_time}},
+              borderColor: 'rgba(102, 0, 204, 1)',
+              fill: false
+          },
+          {
+              label: "TikTok",
+              data: {{tiktok_followers_over_time}},
+              borderColor: 'rgba(0, 76, 153, 1)',
+              fill: false
+          },
+      ]
+  };
+
+  var ctx = document.getElementById('followersOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
 {% endblock %}

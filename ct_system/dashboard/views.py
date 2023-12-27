@@ -274,6 +274,12 @@ class CampaignMetricList(LoginRequiredMixin, ListView):
         context['conversion'] = analysis_utils.conversion_rate_campaign()
         context['most_efficient_platform'] = analysis_utils.most_efficient_platform()
         context['avg_weekly_cost'] = analysis_utils.avg_weekly_cost()
+        context['google_clicks_over_time'] = analysis_utils.google_clicks_over_time()
+        context['fb_clicks_over_time'] = analysis_utils.fb_clicks_over_time()
+        context['google_conversion_rate_over_time'] = analysis_utils.google_conversion_rate_over_time()
+        context['fb_conversion_rate_over_time'] = analysis_utils.fb_conversion_rate_over_time()
+        context['google_cpc_over_time'] = analysis_utils.google_cpc_over_time()
+        context['fb_cpc_over_time'] = analysis_utils.fb_cpc_over_time()
         return context
 
 class ServiceList(LoginRequiredMixin, ListView):
@@ -362,6 +368,18 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
         context['social_media_growth'] = analysis_utils.social_media_growth()
         context['mean_engagement'] = analysis_utils.mean_engagement()
         context['most_impact_network'] = analysis_utils.most_impact_network()
+        context['ig_followers_over_time'] = analysis_utils.ig_followers_over_time()
+        context['face_followers_over_time'] = analysis_utils.face_followers_over_time()
+        context['linkedin_followers_over_time'] = analysis_utils.linkedin_followers_over_time()
+        context['tiktok_followers_over_time'] = analysis_utils.tiktok_followers_over_time()
+        context['ig_reach_over_time'] = analysis_utils.ig_reach_over_time()
+        context['face_reach_over_time'] = analysis_utils.face_reach_over_time()
+        context['linkedin_reach_over_time'] = analysis_utils.linkedin_reach_over_time()
+        context['tiktok_reach_over_time'] = analysis_utils.tiktok_reach_over_time()
+        context['ig_engagement_over_time'] = analysis_utils.ig_engagement_over_time()
+        context['face_engagement_over_time'] = analysis_utils.face_engagament_over_time()
+        context['linkedin_engagement_over_time'] = analysis_utils.linkedin_engagement_over_time()
+        context['tiktok_engagement_over_time'] = analysis_utils.tiktok_engagement_over_time()
         return context
 
 

@@ -532,3 +532,59 @@
 .purple-bordered-card:hover:after {
     filter: brightness(1.8);
 }
+
+
+ /* BORDERED CVAN (TOP-BOTTOM) */
+
+ .cyan-bordered-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.cyan-bordered-card:before,
+.cyan-bordered-card:after {
+  content: ""; /* Create pseudo-elements for the borders */
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 5px; /* Adjust the height of the border as needed */
+  background-color: #006666; /* Color of the border */
+  filter: brightness(1.2); /* Shine effect on the border */
+  border-radius: 8px; /* Border radius to match the card */
+}
+
+.cyan-bordered-card:before {
+  top: 0;
+}
+
+.cyan-bordered-card:after {
+  bottom: 0;
+}
+
+.cyan-bordered-card svg {
+  width: 45px;
+  height: 45px;
+  margin-left: 15px;
+  vertical-align: middle;
+}
+
+.cyan-bordered-card .media {
+  align-items: center;
+}
+
+.cyan-bordered-card:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Apply shine effect on hover for the borders */
+.cyan-bordered-card:hover:before,
+.cyan-bordered-card:hover:after {
+  filter: brightness(1.8);
+}

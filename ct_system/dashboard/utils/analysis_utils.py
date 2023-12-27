@@ -3,6 +3,8 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+current_year = datetime.now().year
+
 def revenue_per_sector():
     civil_total = 0
     tec_total = 0
@@ -522,7 +524,7 @@ def conversion_rate_campaign():
     if not campaigns.empty:
         clicks = campaigns.clicks.sum()
         conversions = campaigns.conversions.sum()
-        return round(conversions/clicks,2)*100 if clicks != 0 else 0
+        return round((conversions/clicks)*100,2) if clicks != 0 else 0
     return 0
 
 def most_efficient_platform():
@@ -535,12 +537,12 @@ def most_efficient_platform():
                 return "Google"
             elif google.empty:
                 return "Facebook"
-        conversion_google = google.clicks.sum() / google.conversions.sum()
-        conversion_face = facebook.clicks.sum() / facebook.conversions.sum()
+        conversion_google = google.conversions.sum() / google.clicks.sum()
+        conversion_face = facebook.conversions.sum() / facebook.clicks.sum()
         if conversion_google > conversion_face:
             return "Google"
         else:
-            return "Facebook"
+            return "Face"
     return 0
 
 def avg_weekly_cost():
@@ -548,8 +550,139 @@ def avg_weekly_cost():
     if not campaigns.empty:
         cost = campaigns.weekly_cost.sum()
         total = campaigns.shape[0]
-        return round(cost/total,2) if total != 0 else 0
+        return round(cost/total,1) if total != 0 else 0
     return 0
+
+def google_clicks_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS", date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                sum += campaign.clicks
+                num = i
+            value.append(sum)
+    return value
+
+def fb_clicks_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS", date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                sum += campaign.clicks
+                num = i
+            value.append(sum)
+    return value
+
+def google_conversion_rate_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                clicks = campaign.clicks
+                conversions = campaign.conversions
+                conv = round(conversions/clicks,2)*100 if clicks != 0 else 0
+                sum += conv
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
+def fb_conversion_rate_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                clicks = campaign.clicks
+                conversions = campaign.conversions
+                conv = round(conversions/clicks,2)*100 if clicks != 0 else 0
+                sum += conv
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
+def google_cpc_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                clicks = campaign.clicks
+                cost = campaign.weekly_cost
+                conv = round(cost/clicks,2) if clicks != 0 else 0
+                sum += conv
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
+def fb_cpc_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month)
+        if campaigns_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,campaign in enumerate(campaigns_in_month):
+                clicks = campaign.clicks
+                cost = campaign.weekly_cost
+                conv = round(cost/clicks,2) if clicks != 0 else 0
+                sum += conv
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
 
 #-SOCIAL MEDIA
 def total_followers():
@@ -621,6 +754,245 @@ def most_impact_network():
             return "Facebook"
     return ""
 
+def ig_followers_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                followers = metric.followers
+                sum += followers
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def face_followers_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FC",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                followers = metric.followers
+                sum += followers
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def linkedin_followers_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                followers = metric.followers
+                sum += followers
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def tiktok_followers_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                followers = metric.followers
+                sum += followers
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def ig_reach_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                reach = metric.reach
+                sum += reach
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def face_reach_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                reach = metric.reach
+                sum += reach
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def linkedin_reach_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                reach = metric.reach
+                sum += reach
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def tiktok_reach_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                reach = metric.reach
+                sum += reach
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def ig_engagement_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                engagement = metric.engagement
+                sum += engagement
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def face_engagament_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                engagement = metric.engagement
+                sum += engagement
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def linkedin_engagement_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                engagement = metric.engagement
+                sum += engagement
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
+
+def tiktok_engagement_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        if metrics_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,metric in enumerate(metrics_in_month):
+                engagement = metric.engagement
+                sum += engagement
+            sum /= num+1 if num != 0 else num+2
+            value.append(sum)
+    return value
 
 #-PROJETOS
 def mean_delay():
@@ -726,4 +1098,5 @@ def con_contract_ticket_over_time():
             sum /= num+1
             value.append(sum)
     return value
+    
     

@@ -14,6 +14,7 @@ from pathlib import Path
 from django.contrib import messages
 import django_heroku
 import dj_database_url
+import psycopg2
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,31 +86,19 @@ WSGI_APPLICATION = 'ct_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER':os.environ.get('DB_USER'),
-        'PASSWORD':os.environ.get('DB_USER_PASSWORD'),
-        'HOST': '',
-        'PORT': '5431',
-    }
-}
-'''
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd3pqpkqda9bh8r',
-        'USER':'ixlomfyoubrigd',
-        'PASSWORD':'943210cc1b394fedbc027a125792755ba3e233659761f83e5d236852dadc51f6',
-        'HOST': 'ec2-3-232-218-211.compute-1.amazonaws.com',
+        'NAME': 'd7ld95l5bj8kn1',
+        'USER':'srlhqxzrmtvynk',
+        'PASSWORD':'300c04acc39144c19f61bb5c6fef4af2bc2df22df5f9541b0f87f7c600ecf179',
+        'HOST': 'ec2-52-4-153-146.compute-1.amazonaws.com',
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

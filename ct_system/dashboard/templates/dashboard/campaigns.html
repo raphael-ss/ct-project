@@ -167,4 +167,170 @@
     </section>
   </div>
 
+  <div class="py-3"></div>
+
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card cyan-bordered-card">
+          <div class="card-body text-center">
+            <h3><strong>Cliques por Tempo</strong></h3>
+            <div class="py-2"></div>
+            <canvas id="clicksOverTime" width="400" height="200"></canvas>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card cyan-bordered-card">
+          <div class="card-body text-center">
+              <h3><strong>Taxa de Conversão por Tempo</strong></h3>
+              <div class="py-2"></div>
+              <canvas id="conversionRateOverTime" width="400" height="200"></canvas>
+            </div>
+          </div>
+          </div>
+  </div>
+
+  <div class="py-4"></div>
+
+  <div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+        <div class="card cyan-bordered-card">
+            <div class="card-body">
+                <div class="text-center">
+                <h3><strong>CPC Por Tempo</strong></h3>
+                <canvas id="cpcOverTime"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+</div>
+
+<div class="py-4"></div>
+
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+            {
+              label: "Google Ads",
+              data: {{google_clicks_over_time}},
+              borderColor: 'rgba(75, 192, 128, 1)',
+              fill: false
+          },
+          {
+              label: "Facebook Ads",
+              data: {{fb_clicks_over_time}},
+              borderColor: 'rgba(75, 192, 192, 1)',
+              fill: false
+          },
+      ]
+  };
+
+  var ctx = document.getElementById('clicksOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+            {
+              label: "Google Ads",
+              data: {{google_conversion_rate_over_time}},
+              borderColor: 'rgba(102, 0, 204, 1)',
+              fill: false
+          },
+          {
+              label: "Facebook Ads",
+              data: {{fb_conversion_rate_over_time}},
+              borderColor: 'rgba(0, 0, 204, 1)',
+              fill: false
+          },
+      ]
+  };
+
+  var ctx = document.getElementById('conversionRateOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+<script>
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
+            {
+              label: "Google Ads",
+              data: {{google_cpc_over_time}},
+              borderColor: 'rgba(102, 0, 204, 1)',
+              fill: false
+          },
+          {
+              label: "Facebook Ads",
+              data: {{fb_cpc_over_time}},
+              borderColor: 'rgba(0, 0, 204, 1)',
+              fill: false
+          },
+      ]
+  };
+
+  var ctx = document.getElementById('cpcOverTime').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
 {% endblock %}
