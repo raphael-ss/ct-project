@@ -86,15 +86,18 @@ def average_ticket(sector=None):
             inplace=True)
             df = services.merge(contracts, how="inner", on="contract_id_id")
             if sector == "TEC":
-                avg_ticket = df.loc[df.sector == "TEC"].price.sum() / df.loc[df.sector == "TEC"].shape[0]
+                tec = df.loc[df.sector == "TEC"].shape[0]
+                avg_ticket = df.loc[df.sector == "TEC"].price.sum() / tec if tec != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CIV":
-                avg_ticket = df.loc[df.sector == "CIV"].price.sum() / df.loc[df.sector == "CIV"].shape[0]
+                civ = df.loc[df.sector == "CIV"].shape[0]
+                avg_ticket = df.loc[df.sector == "CIV"].price.sum() / civ if civ != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CON":
-                avg_ticket = df.loc[df.sector == "CON"].price.sum() / df.loc[df.sector == "CON"].shape[0]
+                con = df.loc[df.sector == "CON"].shape[0]
+                avg_ticket = df.loc[df.sector == "CON"].price.sum() / con if con != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
     return 0
@@ -112,6 +115,7 @@ def leads_per_source():
     if not df.empty:
         leads_by_sector = df.groupby('source').first_name.count().reset_index()
         leads = list(leads_by_sector.first_name)
+        leads_by_sector.sort_values(by=['source'])
         return leads
     return 0
 
@@ -151,7 +155,7 @@ def conversion_rate_diagnostic_to_proposition():
 def conversion_rate_proposition_to_closed():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP") | (leads.status == "CONTRATO FECHADO")].shape[0]
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
         if proposition > 0:
             return round(closed/proposition, 1)*100
@@ -472,6 +476,38 @@ def get_lead_scoring_data():
     
     return {}
 
+#-EMPRESAS
+def most_frequent_companies_areas():
+    companies = pd.DataFrame.from_records(Company.objects.values())
+    if not companies.empty:
+        field = companies['field_of_action'].value_counts()
+        most_frequent_fields = field.head(3).index.tolist()
+        most_frequent_fields = [area.lower().title() for area in most_frequent_fields]
+        return most_frequent_fields
+    
+    return []
+
+def most_frequent_companies_areas_count():
+    companies = pd.DataFrame.from_records(Company.objects.values())
+    if not companies.empty:
+        field = companies['field_of_action'].value_counts()
+        counts_of_most_frequent_areas = field.head(3).tolist()
+        return counts_of_most_frequent_areas
+    
+    return []
+
+def company_size_distribution():
+    companies = pd.DataFrame.from_records(Company.objects.values())
+    if not companies.empty:
+        micro = companies.loc[companies.n_of_employees <= 9].shape[0]
+        small = companies.loc[(companies.n_of_employees <= 49) & (companies.n_of_employees > 9)].shape[0]
+        medium = companies.loc[(companies.n_of_employees <= 99) & (companies.n_of_employees > 49)].shape[0]
+        big = companies.loc[(companies.n_of_employees > 99)].shape[0]
+        return [micro, small, medium, big]
+    
+    return []
+    
+
 #-CAMPANHAS
 def cpc():
     campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
@@ -609,4 +645,85 @@ def projects_on_time():
     return 0
     
 
+#-CONTRATOS
+
+def contract_ticket_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        contracts_in_month = Contract.objects.filter(date__month=month)
+        if contracts_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,contract in enumerate(contracts_in_month):
+                sum += contract.total_value
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
+def tec_contract_ticket_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        contracts_in_month = Contract.objects.filter(date__month=month, sector="TEC")
+        if contracts_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,contract in enumerate(contracts_in_month):
+                sum += contract.total_value
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+    
+def civ_contract_ticket_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        contracts_in_month = Contract.objects.filter(date__month=month, sector="CIV")
+        if contracts_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,contract in enumerate(contracts_in_month):
+                sum += contract.total_value
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
+
+def con_contract_ticket_over_time():
+    value = []
+    months = ['01', '02', '03', '04', 
+              '05', '06', '07', '08', 
+              '09', '10', '11', '12']
+    
+    for month in months:
+        sum = 0
+        num = 0
+        contracts_in_month = Contract.objects.filter(date__month=month, sector="CON")
+        if contracts_in_month.count() == 0:
+            value.append(0)
+        else:
+            for i,contract in enumerate(contracts_in_month):
+                sum += contract.total_value
+                num = i
+            sum /= num+1
+            value.append(sum)
+    return value
     

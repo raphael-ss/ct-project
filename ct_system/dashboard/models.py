@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.timezone import now
-# Create your models here.
 class Lead(models.Model):
     MALE = "M"
     FEMALE = "F"
@@ -346,3 +345,25 @@ class SocialMediaMetric(models.Model):
         ordering: ['-date']
 
 
+class CashMovement(models.Model):
+    OUT = 'SAÍDA'
+    IN = 'ENTRADA'
+    FLOW=[
+        (OUT, "Saída"),
+        (IN, "Entrada"),
+    ]
+    EVENT = "EVENTO"
+    TRAINING = "CAPACITAÇÃO"
+    CATEGORIES = [
+        (EVENT, "Evento"),
+        (TRAINING, "Capacitação"),
+    ]
+    id = models.BigAutoField(primary_key=True)
+    date = models.DateField(default=now)
+    amount = models.FloatField()
+    flow = models.CharField(max_length=10, choices=FLOW)
+    category = models.CharField(max_length=20, choices=CATEGORIES)
+    description = models.CharField(max_length=300, default="-")
+    
+    
+    

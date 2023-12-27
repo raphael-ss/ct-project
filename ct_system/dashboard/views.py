@@ -205,8 +205,7 @@ class CompanyList(LoginRequiredMixin, ListView):
         context['average_company_size'] = analysis_utils.average_company_size()
         context['most_frequent_sector_for_companies'] = analysis_utils.most_frequent_sector_for_companies()
         context['most_frequent_company_field'] = analysis_utils.most_frequent_company_field()
-        
-        
+        context['company_size_distribution'] = analysis_utils.company_size_distribution()
         
         return context
 
@@ -239,6 +238,10 @@ class ContractList(LoginRequiredMixin, ListView):
         context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="TEC")
         context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="CIV")
         context['con_avg_ticket'] = analysis_utils.average_ticket(sector="CON")
+        context['contract_ticket_over_time'] = analysis_utils.contract_ticket_over_time()
+        context['tec_contract_ticket_over_time'] = analysis_utils.tec_contract_ticket_over_time()
+        context['civ_contract_ticket_over_time'] = analysis_utils.civ_contract_ticket_over_time()
+        context['con_contract_ticket_over_time'] = analysis_utils.con_contract_ticket_over_time()
         
         return context
 

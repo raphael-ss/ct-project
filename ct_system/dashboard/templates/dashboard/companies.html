@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
-
+{% block title %} - Empresas{% endblock %}
 {% block content %}
 
 <div class="py-2"></div>
@@ -167,6 +167,72 @@
       </div>
     </section>
   </div>
+
+  <div class="py-3"></div>
+
+  <div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+        <div class="card purple-bordered-card">
+            <div class="card-body">
+                <div class="text-center">
+                <h3><strong>Distribuição do Tamanho de Empresas</strong></h3>
+                <canvas id="sizeCompanyDistribution"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+</div>
   
+  <div class="py-4"></div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var data = {
+            labels: ['MicroEmpresa', 'Empresa de Pequeno Porte', 'Empresa de Médio Porte', 'Grandes Empresas'],
+            datasets: [{
+              label: 'Empresas',
+                data: {{ company_size_distribution }}, 
+                backgroundColor: [
+                    'rgba(153, 0, 76, 0.7)',
+                    'rgba(153, 0, 153, 0.7)', 
+                    'rgba(76, 0, 153, 0.7)', 
+                    'rgba(0, 0, 153, 0.7)'  
+                ],
+                hoverBackgroundColor: [
+                    'rgba(255, 0, 127, 0.7)', 
+                    'rgba(255, 0, 255, 0.7)', 
+                    'rgba(127, 0, 255, 0.7)',
+                    'rgba(0, 0, 255, 0.7)'
+                ]
+            }]
+        };
+        var chartConfig = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                }
+            }
+        };
+  
+          var ctx = document.getElementById('sizeCompanyDistribution').getContext('2d');
+          new Chart(ctx, chartConfig);
+      });
+  </script>
 
 {% endblock %}
