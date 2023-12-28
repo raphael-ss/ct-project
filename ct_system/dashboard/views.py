@@ -71,6 +71,43 @@ def search_client(request):
 
         return JsonResponse(data, safe=False)
   
+def search_company(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        companies = Company.objects.filter(
+            Q(client_id__lead_id__first_name__icontains=search_string) |
+            Q(client_id__lead_id__last_name__icontains=search_string) |
+            Q(client_id__lead_id__email__icontains=search_string) |
+            Q(client_id__lead_id__phone__icontains=search_string) |
+            Q(client_id__cpf__icontains=search_string) |
+            Q(company_name__icontains=search_string) |
+            Q(cnpj__icontains=search_string) |
+            Q(field_of_action__icontains=search_string) |
+            Q(annual_revenue__icontains=search_string) |
+            Q(n_of_locations__icontains=search_string) |
+            Q(n_of_employees__icontains=search_string) |
+            Q(proof_of_registration_link__icontains=search_string) |
+            Q(notes__icontains=search_string)
+        )
+
+        data = []
+        for company in companies:
+            company_info = {
+                'id': company.id,
+                'company_name': company.company_name,
+                'first_name': company.client_id.lead_id.first_name,
+                'last_name': company.client_id.lead_id.last_name,
+                'cnpj': company.cnpj,
+                'field_of_action': company.field_of_action,
+                'annual_revenue': company.annual_revenue,
+                'n_of_employees': company.n_of_employees,
+                'notes': company.notes
+            }
+            data.append(company_info)
+
+        return JsonResponse(data, safe=False)
+  
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
@@ -682,6 +719,197 @@ def export_clients_csv(request):
          client.income,
          client.funnel_time,
          client.notes,
+      ])
+      
+   return response
+
+def export_companies_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Empresas-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Nome', 'Sobrenome', 'Sexo', 'Etapa', 
+                    'Origem', 'Email', 'Telefone', 'Área de Atuação', 
+                    'Data', 'CPF', 'Data de Nascimento', 'Nível Educacional',
+                    'Estado Civil', 'Renda Mensal', 'Tempo de Funil', 'Nome da Empresa',
+                    'CNPJ', 'Setor', 'Faturamento Anual', 'Número de Locais',
+                    'Número de Funcionários', 'Link da Prova de Registro', 'Notas'])
+   
+   companies = Company.objects.all()
+   
+   for company in companies:
+      writer.writerow([
+         company.client_id.lead_id.first_name,
+         company.client_id.lead_id.last_name,
+         company.client_id.lead_id.gender,
+         company.client_id.lead_id.status,
+         company.client_id.lead_id.source,
+         company.client_id.lead_id.email,
+         company.client_id.lead_id.phone,
+         company.client_id.lead_id.field_of_action,
+         company.client_id.lead_id.date,
+         company.client_id.cpf,
+         company.client_id.birth_date,
+         company.client_id.education,
+         company.client_id.marital_status,
+         company.client_id.income,
+         company.client_id.funnel_time,
+         company.company_name,
+         company.cnpj,
+         company.field_of_action,
+         company.annual_revenue,
+         company.n_of_locations,
+         company.n_of_employees,
+         company.proof_of_registration_link,
+         company.notes,
+      ])
+      
+   return response
+
+def export_contracts_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Contratos-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Nome', 'Sobrenome', 'Sexo', 'Etapa', 
+                    'Origem', 'Email', 'Telefone', 'Área de Atuação', 
+                    'Data', 'CPF', 'Data de Nascimento', 'Nível Educacional',
+                    'Estado Civil', 'Renda Mensal', 'Tempo de Funil', 'Vendedor',
+                    'Diretoria', 'Valor Total', 'Número de Serviços', 'Data',
+                    'Link do Contrato', 'Notas'])
+   
+   contracts = Contract.objects.all()
+   
+   for contract in contracts:
+      writer.writerow([
+         contract.client_id.lead_id.first_name,
+         contract.client_id.lead_id.last_name,
+         contract.client_id.lead_id.gender,
+         contract.client_id.lead_id.status,
+         contract.client_id.lead_id.source,
+         contract.client_id.lead_id.email,
+         contract.client_id.lead_id.phone,
+         contract.client_id.lead_id.field_of_action,
+         contract.client_id.lead_id.date,
+         contract.client_id.cpf,
+         contract.client_id.birth_date,
+         contract.client_id.education,
+         contract.client_id.marital_status,
+         contract.client_id.income,
+         contract.client_id.funnel_time,
+         f"{contract.member_id.first_name} {contract.member_id.last_name}",
+         contract.sector,
+         contract.total_value,
+         contract.n_of_services,
+         contract.date,
+         contract.link_of_contract,
+         contract.notes
+      ])
+      
+   return response
+
+def export_campaigns_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Campanhas-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Data', 'Plataforma', 'Setor', 'Posição', 'Cliques',
+                    'Conversões', 'Custo Semanal', 'Notas'])
+   
+   campaigns = CampaignMetric.objects.all()
+   
+   for campaign in campaigns:
+      writer.writerow([
+         campaign.date,
+         campaign.platform,
+         campaign.campaign_sector,
+         campaign.funnel_position,
+         campaign.clicks,
+         campaign.conversions,
+         campaign.weekly_cost,
+         campaign.notes
+      ])
+      
+   return response
+
+def export_sm_metrics_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Redes-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Data', 'Rede Social', 'Seguidores', 'Impressões', 'Alcance',
+                    'Engajamento', 'Notas'])
+   
+   sm_metrics = SocialMediaMetric.objects.all()
+   
+   for metric in sm_metrics:
+      writer.writerow([
+         metric.date,
+         metric.network,
+         metric.followers,
+         metric.impressions,
+         metric.reach,
+         metric.engagement,
+         metric.notes
+      ])
+      
+   return response
+
+def export_members_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Membros-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Nome', 'Sobrenome', 'Diretoria', 'Cargo', 
+                    'Entrada', 'Saída', 'Email Profissional', 'Email Institucional', 
+                    'Telefone', 'CPF', 'RG', 'Curso',
+                    'Data de Nascimento', 'Endereço'])
+   
+   members = Member.objects.all()
+   
+   for member in members:
+      writer.writerow([
+         member.first_name,
+         member.last_name,
+         member.sector,
+         member.role,
+         member.date_of_entry,
+         member.date_of_leave,
+         member.professional_email,
+         member.academic_email,
+         member.phone,
+         member.cpf,
+         member.rg,
+         member.degree,
+         member.date_of_birth,
+         member.address,
+         member.notes
+      ])
+      
+   return response
+
+def export_services_csv(request):
+   response = HttpResponse(content_type="text/csv")
+   response['Content-Disposition'] = 'attachment; filename=Projetos-'+ str(datetime.datetime.now())+ '.csv'
+   
+   writer = csv.writer(response)
+   writer.writerow(['Cliente', 'Link do Contrato', 'Gerente', 'Serviço', 
+                    'Tempo Estimado', 'Tempo Real', 'Número de Consultores', 'Preço', 
+                    'Notas'])
+   
+   services = Service.objects.all()
+   
+   for service in services:
+      writer.writerow([
+         f"{service.contract_id.client_id.lead_id.first_name} {service.contract_id.client_id.lead_id.last_name}",
+         service.contract_id.link_of_contract,
+         f"{service.member_id.first_name} {service.member_id.last_name}",
+         service.project,
+         service.estimated_time,
+         service.actual_time,
+         service.n_of_consultants,
+         service.price,
+         service.notes
       ])
       
    return response

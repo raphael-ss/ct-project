@@ -42,11 +42,17 @@ urlpatterns = [
     
     path('leads/pesquisar-leads', csrf_exempt(views.search_lead), name='search_lead'),
     path('clientes/pesquisar-clientes', csrf_exempt(views.search_client), name='search_client'),
+    path('empresas/pesquisar-empresas', csrf_exempt(views.search_company), name='search_company'),
     
     
     path('leads/exportar-leads-csv', views.export_leads_csv, name='export_leads_csv'),
     path('clientes/exportar-clientes-csv', views.export_clients_csv, name='export_clients_csv'),
-    
+    path('empresas/exportar-empresas-csv', views.export_companies_csv, name='export_companies_csv'),
+    path('contratos/exportar-contratos-csv', views.export_contracts_csv, name='export_contracts_csv'),
+    path('campanhas/exportar-campanhas-csv', views.export_campaigns_csv, name='export_campaigns_csv'),
+    path('redes-sociais/exportar-redes-csv', views.export_sm_metrics_csv, name='export_sm_metrics_csv'),
+    path('membros/exportar-membros-csv', views.export_members_csv, name='export_members_csv'),
+    path('servicos/exportar-servicos-csv', views.export_services_csv, name='export_services_csv'),
     
     path('gerar-analise-publico-alvo', views.generate_target_analysis, name='generate_target_analysis'),
 ]

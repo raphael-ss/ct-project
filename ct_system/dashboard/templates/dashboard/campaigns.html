@@ -21,9 +21,20 @@
       <a href="{% url 'add_campaign_metric' %}" class="btn btn-primary ms-5">Adicionar Métrica</a>
     </div>
   </div>
+  
   <div class="py-4"></div>
 
+  <div class="container-fluid">
+    <a href="{% url 'export_campaigns_csv' %}" class="btn btn-info">Exportar CSV</a>
+    <form class="d-flex" role="search" style="width: 50%; float: right;">
+      <input class="form-control me-2" type="text" placeholder="Pesquisar" id="searchField" aria-label="Search">
+      <button class="btn btn-outline-dark" type="submit">Pesquisar</button>
+    </form>
+  </div>
 
+  <div class="py-3"></div>
+
+<div class="app-table">
   <table class="table table-striped table-hover table-sm">
     <thead>
       <tr>
@@ -50,6 +61,26 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
+
+<div class="table-output">
+  <table class="table table-striped table-hover table-sm">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Plataforma</th>
+          <th>Setor</th>
+          <th>Posição no Funil</th>
+          <th>Cliques</th>
+          <th>Custo Semanal (R$)</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody class="table-body">
+          
+      </tbody>
+    </table>
+</div>
 
   <div class="pagination justify-content-center">
     <ul class="pagination">
@@ -84,6 +115,11 @@
         {% endif %}
     </ul>
   </div>
+
+  <script src={% static 'js/campaignSearchBar.js' %}></script>
+  <script>
+      const updateCampaignUrl = "{% url 'update_campaign_metric' pk='PLACEHOLDER' %}";
+  </script>
 
   <div class="py-3"></div>
 

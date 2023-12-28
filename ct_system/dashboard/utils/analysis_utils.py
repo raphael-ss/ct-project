@@ -126,7 +126,7 @@ def cpl():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not campaigns.empty and not leads.empty:
         cost_per_lead = campaigns.weekly_cost.sum() / leads.loc[(leads.source == "GOOGLEADS") | (leads.source == "FBADS")].shape[0]
-        return round(cost_per_lead, 2)
+        return round(cost_per_lead, 1)
     return 0
 
 def most_frequent_lead_score():

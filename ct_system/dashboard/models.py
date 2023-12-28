@@ -125,8 +125,7 @@ class Client(models.Model):
     
     class Meta:
         ordering: ['-lead_id.date']
-
-    
+ 
 class Company(models.Model):
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=80)
@@ -253,7 +252,6 @@ class Service(models.Model):
     ]
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
     contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    #client_id = models.ForeignKey(Client, on_delete=models.CASCADE, default="")
     project = models.CharField(max_length=18, choices=SER)
     estimated_time = models.PositiveSmallIntegerField(null=False)
     actual_time = models.PositiveSmallIntegerField(null=True)
@@ -312,9 +310,7 @@ class CampaignMetric(models.Model):
         return f"{self.platform} - {self.date}"
     class Meta:
         ordering: ['-date']
-
-
-    
+   
 class SocialMediaMetric(models.Model):
     INSTAGRAM = 'IG'
     LINKEDIN = 'LI'
@@ -343,7 +339,6 @@ class SocialMediaMetric(models.Model):
 
     class Meta:
         ordering: ['-date']
-
 
 class CashMovement(models.Model):
     OUT = 'SAÍDA'
