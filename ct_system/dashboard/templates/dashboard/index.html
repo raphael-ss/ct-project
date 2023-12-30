@@ -15,36 +15,41 @@
 
 <div class="py-2"></div>
 <body>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="card orange-bordered-card">
-                <div class="card-body">
-                    <div class="text-center">
-                    <h3><strong>Faturamento</strong></h3>
-                    <canvas id="lineChart"></canvas>
-                    <div class="py-4"></div>
-                    <h4>A meta de faturamento prevista</h4>
-                    <h4>para {{current_year}} é <strong>R$96.000</strong> reais.</h4>
-                    <div class="py-2"></div>
-                    <h5><strong>Vamos ao trabalho!</strong></h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card orange-bordered-card">
-                <div class="card-body">
-                    <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
-                    <div style="max-width: 100%; max-height: 100%;">
-                        <h3><strong>Faturamento Por Diretoria</strong></h3>
-                        <canvas id="donutChart"></canvas>
-                    </div>
-                </div>
+  <div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10">
+        <div class="card orange-bordered-card">
+            <div class="card-body">
+                <div class="text-center">
+                <h3><strong>Faturamento</strong></h3>
+                <canvas id="lineChart"></canvas>
+                <div class="py-4"></div>
+                <h4>A meta de faturamento prevista</h4>
+                <h4>para {{current_year}} é <strong>R$96.000</strong> reais.</h4>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-lg-1"></div>
+  </div>
+
+  <div class="row">
+  <div class="col-lg-1"></div>
+  <div class="col-lg-10">
+    <div class="card orange-bordered-card">
+        <div class="card-body">
+            <div class="card-body d-flex justify-content-center align-items-center">
+            <div>
+                <h3><strong>Faturamento Por Diretoria</strong></h3>
+                <canvas id="donutChart"></canvas>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+    </div>
+
 
     <div class="py-3"></div>
 

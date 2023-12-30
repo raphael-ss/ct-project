@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="pt-br" data-bs-theme="auto">
   <head>
     <meta charset="utf-8">
@@ -6,7 +7,9 @@
     <script src='{% static 'js/color-modes.js' %}'></script>
     <script src='{% static 'js/bootstrap.bundle.min.js' %}'></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -15,12 +18,15 @@
     <link href="{% static 'css/cards.css' %}" rel="stylesheet">
     <link href="{% static 'css/forms.css' %}" rel="stylesheet">
     <link rel="icon" type="image/svg" href="{% static 'img/logo_branca.svg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css"/>
+
 
     <!--Título das páginas: espaço para modificação de acordo com a página-->
     <title>CT Junior System
     {% block title %} 
         
     {% endblock %}</title>
+
 </head>
 
   <body>
@@ -243,16 +249,26 @@
     <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
   </symbol>
 
+  <symbol id="hamburguer" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+</svg>
+  </symbol>
+
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
   <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="{% url 'home' %}">
-    <img src="{% static 'img/logo_branca.svg' %}" class="me-2" width="25" height="25"/>
-    CT Junior
+      <img src="{% static 'img/logo_branca.svg' %}" class="me-2" width="25" height="25"/>
+      CT Junior
   </a>
+
+  <!-- Toggle button for the sidebar -->
+  <button class="btn btn-secondary-outline d-md-none  ms-3 mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+      <svg class="bi" width="24" height="24" role="img" aria-label="Toggle sidebar"><use xlink:href="#hamburguer"/></svg>
+  </button>
 </header>
 
-<div class="container-fluid" style="background: linear-gradient(to bottom, rgba(51, 204, 255, 0.25) 0%, rgba(0, 76, 153, 0.15) 75%);">
+<div class="container-fluid" style="background-color: #f7f7ff;">
   <div class="row">
     {% include 'dashboard/partials/_sidebar.html' %}
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5">

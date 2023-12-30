@@ -1,72 +1,117 @@
 {% load static %}
 
+<style>
+    /* Add this style for custom hover effect */
+.nav-link-item:hover {
+    color: #007BFF !important; /* Brighter color on hover */
+}
+
+.nav-link-item:hover::before {
+    content: "";
+    position: absolute;
+    height: 5%;
+    width: 4px;
+    background-color: #007BFF; /* Vertical line color on hover */
+    left: 0;
+}
+
+.nav-link-dropdown:hover {
+    color: #007BFF !important; /* Brighter color on hover */
+}
+
+    .nav-link-item,
+    .nav-link-dropdown,
+    .nav-link-dropdown:hover,
+    .span-large {
+        font-size: 16px; /* Adjust the font size as needed */
+    }
+
+    /* Adjust the font size for the user image and name */
+    .rounded-circle,
+    .strong-text {
+        font-size: 17px; /* Adjust the font size as needed */
+    }
+
+    /* Adjust the font size for the logout and settings links */
+    .nav-link-item.d-flex {
+        font-size: 17px; /* Adjust the font size as needed */
+    }
+
+</style>
+
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-    <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="sidebarMenuLabel">CT Junior</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto" style="background: linear-gradient(to right, rgba(51, 204, 255, 0.25) 0%, rgba(0, 76, 153, 0.15) 75%);">
+    <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="background-color: #ffffff;">
+        
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto" style="background: linear-gradient(to bottom, rgba(51, 204, 255, 0.25) 0%, rgba(255, 255, 255, 1) 100%);">
+            <div class="py-2"></div>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle" src="{% static 'img/direx.png' %}" alt="" style="width: 50px; height: 50px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0 strong-text">{{ name }}</h6>
+                    <h6 class="span-large">DirEx</h6>
+                </div>
+            </div>
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-expanded="false" style="padding-left: 15px;">
-                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#speedometer2"/></svg>
+                  <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#speedometer2"/></svg>
                     Dashboard
                 </button>
                 
                     <div class="collapse show" id="dashboard">
                         <ul class="nav flex-column" style="margin-left: 15px;">
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'home' %}">Overview</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'home' %}">Overview</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                              <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#comercial" aria-expanded="false" style="padding-left: 15px;">
-                    <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#rocket"/></svg>
+                  <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#comercial" aria-expanded="false" style="padding-left: 15px;">
+                    <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#rocket"/></svg>
                     Comercial
                 </button>
                 
                     <div class="collapse show" id="comercial">
                         <ul class="nav flex-column" style="margin-left: 15px;">
                             <li class="nav-item">
-                                <a class="nav-link"  style="color: #606060;" href="#">Funil de Vendas</a>
+                                <a class="nav-link nav-link-dropdown"  style="color: #606060;" href="{% url 'funnel' %}">Funil de Vendas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"  style="color: #606060;" href="#">Listas</a>
+                                <a class="nav-link nav-link-dropdown"  style="color: #606060;" href="{% url 'leads' %}">Leads</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"  style="color: #606060;" href="{% url 'leads' %}">Leads</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'clients' %}">Clientes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'clients' %}">Clientes</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'companies' %}">Empresas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'companies' %}">Empresas</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'contracts' %}">Contratos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'contracts' %}">Contratos</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'campaigns' %}">Campanhas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'campaigns' %}">Campanhas</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'social_media' %}">Redes Socias</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'social_media' %}">Redes Socias</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                    <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#projetos" aria-expanded="false" style="padding-left: 15px;">
+                    <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#projetos" aria-expanded="false" style="padding-left: 15px;">
                       <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#coffee"/></svg>
                       Projetos
                   </button>
@@ -74,20 +119,20 @@
                       <div class="collapse show" id="projetos">
                           <ul class="nav flex-column" style="margin-left: 15px;">
                               <li class="nav-item">
-                                  <a class="nav-link" style="color: #606060;" href="{% url 'services' %}">Projetos</a>
+                                  <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'services' %}">Projetos</a>
                               </li>
                               <li class="nav-item">
-                                  <a class="nav-link" style="color: #606060;" href="#">Status dos Projetos</a>
+                                  <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Status dos Projetos</a>
                               </li>
                               <li class="nav-item">
-                                  <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                                  <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
                               </li>
                           </ul>
                       </div>
                   </li>
 
                 <li class="nav-item">
-                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#rh" aria-expanded="false" style="padding-left: 15px;">
+                  <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#rh" aria-expanded="false" style="padding-left: 15px;">
                     <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#people"/></svg>
                     Recursos Humanos
                 </button>
@@ -95,26 +140,26 @@
                     <div class="collapse show" id="rh">
                         <ul class="nav flex-column" style="margin-left: 15px;">
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="{% url 'members' %}">Membros</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'members' %}">Membros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Pesquisa de Clima</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Pesquisa de Clima</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Plano de Carreira</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Plano de Carreira</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Turnover</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Turnover</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                  <button class="nav-link d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#financeiro" aria-expanded="false" style="padding-left: 15px;">
+                  <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#financeiro" aria-expanded="false" style="padding-left: 15px;">
                     <svg class="bi pe-none me-2" style="width: 18px; height: 18px;"><use xlink:href="#money"/></svg>
                     Financeiro
                 </button>
@@ -122,13 +167,13 @@
                     <div class="collapse show" id="financeiro">
                         <ul class="nav flex-column" style="margin-left: 15px;">
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Movimentações</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Movimentações</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Transparência Financeira</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Transparência Financeira</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #606060;" href="#">Relatórios</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
                             </li>
                         </ul>
                     </div>
@@ -140,14 +185,14 @@
     
             <ul class="nav flex-column mb-auto">
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2" style="color: #004C99;" href="#">
+                <a class="nav-link nav-link-item d-flex align-items-center gap-2" style="color: #004C99;" href="#">
                   <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
                   Configurações
                 </a>
               </li>
               
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2" style="color: #004C99;" href="#"
+                <a class="nav-link nav-link-item d-flex align-items-center gap-2" style="color: #004C99;" href="#"
                 onclick="document.getElementById('logout-form').submit();">
                   <svg class="bi"><use xlink:href="#door-closed"/></svg>
                   Desconectar
@@ -157,8 +202,26 @@
                 </form>
               </li>
             </ul>
+
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
           </div>
         </div>
 
+        
+
         </div>
-   

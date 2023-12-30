@@ -12,8 +12,32 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import datetime
 from .utils import analysis_utils, pdf_utils
-from io import BytesIO
-# Create your views here.
+from django.views.decorators.csrf import csrf_exempt
+
+
+@csrf_exempt
+def get_lead_status(request, lead_id):
+    try:
+        lead = Lead.objects.get(id=lead_id)
+        lead_status = lead.status
+        return JsonResponse({'lead_status': lead_status})
+    except Lead.DoesNotExist:
+        return JsonResponse({'error': 'Lead not found'}, status=404)
+
+@csrf_exempt
+def update_lead(request):
+    if request.method == 'POST':
+        lead_id = request.POST.get('lead_id')
+        new_status = request.POST.get('new_status')
+        print(new_status)
+
+        try:
+            lead = Lead.objects.get(id=lead_id)
+            lead.status = new_status
+            lead.save()
+            return JsonResponse({'message': 'Lead status updated successfully'})
+        except Lead.DoesNotExist:
+            return JsonResponse({'error': 'Lead not found'}, status=404)
 
 def search_lead(request):
    if request.method == "POST":
@@ -84,10 +108,6 @@ def search_company(request):
             Q(company_name__icontains=search_string) |
             Q(cnpj__icontains=search_string) |
             Q(field_of_action__icontains=search_string) |
-            Q(annual_revenue__icontains=search_string) |
-            Q(n_of_locations__icontains=search_string) |
-            Q(n_of_employees__icontains=search_string) |
-            Q(proof_of_registration_link__icontains=search_string) |
             Q(notes__icontains=search_string)
         )
 
@@ -107,12 +127,99 @@ def search_company(request):
             data.append(company_info)
 
         return JsonResponse(data, safe=False)
-  
+    
+def search_contract(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        contracts = Contract.objects.filter(
+            Q(client_id__lead_id__first_name__icontains=search_string) |
+            Q(client_id__lead_id__last_name__icontains=search_string) |
+            Q(client_id__lead_id__email__icontains=search_string) |
+            Q(client_id__lead_id__phone__icontains=search_string) |
+            Q(client_id__cpf__icontains=search_string) |
+            Q(date__icontains=search_string) |
+            Q(sector__icontains=search_string)
+        )
+
+        data = []
+        for contract in contracts:
+            contract_info = {
+                'id': contract.id,
+                'first_name': contract.client_id.lead_id.first_name,
+                'last_name': contract.client_id.lead_id.last_name,
+                'sector': contract.sector,
+                'total_value': contract.total_value,
+                'n_of_services': contract.n_of_services,
+                'date': contract.date,
+                'link_of_contract': contract.link_of_contract,
+                'notes': contract.notes
+            }
+            data.append(contract_info)
+
+        return JsonResponse(data, safe=False)
+    
+def search_campaign(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        campaigns = CampaignMetric.objects.filter(
+            Q(date__icontains=search_string) |
+            Q(platform__icontains=search_string) |
+            Q(funnel_position__icontains=search_string) |
+            Q(campaign_sector__icontains=search_string)
+        )
+
+        data = []
+        for campaign in campaigns:
+            campaign_info = {
+                'id': campaign.id,
+                'date': campaign.date,
+                'platform': campaign.platform,
+                'campaign_sector': campaign.campaign_sector,
+                'funnel_position': campaign.funnel_position,
+                'clicks': campaign.clicks,
+                'cost': campaign.weekly_cost,
+                'notes': campaign.notes
+            }
+            data.append(campaign_info)
+
+        return JsonResponse(data, safe=False)
+
+def search_social_media(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        metrics = SocialMediaMetric.objects.filter(
+            Q(date__icontains=search_string) |
+            Q(network__icontains=search_string) |
+            Q(followers__icontains=search_string) |
+            Q(notes__icontains=search_string)
+        )
+
+        data = []
+        for metric in metrics:
+            metric_info = {
+                'id': metric.id,
+                'date': metric.date,
+                'network': metric.network,
+                'followers': metric.followers,
+                'impressions': metric.impressions,
+                'reach': metric.reach,
+                'engagement': metric.engagement,
+                'notes': metric.notes
+            }
+            data.append(metric_info)
+
+        return JsonResponse(data, safe=False)
+
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
   def get_context_data(self):
     context = super().get_context_data()
+    authenticated_username = self.request.user.username
+    context["name"] = authenticated_username.split(".")[0].title()
     context["clientes"] = Client.objects.all()
     context["empresas"] = Company.objects.all()
     context["contracts"] = Contract.objects.all()
@@ -133,6 +240,24 @@ class IndexView(LoginRequiredMixin, TemplateView):
     
     return context
 
+class Funnel(LoginRequiredMixin, ListView):
+    model = Lead
+    template_name = "dashboard/funnel.html"
+    queryset = Lead.objects.all().order_by('date')
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        return Lead.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
+        context['queryset'] = queryset
+        
+        return context
 
 class LeadList(LoginRequiredMixin, ListView):
     model = Lead
@@ -159,6 +284,8 @@ class LeadList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['leads_per_source'] = analysis_utils.leads_per_source()
         context['leads_over_time'] = analysis_utils.leads_per_time()
         context['leads'] = analysis_utils.total_leads()
@@ -172,6 +299,7 @@ class LeadList(LoginRequiredMixin, ListView):
         context['most_frequent_source'] = analysis_utils.most_frequent_lead_source()
         context['conversion_rate_diag_prop'] = analysis_utils.conversion_rate_diagnostic_to_proposition()
         context['conversion_rate_prop_closed'] = analysis_utils.conversion_rate_proposition_to_closed()
+        context['queryset'] = queryset
         
         return context
 
@@ -200,7 +328,8 @@ class ClientList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['cac'] = analysis_utils.cac()
         context['client_education_distribution'] = analysis_utils.client_education_distribution()
         context['client_income_distribution'] = analysis_utils.client_income_distribution()
@@ -238,6 +367,8 @@ class CompanyList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['average_company_revenue'] = analysis_utils.average_company_revenue()
         context['average_company_size'] = analysis_utils.average_company_size()
         context['most_frequent_sector_for_companies'] = analysis_utils.most_frequent_sector_for_companies()
@@ -271,6 +402,8 @@ class ContractList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['avg_ticket'] = analysis_utils.average_ticket()
         context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="TEC")
         context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="CIV")
@@ -308,6 +441,8 @@ class CampaignMetricList(LoginRequiredMixin, ListView):
 
         context['items'] = items
         context['cpc'] = analysis_utils.cpc()
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['conversion'] = analysis_utils.conversion_rate_campaign()
         context['most_efficient_platform'] = analysis_utils.most_efficient_platform()
         context['avg_weekly_cost'] = analysis_utils.avg_weekly_cost()
@@ -344,6 +479,8 @@ class ServiceList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['mean_delay'] = analysis_utils.mean_delay()
         context['real_mean_deadline'] = analysis_utils.real_mean_deadline()
         context['projects_on_time'] = analysis_utils.projects_on_time()
@@ -374,6 +511,8 @@ class MemberList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         return context
 
 class SocialMediaMetricList(LoginRequiredMixin, ListView):
@@ -401,6 +540,8 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
         context['total_followers'] = analysis_utils.total_followers()
         context['social_media_growth'] = analysis_utils.social_media_growth()
         context['mean_engagement'] = analysis_utils.mean_engagement()

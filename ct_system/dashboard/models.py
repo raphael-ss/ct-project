@@ -1,5 +1,60 @@
 from django.db import models
 from django.utils.timezone import now
+
+
+class Member(models.Model):
+    ADVISOR = "ASS"
+    CONSULTANT = "CON"
+    MANAGER = "GER"
+    DIRECTOR = "DIR"
+    PRESIDENT = "PRE"
+    ROLE = [
+        (ADVISOR, "Assessor(a)"),
+        (CONSULTANT, "Consultor(a)"),
+        (MANAGER, "Gerente"),
+        (DIRECTOR, "Diretor(a)"),
+        (PRESIDENT, "Presidente"),
+    ]
+    TEC = "TEC"
+    CIV = "CIV"
+    COM = "COM"
+    RH = "RH"
+    ADMFIN = "ADM"
+    CON = "CON"
+
+    SECTORS = [
+        (TEC, "Tecnologia"),
+        (CIV, "Construção Civil"),
+        (COM, "Comercial"),
+        (RH, "Recursos Humanos"),
+        (ADMFIN, "Adiminstrativo Financeiro"),
+        (CON, "Consultoria"),
+    ]
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    sector = models.CharField(max_length=3, choices=SECTORS)
+    role = models.CharField(max_length=3, choices=ROLE)
+    date_of_entry = models.DateField(null=False)
+    date_of_leave = models.DateField(null=True)
+    professional_email = models.CharField(max_length=80)
+    academic_email = models.CharField(max_length=80)
+    phone = models.CharField(max_length=16)
+    cpf = models.CharField(max_length=14)
+    rg = models.CharField(max_length=9)
+    degree = models.CharField(max_length=40)
+    date_of_birth = models.DateField()
+    address = models.CharField(max_length=300)
+    notes = models.CharField(max_length=100)
+
+    def get_absolute_url(self):
+        return "/membros"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}" 
+    
+    class Meta:
+        ordering: ['-role']
+
 class Lead(models.Model):
     MALE = "M"
     FEMALE = "F"
@@ -44,6 +99,9 @@ class Lead(models.Model):
         (CIV, "Construção Civil"),
         (CON, "Consultoria"),
     ]
+    #member_id = models.ForeignKey(Member, limit_choices_to={
+    #    'sector': 'COM'
+    #}, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=32, default="")
     last_name = models.CharField(max_length=32, default="")
     sector = models.CharField(max_length=3, choices=SECTORS, default=TEC)
@@ -70,6 +128,30 @@ class Lead(models.Model):
     
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.status}"
+    
+    def to_json(self):
+        data = {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'sector': self.sector,
+            'gender': self.gender,
+            'status': self.status,
+            'source': self.source,
+            'email': self.email,
+            'phone': self.phone,
+            'field_of_action': self.field_of_action,
+            'score': self.score,
+            'date': str(self.date),
+            'notes': self.notes,
+            'budget': self.budget,
+            'authority': self.authority,
+            'need': self.need,
+            'timing': self.timing,
+            'time_to_respond': self.time_to_respond,
+            'behavior': self.behavior,
+        }
+
+        return data
     
     class Meta:
         ordering: ['-date']
@@ -145,59 +227,6 @@ class Company(models.Model):
     
     class Meta:
         ordering: ['-client_id.lead_id.date']
-
-class Member(models.Model):
-    ADVISOR = "ASS"
-    CONSULTANT = "CON"
-    MANAGER = "GER"
-    DIRECTOR = "DIR"
-    PRESIDENT = "PRE"
-    ROLE = [
-        (ADVISOR, "Assessor(a)"),
-        (CONSULTANT, "Consultor(a)"),
-        (MANAGER, "Gerente"),
-        (DIRECTOR, "Diretor(a)"),
-        (PRESIDENT, "Presidente"),
-    ]
-    TEC = "TEC"
-    CIV = "CIV"
-    COM = "COM"
-    RH = "RH"
-    ADMFIN = "ADM"
-    CON = "CON"
-
-    SECTORS = [
-        (TEC, "Tecnologia"),
-        (CIV, "Construção Civil"),
-        (COM, "Comercial"),
-        (RH, "Recursos Humanos"),
-        (ADMFIN, "Adiminstrativo Financeiro"),
-    ]
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    sector = models.CharField(max_length=3, choices=SECTORS)
-    role = models.CharField(max_length=3, choices=ROLE)
-    date_of_entry = models.DateField(null=False)
-    date_of_leave = models.DateField(null=True)
-    professional_email = models.CharField(max_length=80)
-    academic_email = models.CharField(max_length=80)
-    phone = models.CharField(max_length=16)
-    cpf = models.CharField(max_length=14)
-    rg = models.CharField(max_length=9)
-    degree = models.CharField(max_length=40)
-    date_of_birth = models.DateField()
-    address = models.CharField(max_length=300)
-    notes = models.CharField(max_length=100)
-
-    def get_absolute_url(self):
-        return "/membros"
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}" 
-    
-    class Meta:
-        ordering: ['-role']
-
 class Contract(models.Model):
     TEC = "TEC"
     CIV = "CIV"
@@ -212,6 +241,9 @@ class Contract(models.Model):
     sector = models.CharField(max_length=3, choices=SECTORS)
     total_value = models.FloatField(null=False)
     n_of_services = models.PositiveSmallIntegerField()
+    #- numero de parcelas
+    #- valor
+    #- data de cada parcela
     date = models.DateField()
     link_of_contract = models.CharField(max_length=250)
     notes = models.CharField(max_length=100, default="-")
@@ -341,6 +373,23 @@ class SocialMediaMetric(models.Model):
         ordering: ['-date']
 
 class CashMovement(models.Model):
+    """
+        Receita por Diretoria
+        Faturamento
+        
+        Relatório: (escolher por data)
+            Meta x O que foi alcançado
+            Indicadores ([
+                PMR
+                EPC
+                EBIT
+            ])
+            
+        gráficos: 
+            custo de servico X diretoria
+            pizza entrada e saida
+        
+    """
     OUT = 'SAÍDA'
     IN = 'ENTRADA'
     FLOW=[
@@ -360,5 +409,32 @@ class CashMovement(models.Model):
     category = models.CharField(max_length=20, choices=CATEGORIES)
     description = models.CharField(max_length=300, default="-")
     
+class TurnOver(models.Model):
+    member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
+    term = models.BooleanField()
+    reason = models.CharField(max_length=50)
+    hours = models.IntegerField()
+    months = models.FloatField()
+    
+class MoodTrack(models.Model):
+    TEC = "TEC"
+    CIV = "CIV"
+    COM = "COM"
+    RH = "RH"
+    ADMFIN = "ADM"
+    CON = "CON"
+
+    SECTORS = [
+        (TEC, "Tecnologia"),
+        (CIV, "Construção Civil"),
+        (COM, "Comercial"),
+        (RH, "Recursos Humanos"),
+        (ADMFIN, "Adiminstrativo Financeiro"),
+        (CON, "Consultoria"),
+    ]
+    date = models.DateField(default=now)
+    score = models.FloatField()
+    sector = models.CharField(max_length=3, choices=SECTORS)
+    notes = models.CharField(max_length=100)
     
     

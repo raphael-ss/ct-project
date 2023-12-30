@@ -1,0 +1,489 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} - Funil de Vendas{% endblock %}
+{% block content %}
+
+
+<style>
+    /* Styles for the column cards */
+    .kanban-column-card {
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .smaller-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .smaller-subtitle {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .smaller-text {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .kanban-lead-card {
+        background-color: #f8f9fa;
+    }
+
+    .blue-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .blue-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #2c7ac9; /* Color of the SVG icon */
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .blue-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .blue-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .blue-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+
+      .purple-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .purple-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #4c0099; /* Color of the SVG icon */
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .purple-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .purple-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .purple-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+
+      /* GREEN */
+
+      .green-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .green-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #00cc00; /* Color of the SVG icon */
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .green-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .green-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .green-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+
+      /* CYAN */
+
+      .cyan-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .cyan-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #009999; /* Color of the SVG icon */
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .cyan-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .cyan-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .cyan-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+
+      /* YELLOW */
+
+      .yellow-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .yellow-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #cccc00; 
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .yellow-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .yellow-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .yellow-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+    
+      /* ORANGE */
+
+      .orange-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .orange-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #cc6600; 
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .orange-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .orange-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .orange-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+
+      /* RED */
+
+      .red-kanban-lead-card {
+        border-radius: 8px;
+        padding: 2px;
+        margin-bottom: 7px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative; 
+      }
+      
+      .red-kanban-lead-card:before {
+        content: ""; /* Create a pseudo-element for the border */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 5px; /* Adjust the width of the border as needed */
+        background-color: #cc0000; 
+        filter: brightness(1.2); /* Shine effect on the border */
+        border-radius: 0 8px 8px 0; /* Border radius to match the card */
+      }
+      
+      .red-kanban-lead-card .media {
+        align-items: center;
+      }
+      
+      .red-kanban-lead-card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      
+      /* Apply shine effect on hover for the border */
+      .red-kanban-lead-card:hover:before{
+        filter: brightness(1.8);
+      }
+  </style>
+  
+
+<div class="py-2"></div>
+  <div class="row">
+    <div class="col-md-9 align-items-center">
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Funil de Vendas</li>
+          </ol>
+        </nav>
+    </div>
+
+    {% include 'authentication/partials/_messages.html'%}
+
+    <div>
+      <h1 class="d-inline">Kanban - <strong>Funil de Vendas</strong></h1>
+    </div>
+  </div>
+
+  <div class="py-3"></div>
+
+
+  <div class="container mt-6" id="board">
+    <div class="row">
+
+      <div class="col col-md-3 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+        <div class="card border-secondary mb-3" id="PRÉ-DIAGNÓSTICO">
+          <div class="card-header d-flex align-items-center">
+            <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+            <h4 class="mb-0 smaller-title">Pré-Diagnóstico</h4>
+          </div>
+          <div class="card-body">
+            {% for lead in queryset %}
+              {% if lead.status == 'PRÉ-DIAGNÓSTICO' %}
+                <div id="{{ lead.id }}" class="card kanban-lead-card cyan-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                  <div class="card-body">
+                    <h6 class="smaller-subtitle" style="color: #009999;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                    <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                    <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                    <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                  </div>
+                </div>
+                <div class="py-1"></div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-md-3 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+        <div class="card" id="PRÉ-PROPOSTA">
+          <div class="card-header d-flex align-items-center">
+            <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+            <h4 class="mb-0 smaller-title">Pré-Proposta</h4>
+          </div>
+          <div class="card-body">
+                {% for lead in queryset %}
+                  {% if lead.status == 'PRÉ-PROPOSTA' %}
+                  <div id="{{ lead.id }}" class="card kanban-lead-card blue-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                    <div class="card-body">
+                      <h6 class="smaller-subtitle" style="color: #2c7ac9;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                      <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                      <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                      <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                    </div>
+                  </div>
+                  <div class="py-1"></div>
+                  {% endif %}
+                {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-md-3 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+        <div class="card" id="PÓS-PROPOSTA">
+            <div class="card-header d-flex align-items-center">
+                <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+                <h4 class="mb-0 smaller-title">Pós-Proposta</h4>
+              </div>
+          <div class="card-body">
+                {% for lead in queryset %}
+                  {% if lead.status == 'PÓS-PROPOSTA' %}
+                  <div id="{{ lead.id }}" class="card kanban-lead-card purple-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                    <div class="card-body">
+                      <h6 class="smaller-subtitle" style="color: #4c0099;" >{{ lead.first_name }} {{ lead.last_name }}</h6>
+                      <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                      <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                      <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                    </div>
+                  </div>
+                  <div class="py-1"></div>
+                  {% endif %}
+                {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-md-3 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+        <div class="card" id="CONTRATO FECHADO">
+            <div class="card-header d-flex align-items-center">
+                <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+                <h4 class="mb-0 smaller-title">Contrato Fechado</h4>
+              </div>
+          <div class="card-body">
+                {% for lead in queryset %}
+                  {% if lead.status == 'CONTRATO FECHADO' %}
+                        <div id="{{ lead.id }}" class="card kanban-lead-card  green-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                            <div class="card-body">
+                            <h6 class="smaller-subtitle" style="color: #00cc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                            <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                            <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                            <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                            </div>
+                        </div>
+                  <div class="py-1"></div>
+                  {% endif %}
+                {% endfor %}
+          </div>
+        </div>
+      </div>
+
+  </div>
+  <div class="py-2"></div>
+  <div class="row">
+    <div class="col col-md-4 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+      <div class="card" id="PERDIDO PRÉ-DIAG">
+        <div class="card-header d-flex align-items-center">
+            <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+            <h4 class="mb-0 smaller-title">Perdido Pré-Diagnóstico</h4>
+          </div>
+        <div class="card-body">
+              {% for lead in queryset %}
+                {% if lead.status == 'PERDIDO PRÉ-DIAG' %}
+                    <div id="{{ lead.id }}" class="card kanban-lead-card yellow-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                        <div class="card-body">
+                        <h6 class="smaller-subtitle" style="color: #cccc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                        <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                        <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                        <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                        </div>
+                    </div>
+                <div class="py-1"></div>
+                {% endif %}
+              {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col col-md-4 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+      <div class="card" id="PERDIDO PRÉ-PROP">
+        <div class="card-header d-flex align-items-center">
+            <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+            <h4 class="mb-0 smaller-title">Perdido Pré-Proposta</h4>
+          </div>
+        <div class="card-body">
+              {% for lead in queryset %}
+                {% if lead.status == 'PERDIDO PRÉ-PROP' %}
+                    <div id="{{ lead.id }}" class="card kanban-lead-card orange-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                        <div class="card-body">
+                        <h6 class="smaller-subtitle" style="color: #cc6600;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                        <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                        <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                        <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                        </div>
+                    </div>
+                <div class="py-1"></div>
+                {% endif %}
+              {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col col-md-4 kanban-column-card" ondragover="dragOver(event)" ondrop="drop(event)">
+      <div class="card" id="PERDIDO PÓS-PROP">
+        <div class="card-header d-flex align-items-center">
+            <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#people"/></svg>
+            <h4 class="mb-0 smaller-title">Perdido Pós-Proposta</h4>
+          </div>
+        <div class="card-body">
+              {% for lead in queryset %}
+                {% if lead.status == 'PERDIDO PÓS-PROP' %}
+                    <div id="{{ lead.id }}" class="card kanban-lead-card red-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                        <div class="card-body">
+                        <h6 class="smaller-subtitle" style="color: #cc0000;">{{ lead.first_name }} {{ lead.last_name }}</h6>
+                        <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
+                        <h6 class="smaller-text">Origem: {{ lead.get_source_display }}</h6>
+                        <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
+                        </div>
+                    </div>
+                <div class="py-1"></div>
+                {% endif %}
+              {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <div class="py-2"></div>
+
+  </div>
+</div>
+
+
+<script src="{% static 'js/leadKanban.js' %}"></script>
+
+{% endblock %}

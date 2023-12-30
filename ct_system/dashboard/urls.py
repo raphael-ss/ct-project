@@ -43,6 +43,9 @@ urlpatterns = [
     path('leads/pesquisar-leads', csrf_exempt(views.search_lead), name='search_lead'),
     path('clientes/pesquisar-clientes', csrf_exempt(views.search_client), name='search_client'),
     path('empresas/pesquisar-empresas', csrf_exempt(views.search_company), name='search_company'),
+    path('contratos/pesquisar-contratos', csrf_exempt(views.search_contract), name='search_contract'),
+    path('campanhas/pesquisar-campanhas', csrf_exempt(views.search_campaign), name='search_campaign'),
+    path('redes-sociais/pesquisar-metricas', csrf_exempt(views.search_social_media), name='search_social_media'),
     
     
     path('leads/exportar-leads-csv', views.export_leads_csv, name='export_leads_csv'),
@@ -55,4 +58,9 @@ urlpatterns = [
     path('servicos/exportar-servicos-csv', views.export_services_csv, name='export_services_csv'),
     
     path('gerar-analise-publico-alvo', views.generate_target_analysis, name='generate_target_analysis'),
+    
+    path('update_lead/', csrf_exempt(views.update_lead), name='update_lead'),
+    path('get_lead_status/<int:lead_id>/', views.get_lead_status, name='get_lead_status'),
+    
+    path('leads/funil-de-vendas', views.Funnel.as_view(), name='funnel')
 ]
