@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead
 from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm, LeadCreateForm
@@ -13,6 +13,7 @@ from django.db.models import Q
 import datetime
 from .utils import analysis_utils, pdf_utils
 from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse_lazy
 
 
 @csrf_exempt
@@ -39,6 +40,7 @@ def update_lead(request):
         except Lead.DoesNotExist:
             return JsonResponse({'error': 'Lead not found'}, status=404)
 
+@csrf_exempt
 def search_lead(request):
    if request.method == "POST":
       search_string = json.loads(request.body).get("searchText")
@@ -58,6 +60,7 @@ def search_lead(request):
       data = leads.values()
       return JsonResponse(list(data), safe=False)
   
+@csrf_exempt
 def search_client(request):
     if request.method == "POST":
         search_string = json.loads(request.body).get("searchText")
@@ -95,6 +98,7 @@ def search_client(request):
 
         return JsonResponse(data, safe=False)
   
+@csrf_exempt
 def search_company(request):
     if request.method == "POST":
         search_string = json.loads(request.body).get("searchText")
@@ -127,7 +131,8 @@ def search_company(request):
             data.append(company_info)
 
         return JsonResponse(data, safe=False)
-    
+ 
+@csrf_exempt   
 def search_contract(request):
     if request.method == "POST":
         search_string = json.loads(request.body).get("searchText")
@@ -158,7 +163,8 @@ def search_contract(request):
             data.append(contract_info)
 
         return JsonResponse(data, safe=False)
-    
+   
+@csrf_exempt 
 def search_campaign(request):
     if request.method == "POST":
         search_string = json.loads(request.body).get("searchText")
@@ -186,6 +192,7 @@ def search_campaign(request):
 
         return JsonResponse(data, safe=False)
 
+@csrf_exempt
 def search_social_media(request):
     if request.method == "POST":
         search_string = json.loads(request.body).get("searchText")
@@ -227,12 +234,12 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["servicos"] = Service.objects.all()
     context["membros"] = Member.objects.all()
     context["rede-social"] = SocialMediaMetric.objects.all()
-    context["projects_sold"] = Service.objects.count()
+    context["projects_sold"] = analysis_utils.projects_sold()
     context["active_members"] = Member.objects.count()
-    context["goal"] = round(96000 / 12)
+    context["goal"] = [8900, 17800, 26700, 38700, 50700, 64200, 76200, 88200, 101000, 112000, 120000, 127000]
     context["revenue"] = analysis_utils.revenue_per_month()  
     context['sum'] = analysis_utils.total_revenue()
-    context['yearly_goal'] = 96000
+    context['yearly_goal'] = 127000
     context["revenue_per_sector"] = analysis_utils.revenue_per_sector()
     context['total_leads'] = analysis_utils.total_leads()
     context['current_year'] = datetime.datetime.now().date().year
@@ -243,11 +250,11 @@ class IndexView(LoginRequiredMixin, TemplateView):
 class Funnel(LoginRequiredMixin, ListView):
     model = Lead
     template_name = "dashboard/funnel.html"
-    queryset = Lead.objects.all().order_by('date')
+    queryset = Lead.objects.filter(date__year=datetime.datetime.now().year).order_by('-date')
     context_object_name = 'items'
 
     def get_queryset(self):
-        return Lead.objects.all()
+        return Lead.objects.filter(date__year=datetime.datetime.now().year).order_by('-date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -256,18 +263,19 @@ class Funnel(LoginRequiredMixin, ListView):
         authenticated_username = self.request.user.username
         context["name"] = authenticated_username.split(".")[0].title()
         context['queryset'] = queryset
+        context['current_year'] = datetime.datetime.now().year
         
         return context
 
 class LeadList(LoginRequiredMixin, ListView):
     model = Lead
     template_name = "dashboard/leads.html"
-    queryset = Lead.objects.all().order_by('date')
+    queryset = Lead.objects.all().order_by('-date')
     context_object_name = 'items'
     paginate_by = 8 
 
     def get_queryset(self):
-        return Lead.objects.all()
+        return Lead.objects.all().order_by('-date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -311,7 +319,7 @@ class ClientList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Client.objects.all()
+        return Client.objects.order_by('-lead_id__date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -350,7 +358,7 @@ class CompanyList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Company.objects.all()
+        return Company.objects.order_by('-client_id__lead_id__date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -385,7 +393,7 @@ class ContractList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Contract.objects.all()
+        return Contract.objects.order_by('-client_id__lead_id__date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -563,14 +571,27 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
 
 #-ADD DATA
 class LeadCreate(LoginRequiredMixin, CreateView):
-   model = Lead
-   template_name = 'dashboard/add_lead.html'
-   form_class = LeadCreateForm
+    model = Lead
+    template_name = 'dashboard/add_lead.html'
+    form_class = LeadCreateForm
+    success_url = reverse_lazy('leads')
 
-   def form_valid(self, form):
+    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Lead adicionado com sucesso.')
         return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o lead. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
+        context['members'] = Member.objects.filter(sector="COM", date_of_leave__year=datetime.datetime.now().date().year)
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
 
 class ClientCreate(LoginRequiredMixin, CreateView):
    model = Client
@@ -652,7 +673,7 @@ class LeadUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Lead atualizado com sucesso.')
         return response
-
+    
 class ClientUpdate(LoginRequiredMixin, UpdateView):
    model = Client
    template_name = 'dashboard/update_client_data.html'
@@ -803,7 +824,15 @@ class SocialMediaMetricDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Métrica deletada com sucesso.')
         return response
+    
+    
+#-DETAIL VIEWS
+class LeadDetail(LoginRequiredMixin, DetailView):
+    model = Lead
+    template_name = 'dashboard/lead_detail.html'
+    context_object_name = 'lead'
      
+#-CSV
 def export_leads_csv(request):
    response = HttpResponse(content_type="text/csv")
    response['Content-Disposition'] = 'attachment; filename=Leads-'+ str(datetime.datetime.now())+ '.csv'
@@ -1054,6 +1083,29 @@ def export_services_csv(request):
       ])
       
    return response
+
+
+class SalesReports(LoginRequiredMixin, TemplateView):
+    template_name = "dashboard/reports_sales.html"
+    
+    def get_context_data(self):
+        context = super().get_context_data()
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
+        
+        
+        return context
+    
+class LearnMore(LoginRequiredMixin, TemplateView):
+    template_name = "dashboard/learn_more.html"
+    
+    def get_context_data(self):
+        context = super().get_context_data()
+        authenticated_username = self.request.user.username
+        context["name"] = authenticated_username.split(".")[0].title()
+        
+        
+        return context
 
 def generate_target_analysis(request):
     chart_configs:list = [

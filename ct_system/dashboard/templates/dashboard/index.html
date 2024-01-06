@@ -11,7 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 
-<h1>Overview de {{ current_year }}</h1>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1>Overview de {{ current_year }}</h1>
+</div>
 
 <div class="py-2"></div>
 <body>
@@ -25,7 +27,7 @@
                 <canvas id="lineChart"></canvas>
                 <div class="py-4"></div>
                 <h4>A meta de faturamento prevista</h4>
-                <h4>para {{current_year}} é <strong>R$96.000</strong> reais.</h4>
+                <h4>para {{current_year}} é <strong>R$127.000</strong> reais.</h4>
                 </div>
             </div>
         </div>
@@ -136,73 +138,45 @@
 </body>
 
 <script>
-    Chart.register({
-        id: 'pt-BR',
-        options: {
-            date: {
-                months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
-            }
-        }
-    });
-    var labels = ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', 
-    '2023-05-01', '2023-06-01', '2023-07-01', '2023-08-01', '2023-09-01', 
-    '2023-10-01', '2023-11-01', '2023-12-01']
-    var data = {{revenue}};
-    var goal = {{ goal }};
-    
-
-    var goalArray = [];
-    for (var i = 0; i < 12; i++) {
-        goalArray.push((i + 1) * goal);
-    }
-
-    var ctx = document.getElementById('lineChart').getContext('2d');
-    var lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Faturamento Anual',
-                data: data,
-                fill: true,
-                borderColor: 'rgba(255, 128, 0, 1)',
-                borderWidth: 2
-            },
+  var data = {
+      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      datasets: [
             {
-                label: 'Meta Prevista',
-                data: goalArray,
-                fill: false,
-                borderColor: 'rgba(0, 51, 51, 1)',
-                borderWidth: 2,
-                borderDash: [5, 5],  // Add a dashed border to distinguish the goal line
-                spanGaps: true,
-            },]
-            
-            
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'month',
-                        tooltipFormat: 'yyyy-mm-dd',
-                    }
-                },
-                y: {
-                    beginAtZero: true
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            }
-        },
-           
-    });
+              label: "Faturamento",
+              data: {{revenue}},
+              borderColor: 'rgba(75, 192, 128, 1)',
+              fill: false
+          },
+          {
+              label: "Meta",
+              data: {{goal}},
+              borderColor: 'rgba(75, 192, 192, 1)',
+              fill: false,
+              borderDash: [5, 5],
+          },
+      ]
+  };
+
+  var ctx = document.getElementById('lineChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+              x: {
+                  type: 'category', 
+                  position: 'bottom'
+              },
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
 </script>
 
 <script>

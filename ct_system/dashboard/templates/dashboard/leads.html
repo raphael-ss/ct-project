@@ -16,7 +16,7 @@
 
     {% include 'authentication/partials/_messages.html'%}
 
-    <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1 class="d-inline">Dados - <strong>Leads</strong></h1><span></span>
       <a href="{% url 'add_lead' %}" class="btn btn-primary ms-5">Adicionar Lead</a>
     </div>
@@ -51,7 +51,7 @@
         <tbody>
           {% for lead in object_list %}
             <tr>
-              <td><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.pk }}</a></td>
+              <td><a href="{% url 'lead_detail' pk=lead.pk %}">{{ lead.pk }}</a></td>
               <td>{{ lead.first_name }} {{ lead.last_name }}</td>
               <td>{{ lead.score }}</td>
               <td>{{ lead.get_status_display }}</td>

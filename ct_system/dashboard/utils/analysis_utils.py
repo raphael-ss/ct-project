@@ -10,11 +10,11 @@ def revenue_per_sector():
     tec_total = 0
     con_total = 0
       
-    for contract in Contract.objects.filter(sector="CIV"):
+    for contract in Contract.objects.filter(sector="CIV", date__year=current_year):
       civil_total += contract.total_value
-    for contract in Contract.objects.filter(sector="TEC"):
+    for contract in Contract.objects.filter(sector="TEC", date__year=current_year):
       tec_total += contract.total_value
-    for contract in Contract.objects.filter(sector="CON"):
+    for contract in Contract.objects.filter(sector="CON", date__year=current_year):
       con_total += contract.total_value
       
     return [tec_total, civil_total, con_total]
@@ -172,6 +172,14 @@ def cpl_per_platform():
         return cost_per_platform, leads_per_platform
     return 0
 
+def projects_sold():
+    contracts = Contract.objects.filter(date__year=current_year)
+    projects = 0
+    for contract in contracts:
+        projects += contract.n_of_services
+    return projects
+        
+
 def revenue_per_month():
     revenue = []
     months = ['01', '02', '03', '04', 
@@ -180,7 +188,7 @@ def revenue_per_month():
     
     for month in months:
         sum = 0
-        contracts_in_month = Contract.objects.filter(date__month=month)
+        contracts_in_month = Contract.objects.filter(date__month=month, date__year=current_year)
         if contracts_in_month.count() == 0:
             if revenue:
                 revenue.append(revenue[-1])
@@ -325,7 +333,7 @@ def client_mean_funnel_time():
     return 0
 
 def client_count():
-    clients_df = pd.DataFrame.from_records(Client.objects.values())
+    clients_df = pd.DataFrame.from_records(Client.objects.filter(lead_id__date__year=current_year).values())
     
     if not clients_df.empty:
         return clients_df.shape[0]

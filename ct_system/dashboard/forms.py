@@ -14,87 +14,16 @@ class BaseCreateForm(forms.ModelForm):
         self.helper.form_method = 'post'
 
 class LeadCreateForm(BaseCreateForm):
-    TEC = "TEC"
-    CIV = "CIV"
-    CON = "CON"
-    SECTORS = [
-        (TEC, "Tecnologia"),
-        (CIV, "Construção Civil"),
-        (CON, "Consultoria"),
-    ]
     def save(self, commit=True):
         instance = super(LeadCreateForm, self).save(commit=False)
         instance.score = lead_scoring(instance)
         if commit:
             instance.save()
-        return instance
-    
-        # Add the following fields for the numeric values from 1 to 10
-    CHOICES = [(i, str(i)) for i in range(1, 11)]
-    budget = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Orçamento: (o Lead tem capital disponível para investir?)'
-    )
-
-    authority = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Autoridade: (o Lead é o tomador de decisão?)'
-    )
-
-    need = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Necessidade: (o Lead precisa do projeto?)'
-    )
-
-    timing = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Timing: (o Lead tem prazo definido para investir?)'
-    )
-
-    time_to_respond = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Tempo de Resposta: (o Lead responde rápido?)'
-    )
-
-    behavior = forms.TypedChoiceField(
-        coerce=int,
-        choices=CHOICES,
-        widget=forms.Select,
-        label='Comportamento: (o Lead é educado?)'
-    )
-    
-    sector = forms.ChoiceField(
-        choices=SECTORS,
-        widget=forms.RadioSelect(attrs={'class': 'form-radio'}),
-        label="Área/Diretoria"
-    )
+        return instance    
     class Meta:
         model = Lead
         fields = '__all__'
         exclude = ['score']
-        labels = {
-            'first_name': 'Nome',
-            'last_name': 'Sobrenome',
-            'sector': 'Área',
-            'gender': 'Sexo',
-            'status': 'Etapa do Funil',
-            'source': 'Origem',
-            'email': 'E-mail',
-            'phone': 'Telefone',
-            'field_of_action': 'Área de Atuação',
-            'date': 'Data',
-            'notes': 'Notas',
-        }
         
 class ClientCreateForm(BaseCreateForm):
     class Meta:

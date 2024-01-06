@@ -36,44 +36,15 @@
     .nav-link-item.d-flex {
         font-size: 17px; /* Adjust the font size as needed */
     }
-
 </style>
 
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-    <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="background-color: #ffffff;">
+    <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         
-        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto" style="background: linear-gradient(to bottom, rgba(51, 204, 255, 0.25) 0%, rgba(255, 255, 255, 1) 100%);">
-            <div class="py-2"></div>
-            <div class="d-flex align-items-center ms-4 mb-4">
-                <div class="position-relative">
-                    <img class="rounded-circle" src="{% static 'img/direx.png' %}" alt="" style="width: 50px; height: 50px;">
-                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                </div>
-                <div class="ms-3">
-                    <h6 class="mb-0 strong-text">{{ name }}</h6>
-                    <h6 class="span-large">DirEx</h6>
-                </div>
-            </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto" style="background: linear-gradient(to bottom, rgba(51, 204, 255, 0.35) 0%, rgba(255, 255, 255, 1) 100%);">
+            <div class="py-1"></div>          
 
             <ul class="nav flex-column">
-                <li class="nav-item">
-                  <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-expanded="false" style="padding-left: 15px;">
-                    <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#speedometer2"/></svg>
-                    Dashboard
-                </button>
-                
-                    <div class="collapse show" id="dashboard">
-                        <ul class="nav flex-column" style="margin-left: 15px;">
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'home' %}">Overview</a>
-                            </li>
-                            <li class="nav-item">
-                              <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
                 <li class="nav-item">
                   <button class="nav-link nav-link-item d-flex align-items-center gap-1 active" style="color: #004C99;" data-bs-toggle="collapse" data-bs-target="#comercial" aria-expanded="false" style="padding-left: 15px;">
                     <svg class="bi pe-none me-2" style="width: 21px; height: 21px;"><use xlink:href="#rocket"/></svg>
@@ -104,7 +75,7 @@
                                 <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'social_media' %}">Redes Socias</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="#">Relatórios</a>
+                                <a class="nav-link nav-link-dropdown" style="color: #606060;" href="{% url 'reports_sales' %}">Relatórios</a>
                             </li>
                         </ul>
                     </div>
@@ -190,6 +161,13 @@
                   Configurações
                 </a>
               </li>
+
+              <li class="nav-item">
+                <a class="nav-link nav-link-item d-flex align-items-center gap-2" style="color: #004C99;" href="{% url 'learn_more' %}">
+                  <svg class="bi"><use xlink:href="#question-mark"/></svg>
+                  Ajuda
+                </a>
+              </li>
               
               <li class="nav-item">
                 <a class="nav-link nav-link-item d-flex align-items-center gap-2" style="color: #004C99;" href="#"
@@ -203,6 +181,27 @@
               </li>
             </ul>
 
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
+            <div class="py-4"></div>
             <div class="py-4"></div>
             <div class="py-4"></div>
             <div class="py-4"></div>

@@ -57,10 +57,17 @@ urlpatterns = [
     path('membros/exportar-membros-csv', views.export_members_csv, name='export_members_csv'),
     path('servicos/exportar-servicos-csv', views.export_services_csv, name='export_services_csv'),
     
+    path('leads/lead/<pk>', views.LeadDetail.as_view(), name="lead_detail"),
+    
+    path('relatorios/comercial', views.SalesReports.as_view(), name='reports_sales'),
+    
     path('gerar-analise-publico-alvo', views.generate_target_analysis, name='generate_target_analysis'),
     
     path('update_lead/', csrf_exempt(views.update_lead), name='update_lead'),
     path('get_lead_status/<int:lead_id>/', views.get_lead_status, name='get_lead_status'),
     
-    path('leads/funil-de-vendas', views.Funnel.as_view(), name='funnel')
+    path('leads/funil-de-vendas', views.Funnel.as_view(), name='funnel'),
+    
+    
+    path('ajuda/saiba-mais', views.LearnMore.as_view(), name="learn_more"),
 ]

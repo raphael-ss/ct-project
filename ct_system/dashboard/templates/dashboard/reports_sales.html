@@ -1,0 +1,88 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %} - Relatórios - Comercial{% endblock %}
+{% block content %}
+
+<div class="py-2"></div>
+  <div class="row">
+    <div class="col-md-9 align-items-center">
+      <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Relatórios</li>
+          </ol>
+        </nav>
+    </div>
+
+    {% include 'authentication/partials/_messages.html'%}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="d-inline">Relatórios - <strong>Comercial</strong></h1><span></span>
+    </div>
+  </div>
+
+  <div class="py-3"></div>
+
+  <div class="container mt-5">
+    <div class="row">
+
+      <div class="col col-md-6">
+        <div class="card text-center align-items-center">
+            <img src="{% static 'img/target-public.png' %}" class="card-img-top" alt="..." style="height: 250px;">
+            <div class="card-body">
+              <h5 class="card-title"><strong>Público-Alvo</strong></h5>
+              <p class="card-text">Relatório de público-alvo, com métricas e visualizações para análise demográfica e comportamental.</p>
+              <a href="{% url 'generate_target_analysis' %}" class="btn btn-outline-success">Exportar PDF</a>
+              <a href="{% url 'learn_more' %}" class="btn btn-outline-dark">Saiba Mais</a>
+            </div>
+          </div>
+      </div>
+
+      <div class="col col-md-6">
+        <div class="card text-center align-items-center">
+            <img src="{% static 'img/sales.png' %}" class="card-img-top" alt="..." style="height: 250px;">
+            <div class="card-body">
+              <h5 class="card-title"><strong>Funil de Vendas</strong></h5>
+              <p class="card-text">Relatório do funil e processo de vendas, com métricas e visualizações para análise de conversão e de desempenho.</p>
+              <a href="#" class="btn btn-outline-success">Exportar PDF</a>
+              <a href="#" class="btn btn-outline-dark" type="button">Saiba Mais</a>
+            </div>
+          </div>
+      </div>
+
+    </div>
+
+    <div class="py-3"></div>
+
+    <div class="row">
+
+        <div class="col col-md-6">
+          <div class="card text-center align-items-center">
+              <img src="{% static 'img/social-media.png' %}" class="card-img-top" alt="..." style="height: 250px;">
+              <div class="card-body">
+                <h5 class="card-title"><strong>Redes Sociais</strong></h5>
+                <p class="card-text">Relatório das redes sociais, com métricas e visualizações para análise temporal dos resultados e alcanceno meio digital.</p>
+                <a href="{% url 'generate_target_analysis' %}" class="btn btn-outline-success">Exportar PDF</a>
+                <a href="#" class="btn btn-outline-dark">Saiba Mais</a>
+              </div>
+            </div>
+        </div>
+  
+        <div class="col col-md-6">
+            <div class="card text-center align-items-center">
+                <img src="{% static 'img/trafego-pago.png' %}" class="card-img-top" alt="..." style="height: 250px;">
+                <div class="card-body">
+                  <h5 class="card-title"><strong>Tráfego Pago</strong></h5>
+                  <p class="card-text">Relatório de tráfego pago, com métricas e visualizações para análise de ROI e de desempenho das campanhas.</p>
+                  <a href="#" class="btn btn-outline-success">Exportar PDF</a>
+                  <a href="#" class="btn btn-outline-dark" type="button">Saiba Mais</a>
+                </div>
+              </div>
+          </div>
+  
+      </div>
+</div>
+
+
+
+{% endblock %}

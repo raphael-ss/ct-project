@@ -16,7 +16,7 @@
 
     {% include 'authentication/partials/_messages.html'%}
 
-    <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
       <h1 class="d-inline">Dados - <strong>Clientes</strong></h1><span></span>
       <a href="{% url 'add_client_data' %}" class="btn btn-primary ms-5">Adicionar Dados</a>
     </div>
@@ -26,7 +26,6 @@
 
     <div class="container-fluid">
       <a href="{% url 'export_clients_csv' %}" class="btn btn-info">Exportar CSV</a>
-      <a href="{% url 'generate_target_analysis' %}" class="btn btn-outline-success">Análise</a>
       <form class="d-flex" role="search" style="width: 50%; float: right;">
         <input class="form-control me-2" type="text" placeholder="Pesquisar" id="clientSearchField" aria-label="Search">
         <button class="btn btn-outline-dark" type="submit">Pesquisar</button>

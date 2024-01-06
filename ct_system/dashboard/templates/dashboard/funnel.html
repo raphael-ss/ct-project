@@ -279,6 +279,10 @@
       .red-kanban-lead-card:hover:before{
         filter: brightness(1.8);
       }
+
+      .kanban-column-card .card-body a {
+        text-decoration: none;
+    }
   </style>
   
 
@@ -295,13 +299,13 @@
 
     {% include 'authentication/partials/_messages.html'%}
 
-    <div>
-      <h1 class="d-inline">Kanban - <strong>Funil de Vendas</strong></h1>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"> 
+      <h1>Kanban - <strong>Funil de Vendas</strong></h1>
+      <a href="{% url 'add_lead' %}" class="btn btn-primary ms-5">Adicionar Lead</a>
     </div>
   </div>
 
   <div class="py-3"></div>
-
 
   <div class="container mt-6" id="board">
     <div class="row">
@@ -315,6 +319,7 @@
           <div class="card-body">
             {% for lead in queryset %}
               {% if lead.status == 'PRÉ-DIAGNÓSTICO' %}
+              <a href="{% url 'lead_detail' pk=lead.pk %}">
                 <div id="{{ lead.id }}" class="card kanban-lead-card cyan-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                   <div class="card-body">
                     <h6 class="smaller-subtitle" style="color: #009999;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -323,6 +328,7 @@
                     <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                   </div>
                 </div>
+              </a>
                 <div class="py-1"></div>
               {% endif %}
             {% endfor %}
@@ -339,6 +345,7 @@
           <div class="card-body">
                 {% for lead in queryset %}
                   {% if lead.status == 'PRÉ-PROPOSTA' %}
+                  <a href="{% url 'lead_detail' pk=lead.pk %}">
                   <div id="{{ lead.id }}" class="card kanban-lead-card blue-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                     <div class="card-body">
                       <h6 class="smaller-subtitle" style="color: #2c7ac9;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -347,6 +354,7 @@
                       <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                     </div>
                   </div>
+                </a>
                   <div class="py-1"></div>
                   {% endif %}
                 {% endfor %}
@@ -363,6 +371,7 @@
           <div class="card-body">
                 {% for lead in queryset %}
                   {% if lead.status == 'PÓS-PROPOSTA' %}
+                  <a href="{% url 'lead_detail' pk=lead.pk %}">
                   <div id="{{ lead.id }}" class="card kanban-lead-card purple-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                     <div class="card-body">
                       <h6 class="smaller-subtitle" style="color: #4c0099;" >{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -371,6 +380,7 @@
                       <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                     </div>
                   </div>
+                  </a>
                   <div class="py-1"></div>
                   {% endif %}
                 {% endfor %}
@@ -387,6 +397,7 @@
           <div class="card-body">
                 {% for lead in queryset %}
                   {% if lead.status == 'CONTRATO FECHADO' %}
+                  <a href="{% url 'lead_detail' pk=lead.pk %}">
                         <div id="{{ lead.id }}" class="card kanban-lead-card  green-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                             <div class="card-body">
                             <h6 class="smaller-subtitle" style="color: #00cc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -395,6 +406,7 @@
                             <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                             </div>
                         </div>
+                      </a>
                   <div class="py-1"></div>
                   {% endif %}
                 {% endfor %}
@@ -414,6 +426,7 @@
         <div class="card-body">
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PRÉ-DIAG' %}
+                <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card yellow-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cccc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -422,6 +435,7 @@
                         <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                         </div>
                     </div>
+                  </a>
                 <div class="py-1"></div>
                 {% endif %}
               {% endfor %}
@@ -438,6 +452,7 @@
         <div class="card-body">
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PRÉ-PROP' %}
+                <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card orange-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cc6600;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -446,6 +461,7 @@
                         <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                         </div>
                     </div>
+                  </a>
                 <div class="py-1"></div>
                 {% endif %}
               {% endfor %}
@@ -462,6 +478,7 @@
         <div class="card-body">
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PÓS-PROP' %}
+                <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card red-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cc0000;">{{ lead.first_name }} {{ lead.last_name }}</h6>
@@ -470,6 +487,7 @@
                         <h6 class="smaller-text">Tel: {{ lead.phone }}</h6>
                         </div>
                     </div>
+                  </a>
                 <div class="py-1"></div>
                 {% endif %}
               {% endfor %}
