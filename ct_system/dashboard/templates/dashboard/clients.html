@@ -46,21 +46,19 @@
         <th>Telefone</th>
         <th>Score</th>
         <th>Tempo de Funil (Dias)</th>
-        <th>Notas</th>
       </tr>
     </thead>
     <tbody>
       {% for client in object_list %}
         <tr>
-          <td><a href="{% url 'update_client_data' pk=client.pk %}">{{ client.pk }}</a></td>
+          <td><a href="{% url 'client_detail' pk=client.pk %}">{{ client.pk }}</a></td>
           <td>{{ client.lead_id.first_name }} {{ client.lead_id.last_name }}</td>
           <td>{{ client.lead_id.get_gender_display }}</td>
           <td>{{ client.lead_id.get_source_display }}</td>
           <td>{{ client.lead_id.email }}</td>
           <td>{{ client.lead_id.phone }}</td>
-          <td>{{ client.lead_id.score }}</td>
+          <td>{{ client.lead_id.get_score }}</td>
           <td>{{ client.funnel_time }}</td>
-          <td>{{ client.notes }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -79,7 +77,6 @@
         <th>Telefone</th>
         <th>Score</th>
         <th>Tempo de Funil (Dias)</th>
-        <th>Notas</th>
       </tr>
     </thead>
     <tbody class="table-body">

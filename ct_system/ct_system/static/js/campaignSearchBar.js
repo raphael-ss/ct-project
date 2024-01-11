@@ -35,7 +35,6 @@ searchField.addEventListener("keyup", (e)=>{
                 <td>${item.funnel_position}</td>
                 <td>${item.clicks}</td>
                 <td>${item.cost}</td>
-                <td>${item.notes}</td>
             </tr>`
                 });
             }

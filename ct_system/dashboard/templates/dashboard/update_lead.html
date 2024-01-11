@@ -23,46 +23,33 @@
 </div>
 
 <div class="py-2"></div>
-<!---
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Atualizar Dados" class="btn btn-block btn-secondary submit-btn" />
-      </div>
-    </div>
-  </div>
-</form>
--->
 
 <div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
-  <form action="{% url 'add_lead' %}" method="POST" style="margin: 45px;">
+  <form action="{% url 'update_lead' pk=object.pk %}" method="POST" style="margin: 45px;">
       {% csrf_token %}
 
       <div class="row g-3">
         <div class="col">
           <div class="form-group">
               <label for="first_name" class="form-label"><strong>Nome</strong></label>
-              <input type="text" id="first_name" name="first_name" placeholder="ex.: João" class="form-control" required>
+              <input type="text" id="first_name" name="first_name" value="{{form.first_name.value}}" class="form-control" required>
           </div>
         </div>
 
         <div class="col">
           <div class="form-group">
             <label for="last_name" class="form-label"><strong>Sobrenome</strong></label>
-            <input type="text" id="last_name" name="last_name" placeholder="ex.: Silva" class="form-control" required>
+            <input type="text" id="last_name" name="last_name" value="{{form.last_name.value}}" class="form-control" required>
           </div>
         </div>
       </div>
 
-      <!-- VENDEDOR (IMPLEMENTAR QUANDO ATUALIZAR BANCO DE DADOS) 
+
       <div class="py-2"></div>
 
       <label for="memberDataList" class="form-label">Vendedor</label>
       <input class="form-control" list="memberOptions" id="memberDataList" placeholder="Digite para pesquisar..." oninput="setMemberId(this.value)">
-      <input type="hidden" id="memberId" name="member_id">
+      <input type="hidden" id="member_id" name="member_id">
       <datalist id="memberOptions">
         {% for member in members %}
           <option data-value="{{member.id}}" value="{{member.first_name}} {{member.last_name}}"></option>
@@ -74,13 +61,13 @@
         var options = document.querySelectorAll('#memberOptions option');
         for (var i = 0; i < options.length; i++) {
           if (options[i].value === value) {
-            document.getElementById('memberId').value = options[i].dataset.value;
+            document.getElementById('member_id').value = options[i].dataset.value;
             break;
           }
         }
       }
       </script>
-    -->
+
 
       <div class="py-2"></div>
 
@@ -92,17 +79,17 @@
         
           <div class="form-check form-check-inline">
             <label for="tec" class="form-check-label">Tecnologia</label>
-            <input type="radio" id="tec" name="sector" value="TEC" class="form-check-input" checked>
+            <input type="radio" id="tec" name="sector" value="Tecnologia" class="form-check-input" {% if form.sector.value == 'Tecnologia' %} checked {% endif %}>
           </div>
 
           <div class="form-check form-check-inline">
             <label for="civ">Construção Civil</label>
-            <input type="radio" id="civ" name="sector" value="CIV" class="form-check-input">
+            <input type="radio" id="civ" name="sector" value="Civil" class="form-check-input" {% if form.sector.value == 'Civil' %} checked {% endif %}>
           </div>
 
           <div class="form-check form-check-inline">
             <label for="con">Consultoria</label>
-            <input type="radio" id="con" name="sector" value="CON" class="form-check-input">
+            <input type="radio" id="con" name="sector" value="Consultoria" class="form-check-input" {% if form.sector.value == 'Consultoria' %} checked {% endif %}>
           </div>
       </div>
     </div>
@@ -113,12 +100,12 @@
         
           <div class="form-check form-check-inline">
             <label for="m" class="form-check-label">Homem</label>
-            <input type="radio" id="m" name="gender" value="M" class="form-check-input" checked>
+            <input type="radio" id="m" name="gender" value="Homem" class="form-check-input" {% if form.gender.value == 'Homem' %} checked {% endif %}>
           </div>
 
           <div class="form-check form-check-inline">
             <label for="f">Mulher</label>
-            <input type="radio" id="f" name="gender" value="F" class="form-check-input">
+            <input type="radio" id="f" name="gender" value="Mulher" class="form-check-input" {% if form.gender.value == 'Mulher' %} checked {% endif %}>
           </div>
       </div>
     </div>
@@ -132,13 +119,13 @@
       <div class="form-group">
         <label for="status" class="form-label"><strong>Status</strong></label>
         <select id="status" name="status" class="form-control form-select" required>
-            <option value="PRÉ-DIAGNÓSTICO">Pré-Diagnóstico</option>
-            <option value="PERDIDO PRÉ-DIAG">Perdido Pré-Diagnóstico</option>
-            <option value="PRÉ-PROPOSTA">Pré-Proposta</option>
-            <option value="PERDIDO PRÉ-PROP">Perdido Pré-Proposta</option>
-            <option value="PÓS-PROPOSTA">Pós-Proposta</option>
-            <option value="PERDIDO PÓS-PROP">Perdido Pós-Proposta</option>
-            <option value="CONTRATO FECHADO">Contrato Fechado</option>
+            <option value="PRÉ-DIAGNÓSTICO" {% if form.status.value == 'PRÉ-DIAGNÓSTICO' %} selected {% endif %}>Pré-Diagnóstico</option>
+            <option value="PERDIDO PRÉ-DIAG"  {% if form.status.value == 'PERDIDO PRÉ-DIAG' %} selected {% endif %}>Perdido Pré-Diagnóstico</option>
+            <option value="PRÉ-PROPOSTA" {% if form.status.value == 'PRÉ-PROPOSTA' %} selected {% endif %}>Pré-Proposta</option>
+            <option value="PERDIDO PRÉ-PROP" {% if form.status.value == 'PERDIDO PRÉ-PROP' %} selected {% endif %}>Perdido Pré-Proposta</option>
+            <option value="PÓS-PROPOSTA" {% if form.status.value == 'PÓS-PROPOSTA' %} selected {% endif %}>Pós-Proposta</option>
+            <option value="PERDIDO PÓS-PROP" {% if form.status.value == 'PERDIDO PÓS-PROP' %} selected {% endif %}>Perdido Pós-Proposta</option>
+            <option value="CONTRATO FECHADO" {% if form.status.value == 'CONTRATO FECHADO' %} selected {% endif %}>Contrato Fechado</option>
         </select>
       </div>
     </div>
@@ -147,11 +134,11 @@
       <div class="form-group">
         <label for="source" class="form-label"><strong>Origem do Lead</strong></label>
         <select id="source" name="source" class="form-control form-select" required>
-            <option value="INDICAÇÃO" {% if object.source == "INDICAÇÃO" %} selected {% endif %}>Indicação</option>
-            <option value="FBADS" {% if object.source == "FBADS" %} selected {% endif %}>Facebook Ads</option>
-            <option value="GOOGLEADS" {% if object.source == "GOOGLEADS" %} selected {% endif %}>Google Ads</option>
-            <option value="ATIVA" {% if object.source == "ATIVA" %} selected {% endif %}>Prospecção Ativa</option>
-            <option value="PASSIVA" {% if object.source == "PASSIVA" %} selected {% endif %}>Prospecção Passiva</option>
+            <option value="Indicação" {% if form.source.value == 'Indicação' %} selected {% endif %}>Indicação</option>
+            <option value="Facebook Ads" {% if form.source.value == 'Facebook Ads' %} selected {% endif %}>Facebook Ads</option>
+            <option value="Google Ads" {% if form.source.value == 'Google Ads' %} selected {% endif %}>Google Ads</option>
+            <option value="Ativa" {% if form.source.value == 'Ativa' %} selected {% endif %}>Prospecção Ativa</option>
+            <option value="Passiva" {% if form.source.value == 'Passiva' %} selected {% endif %}>Prospecção Passiva</option>
         </select>
       </div>
     </div>
@@ -163,14 +150,14 @@
         <div class="col">
           <div class="form-group">
             <label for="email" class="form-label"><strong>Email</strong></label>
-            <input type="email" id="email" name="email" class="form-control" value="{{object.email}}">
+            <input type="email" id="email" name="email" class="form-control" value="{{form.email.value}}">
           </div>
         </div>
 
         <div class="col">
           <div class="form-group">
             <label for="phone" class="form-label"><strong>Telefone</strong></label>
-            <input type="phone" id="phone" name="phone" value="{{object.phone}}" class="form-control" required>
+            <input type="phone" id="phone" name="phone" value="{{form.phone.value}}" class="form-control" required>
           </div>
         </div>
       </div>
@@ -181,142 +168,23 @@
         <div class="col">
           <div class="form-group">
             <label for="field_of_action" class="form-label"><strong>Área de Atuação</strong></label>
-            <input type="text" id="field_of_action" name="field_of_action" class="form-control" value="{{object.field_of_action}}">
+            <input type="text" id="field_of_action" name="field_of_action" class="form-control" value="{{form.field_of_action.value}}">
           </div>
         </div>
 
         <div class="col">
           <div class="form-group">
-            <label for="date" class="form-label"><strong>Data de Chegada</strong></label>
-            <input type="date" id="date" name="date" class="form-control" value="{{object.date}}" required>
+            <label for="arrival_date" class="form-label"><strong>Data de Chegada</strong></label>
+            <input type="date" id="arrival_date" name="arrival_date"  value="{{form.arrival_date.value}}" class="form-control" required>
           </div>
         </div>
       </div>
-      
+
       <div class="py-2"></div>
-
-      <div class="row g-3">
-        <div class="col">
-          <div class="form-group">
-            <label for="budget" class="form-label"><strong>Orçamento do Lead</strong></label>
-            <select id="budget" name="budget" class="form-control form-select" required>
-                <option>"O Lead tem capital para investir?"</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-            </select>
-          </div>
-        </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="authority" class="form-label"><strong>Autoridade do Lead</strong></label>
-              <select id="authority" name="authority" class="form-control form-select" required>
-                  <option>"O Lead é o tomador de decisão?"</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="need" class="form-label"><strong>Necessidade do Lead</strong></label>
-              <select id="need" name="need" class="form-control form-select" required>
-                  <option>"O Lead realmente precisa da solução para resolver a dor?"</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="row g-3">
-          <div class="col">
-            <div class="form-group">
-              <label for="timing" class="form-label"><strong>Timing do Lead</strong></label>
-              <select id="timing" name="timing" class="form-control form-select" required>
-                  <option>"O Lead tem data para adquirir a solução?"</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="time_to_respond" class="form-label"><strong>Tempo de Resposta do Lead</strong></label>
-              <select id="time_to_respond" name="time_to_respond" class="form-control form-select" required>
-                  <option>"O Lead responde rapidamente?"</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="behavior" class="form-label"><strong>Comportamento do Lead</strong></label>
-              <select id="behavior" name="behavior" class="form-control form-select" required>
-                  <option>"O Lead responde educadamente?"</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
 
       <div class="form-group">
         <label for="notes" class="form-label"><strong>Notas</strong></label>
-        <textarea type="text" id="notes" name="notes" placeholder="Notas e descrições... (máx. 150 caracteres)" class="form-control" rows="2"></textarea>
+        <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
       </div>
 
       <div class="py-2"></div>

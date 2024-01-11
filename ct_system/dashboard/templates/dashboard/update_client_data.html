@@ -10,6 +10,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
       <li class="breadcrumb-item"><a href="{% url 'clients' %}">Clientes</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'client_detail' pk=object.pk %}">{{object.lead_id.first_name}} {{object.lead_id.last_name}}</a></li>
       <li class="breadcrumb-item active" aria-current="page">Atualizar Dados - Cliente</li>
     </ol>
   </nav>
@@ -17,7 +18,7 @@
 {% include 'authentication/partials/_messages.html' %}
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-  <h3 class="d-inline">Atualizar Dados de <strong>Cliente</strong>: {{ object.first_name }} {{ object.last_name }}</h3>
+  <h3 class="d-inline">Atualizar Dados de <strong>Cliente</strong>: {{ object.lead_id.first_name }} {{ object.lead_id.last_name }}</h3>
   <a href="{% url 'delete_client_data' pk=object.pk %}" class="btn btn-danger ms-5">Deletar Registro</a>
 </div>
 

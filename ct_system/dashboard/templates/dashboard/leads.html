@@ -45,7 +45,6 @@
             <th>Origem</th>
             <th>E-mail</th>
             <th>Telefone</th>
-            <th>Notas</th>
           </tr>
         </thead>
         <tbody>
@@ -53,12 +52,11 @@
             <tr>
               <td><a href="{% url 'lead_detail' pk=lead.pk %}">{{ lead.pk }}</a></td>
               <td>{{ lead.first_name }} {{ lead.last_name }}</td>
-              <td>{{ lead.score }}</td>
+              <td>{{ lead.get_score }}</td>
               <td>{{ lead.get_status_display }}</td>
               <td>{{ lead.get_source_display }}</td>
               <td>{{ lead.email }}</td>
               <td>{{ lead.phone }}</td>
-              <td>{{ lead.notes }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -76,7 +74,6 @@
             <th>Origem</th>
             <th>E-mail</th>
             <th>Telefone</th>
-            <th>Notas</th>
           </tr>
         </thead>
         <tbody class="table-body">

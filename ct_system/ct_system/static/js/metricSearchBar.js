@@ -35,7 +35,6 @@ searchField.addEventListener("keyup", (e)=>{
                 <td>${item.impressions}</td>
                 <td>${item.reach}</td>
                 <td>${item.engagement}</td>
-                <td>${item.notes}</td>
             </tr>`
                 });
             }

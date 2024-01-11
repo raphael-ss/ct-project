@@ -30,6 +30,7 @@
 </head>
 
   <body>
+    <!--
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="check2" viewBox="0 0 16 16">
         <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -79,7 +80,7 @@
           </button>
         </li>
       </ul>
-    </div>
+    </div>-->
 
     
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -403,7 +404,7 @@
 </style>
 
 
-<header style="background: linear-gradient(to right, rgba(0, 0, 102, 0.80) 0%, rgba(102, 178, 255, 1) 100%);">
+<header style="background: linear-gradient(to right, rgba(0, 153, 153, 0.55) 0%, rgba(0, 153, 153, 0.30) 100%);">
 
   <div class="py-1"></div>
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -420,17 +421,20 @@
       <div class="px-4"></div>
       <div class="px-4"></div>
       <div class="px-2"></div>
-      
+
+
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <!---
         <li><a href="{% url 'home' %}" class="nav-link nav-link-header px-2"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#speedometer2"/></svg>Dashboard</a></li>
         <li><a href="#" class="nav-link nav-link-header px-2"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#openai"/></svg>Chat</a></li>
         <li><a href="#" class="nav-link nav-link-header px-2"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#calendar3"/></svg>Calendário</a></li>
         <li><a href="{% url 'learn_more' %}" class="nav-link nav-link-header px-2"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#question-mark"/></svg>Ajuda</a></li>
-      </ul>
+      -->
+      </ul> 
 
       <div class="d-flex flex-column align-items-center">
-          <h6 class="animate-charcter">Raphael</h6>
-          <span class="animate-charcter">Admin</span>
+          <h6>{{name}}</h6>
+          <span class="animate-charcter">Membro</span>
       </div>
 
       <div class="px-2"></div>
@@ -441,9 +445,11 @@
                 <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
             </a>
             <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="background-color: #f7f7ff;">
+              <!-- REMOVER QUANDO TERMINADO 
                 <li><a class="dropdown-item" href="#"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#bell"/></svg>Notificações</a></li>
                 <li><a class="dropdown-item" href="#"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#gear-wide-connected"/></svg>Configurações</a></li>
                 <li><hr class="dropdown-divider"></li>
+                -->
                 <li><a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();"><svg class="bi pe-none me-2" style="width: 19px; height: 19px; horizontal-align: middle;"><use xlink:href="#door-closed"/></svg>Desconectar</a></li>
                 <form method="POST" action="{% url 'logout' %}" id="logout-form">
                   {% csrf_token %}

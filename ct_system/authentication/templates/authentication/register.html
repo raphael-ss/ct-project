@@ -24,7 +24,41 @@
 
                 {% include 'authentication/partials/_messages.html' %}
 
-                    <div class="form-group">
+                    <div class="form-group py-2">
+                        <input type="text" name="full_name" id="full_name" placeholder="Nome (ex.: João Silveira)" class="form-control form-control-sm" value="{{fieldValues.name}}"/>
+                    </div>
+                    <div class="form-group py-2">
+                        <input type="text" name="cpf" id="cpf" placeholder="CPF (ex.: 120.210.321-01)" class="form-control form-control-sm" value="{{fieldValues.cpf}}"/>
+                    </div>
+                    <div class="form-group py-2">
+                        <input type="text" name="rg" id="rg" placeholder="RG (ex.: 1.123.321)" class="form-control form-control-sm" value="{{fieldValues.rg}}"/>
+                    </div>
+
+                    <div class="form-group py-2">
+                        <select id="role" name="role" class="form-control form-select" required>
+                            <option>Cargo</option>
+                            <option value="Assessor">Assessor(a)</option>
+                            <option value="Consultor">Consultor(a)</option>
+                            <option value="Gerente">Gerente</option>
+                            <option value="Diretor">Diretor(a)</option>
+                            <option value="Presidente">Presidente</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group py-2">
+                        <select id="sector" name="sector" class="form-control form-select" required>
+                            <option>Diretoria</option>
+                            <option value="Comercial">Comercial</option>
+                            <option value="Consultoria">Consultoria</option>
+                            <option value="Tecnologia">Tecnologia</option>
+                            <option value="Civil">Construção Civil</option>
+                            <option value="RH">Recursos Humanos</option>
+                            <option value="Financeiro">Administrativo Financeiro</option>
+                            <option value="DirEx">Diretoria Executiva</option>
+                        </select>
+                      </div>
+
+                    <div class="form-group py-2">
                         <input
                             type="text"
                             name="username" 
@@ -37,7 +71,7 @@
                     <div class="invalid-feedback invalid_feedback" style="display:none">
                         
                     </div>
-                    <p class="text-sm text-success username-success"></p>
+                    <p class="text-sm text-success username-success" style="display:none"></p>
                     <div class="form-group py-2">
                         <input
                             type="email"
@@ -62,8 +96,7 @@
                          />
                          <div class="py-2 text-right "><small class="showPasswordToggle">VER</small></div>          
                     </div>
-                        <!--<button type="submit" class="btn btn-primary">Registrar</button>-->
-                        <input type="submit" value="Registrar" class="btn btn-block btn-primary submit-btn" />
+                        <input type="submit" value="Registrar" class="btn btn-block btn-primary submit-btn"/>
                 </form>
                 <div class="py-2"></div>
 

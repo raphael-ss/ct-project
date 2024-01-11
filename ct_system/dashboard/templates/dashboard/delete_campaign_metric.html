@@ -22,6 +22,7 @@
 
 <div class="py-2"></div>
 
+<div class="text-center align-items-center">
   <form method="post" action="{% url 'delete_campaign_metric' pk=object.pk %}">
     {% csrf_token %}
 
@@ -31,5 +32,10 @@
 
   </form>
 
+  <div class="py-2"></div>
+
   <a href="{% url 'campaigns' %}">Voltar</a>
+
+</div>
+
 {% endblock %}

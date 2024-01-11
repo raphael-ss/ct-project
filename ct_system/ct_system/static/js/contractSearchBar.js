@@ -36,7 +36,6 @@ searchField.addEventListener("keyup", (e)=>{
             <td>${item.n_of_services}</td>
             <td>${item.date}</td>
             <td>${item.link_of_contract}</td>
-            <td>${item.notes}</td>
             </tr>`
                 });
             }

@@ -36,7 +36,6 @@ searchField.addEventListener("keyup", (e)=>{
             <td>${item.field_of_action}</td>
             <td>${item.annual_revenue}</td>
             <td>${item.n_of_employees}</td>
-            <td>${item.notes}</td>
             </tr>`
                 });
             }

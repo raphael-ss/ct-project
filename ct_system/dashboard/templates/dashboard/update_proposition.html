@@ -1,0 +1,82 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'leads' %}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Atualizar Proposta</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+<h3>Atualizar <strong>Proposta</strong></h3>
+<a href="{% url 'delete_proposition' pk=proposition.pk %}" class="btn btn-outline-danger ms-5">Deletar Proposta</a>
+</div>
+
+<div class="py-2"></div>
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'update_proposition' pk=proposition.pk %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <label for="leadDataList" class="form-label">Lead</label>
+      <input class="form-control" list="leadOptions" id="leadDataList" placeholder="Digite para pesquisar..." oninput="setLeadId(this.value)">
+      <input type="hidden" id="leadId" name="lead_id">
+      <datalist id="leadOptions">
+        {% for lead in leads %}
+          <option data-value="{{lead.id}}" value="{{lead.first_name}} {{lead.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setLeadId(value) {
+        var options = document.querySelectorAll('#leadOptions option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('leadId').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="link" class="form-label"><strong>Link da Proposta</strong></label>
+            <input type="text" id="link" name="link" value="{{form.link.value}}" class="form-control"/>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="date" class="form-label"><strong>Data</strong></label>
+            <input type="date" id="date" name="date" class="form-control" required>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+  </form>
+</div>
+
+{% endblock %}

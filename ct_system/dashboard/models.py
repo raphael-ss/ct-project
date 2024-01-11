@@ -1,13 +1,12 @@
 from django.db import models
 from django.utils.timezone import now
 
-
 class Member(models.Model):
-    ADVISOR = "ASS"
-    CONSULTANT = "CON"
-    MANAGER = "GER"
-    DIRECTOR = "DIR"
-    PRESIDENT = "PRE"
+    ADVISOR = "Assessor"
+    CONSULTANT = "Consultor"
+    MANAGER = "Gerente"
+    DIRECTOR = "Diretor"
+    PRESIDENT = "Presidente"
     ROLE = [
         (ADVISOR, "Assessor(a)"),
         (CONSULTANT, "Consultor(a)"),
@@ -15,36 +14,36 @@ class Member(models.Model):
         (DIRECTOR, "Diretor(a)"),
         (PRESIDENT, "Presidente"),
     ]
-    TEC = "TEC"
-    CIV = "CIV"
-    COM = "COM"
-    RH = "RH"
-    ADMFIN = "ADM"
-    CON = "CON"
-
+    
+    TEC = "Tecnologia"
+    CIV = "Civil"
+    COM = "Comercial"
+    RH = "Recursos Humanos"
+    ADMFIN = "Adm-Fin"
+    CON = "Consultoria"
     SECTORS = [
         (TEC, "Tecnologia"),
         (CIV, "Construção Civil"),
         (COM, "Comercial"),
         (RH, "Recursos Humanos"),
-        (ADMFIN, "Adiminstrativo Financeiro"),
+        (ADMFIN, "Adminstrativo Financeiro"),
         (CON, "Consultoria"),
     ]
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    sector = models.CharField(max_length=3, choices=SECTORS)
-    role = models.CharField(max_length=3, choices=ROLE)
+    sector = models.CharField(max_length=20, choices=SECTORS)
+    role = models.CharField(max_length=20, choices=ROLE)
     date_of_entry = models.DateField(null=False)
     date_of_leave = models.DateField(null=True)
     professional_email = models.CharField(max_length=80)
-    academic_email = models.CharField(max_length=80)
+    academic_email = models.CharField(max_length=80, null=True)
     phone = models.CharField(max_length=16)
     cpf = models.CharField(max_length=14)
     rg = models.CharField(max_length=9)
-    degree = models.CharField(max_length=40)
-    date_of_birth = models.DateField()
-    address = models.CharField(max_length=300)
-    notes = models.CharField(max_length=100)
+    degree = models.CharField(max_length=50,null=True)
+    date_of_birth = models.DateField(null=True)
+    address = models.CharField(max_length=300, null=True)
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/membros"
@@ -53,20 +52,20 @@ class Member(models.Model):
         return f"{self.first_name} {self.last_name}" 
     
     class Meta:
-        ordering: ['-role']
-
+        ordering: ['-date_of_entry']
+        
 class Lead(models.Model):
-    MALE = "M"
-    FEMALE = "F"
+    MALE = "Homem"
+    FEMALE = "Mulher"
     GENDER = [
         (MALE, "Homem"),
         (FEMALE, "Mulher")
     ]
-    INDICATION = "INDICAÇÃO"
-    FACEBOOKADS = "FBADS"
-    GOOGLEADS = "GOOGLEADS"
-    ACTIVE = "ATIVA"
-    PASSIVE = "PASSIVA"
+    INDICATION = "Indicação"
+    FACEBOOKADS = "Facebook Ads"
+    GOOGLEADS = "Google Ads"
+    ACTIVE = "Ativa"
+    PASSIVE = "Passiva"
     SOURCE = [
         (INDICATION, "Indicação"),
         (FACEBOOKADS, "Facebook Ads"),
@@ -74,6 +73,7 @@ class Lead(models.Model):
         (ACTIVE, "Prospecção Ativa"),
         (PASSIVE, "Prospecção Passiva"),
     ]
+    
     PRED = "PRÉ-DIAGNÓSTICO"
     PPD = "PERDIDO PRÉ-DIAG"
     PREP = "PRÉ-PROPOSTA"
@@ -81,7 +81,6 @@ class Lead(models.Model):
     POSTP = "PÓS-PROPOSTA"
     PPOSP = "PERDIDO PÓS-PROP"
     CLOSED = "CONTRATO FECHADO"
-    
     STATUS = [
         (PRED, "Pré-Diagnóstico"),
         (PPD, "Perdido Pré-Diagnóstico"),
@@ -91,37 +90,28 @@ class Lead(models.Model):
         (PPOSP, "Perdido Pós-Proposta"),
         (CLOSED, "Contrato Fechado"),
     ]
-    TEC = "TEC"
-    CIV = "CIV"
-    CON = "CON"
+    TEC = "Tecnologia"
+    CIV = "Civil"
+    CON = "Consultoria"
     SECTORS = [
         (TEC, "Tecnologia"),
         (CIV, "Construção Civil"),
         (CON, "Consultoria"),
     ]
-    #member_id = models.ForeignKey(Member, limit_choices_to={
-    #    'sector': 'COM'
-    #}, on_delete=models.CASCADE, null=True)
-    first_name = models.CharField(max_length=32, default="")
-    last_name = models.CharField(max_length=32, default="")
-    sector = models.CharField(max_length=3, choices=SECTORS, default=TEC)
-    gender = models.CharField(max_length=1, choices=GENDER, default="")
+    member_id = models.ForeignKey(Member, limit_choices_to={
+        'sector': 'Comercial'
+    }, on_delete=models.CASCADE, null=True)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    sector = models.CharField(max_length=15, choices=SECTORS, default=TEC)
+    gender = models.CharField(max_length=10, choices=GENDER)
     status = models.CharField(max_length=20, choices=STATUS, default=PRED)
-    source = models.CharField(max_length=10, choices=SOURCE, default="")
-    email = models.CharField(max_length=80, default="", null=True)
+    source = models.CharField(max_length=20, choices=SOURCE)
+    email = models.CharField(max_length=80, null=True)
     phone = models.CharField(max_length=16, default="")
     field_of_action = models.CharField(max_length=30, default="", null=True)
-    score = models.CharField(max_length=1)
-    date = models.DateField()
-    notes = models.CharField(max_length=150, default="-")
-    
-    #-LEAD SCORING
-    budget = models.IntegerField()
-    authority = models.IntegerField()
-    need = models.IntegerField()
-    timing = models.IntegerField()
-    time_to_respond = models.IntegerField()
-    behavior = models.IntegerField()
+    arrival_date = models.DateField()
+    notes = models.CharField(max_length=150, default="...")
     
     def get_absolute_url(self):
         return "/leads"
@@ -140,36 +130,57 @@ class Lead(models.Model):
             'email': self.email,
             'phone': self.phone,
             'field_of_action': self.field_of_action,
-            'score': self.score,
-            'date': str(self.date),
+
             'notes': self.notes,
-            'budget': self.budget,
-            'authority': self.authority,
-            'need': self.need,
-            'timing': self.timing,
-            'time_to_respond': self.time_to_respond,
-            'behavior': self.behavior,
         }
 
         return data
     
+    def get_score(self):
+        object = self.diagnostic_set
+        return object.first().score if object.exists() else '-'
     class Meta:
         ordering: ['-date']
+        
+class Diagnostic(models.Model):
+    lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE)
+    budget = models.IntegerField(null=True)
+    authority = models.IntegerField(null=True)
+    need = models.IntegerField(null=True)
+    timing = models.IntegerField(null=True)
+    time_to_respond = models.IntegerField(null=True)
+    behavior = models.IntegerField(null=True)
+    score = models.CharField(max_length=1)
+    date = models.DateField()
+    estimated_price = models.FloatField()
+    notes = models.CharField(max_length=300, default="...")
     
+    def __str__(self):
+        return f"{self.lead_id.first_name} {self.lead_id.last_name} - {self.date}"
+    
+class Proposition(models.Model):
+    lead_id = lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE)
+    date = models.DateField()
+    link = models.CharField(max_length=300)
+    notes = models.CharField(max_length=300, default="...")
+    
+    def __str__(self):
+        return f"{self.lead_id.first_name} {self.lead_id.last_name} - {self.date}"
+
 class Client(models.Model):
-    EFCOMPLETE = "EF-COMPLETO"
-    EMCOMPLETE = "EM-COMPLETO"
-    ESCOMPLETE = "ES-COMPLETO"
+    EFCOMPLETE = "Fundamental Completo"
+    EMCOMPLETE = "Médio Completo"
+    ESCOMPLETE = "Superior Completo"
     EDUCATION = [
         (EFCOMPLETE, "Ensino Fundamental Completo"),
         (EMCOMPLETE, "Ensino Médio Completo"),
         (ESCOMPLETE, "Ensino Superior Completo"),
     ]
-    SINGLE = "SOLTEIRO"
-    MARRIED = "CASADO"
-    DIVORCED = "DIVORCIADO"
-    OTHER = "OUTRO"
-    DATING = "UNIÃO ESTÁVEL"
+    SINGLE = "Solteiro"
+    MARRIED = "Casado"
+    DIVORCED = "Divorciado"
+    OTHER = "Outro"
+    DATING = "União Estável"
     STATUS = [
         (SINGLE, 'Solteiro(a)'),
         (MARRIED, "Casado(a)"),
@@ -190,14 +201,14 @@ class Client(models.Model):
 
     lead_id = models.ForeignKey(Lead, on_delete=models.CASCADE, limit_choices_to={
         'status': 'CONTRATO FECHADO'
-    }, null=True)
-    cpf = models.CharField(max_length=14, default="")
-    birth_date = models.DateField(null=False)
-    education = models.CharField(max_length=15, choices=EDUCATION, default=ESCOMPLETE, null=True)
+    })
+    cpf = models.CharField(max_length=14)
+    birth_date = models.DateField(null=True)
+    education = models.CharField(max_length=25, choices=EDUCATION, default=ESCOMPLETE, null=True)
     marital_status = models.CharField(max_length=15, choices=STATUS, default=SINGLE, null=True)
-    income = models.CharField(max_length=5, choices=INCOME, default="", null=True)
+    income = models.CharField(max_length=5, choices=INCOME, null=True)
     funnel_time = models.PositiveIntegerField(default=15)
-    notes = models.CharField(max_length=100, default="-")
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/clientes"
@@ -214,39 +225,37 @@ class Company(models.Model):
     cnpj = models.CharField(max_length=18)
     field_of_action = models.CharField(max_length=100)
     annual_revenue = models.FloatField(null=True)
-    n_of_locations = models.PositiveSmallIntegerField(null=True)
-    n_of_employees = models.PositiveSmallIntegerField(null=True)
-    proof_of_registration_link = models.CharField(max_length=150)
-    notes = models.CharField(max_length=10, default="-")
+    locations = models.PositiveSmallIntegerField(null=True)
+    employees = models.PositiveSmallIntegerField(null=True)
+    registration_link = models.CharField(max_length=300, null=True)
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/empresas"
 
     def __srt__(self):
-        return f"{self.client_id.first_name} - {self.client_id.last_name} - {self.company_name}"
+        return f"{self.company_name}"
     
     class Meta:
         ordering: ['-client_id.lead_id.date']
+        
 class Contract(models.Model):
-    TEC = "TEC"
-    CIV = "CIV"
-    CON = "CON"
+    TEC = "Tecnologia"
+    CIV = "Civil"
+    CON = "Consultoria"
     SECTORS = [
         (TEC, "Tecnologia"),
         (CIV, "Construção Civil"),
         (CON, "Consultoria"),
     ]
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
-    member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
-    sector = models.CharField(max_length=3, choices=SECTORS)
+    sector = models.CharField(max_length=15, choices=SECTORS)
     total_value = models.FloatField(null=False)
     n_of_services = models.PositiveSmallIntegerField()
-    #- numero de parcelas
-    #- valor
-    #- data de cada parcela
-    date = models.DateField()
-    link_of_contract = models.CharField(max_length=250)
-    notes = models.CharField(max_length=100, default="-")
+    date = models.DateField(default=now)
+    deadline = models.DateField()
+    contract_link = models.CharField(max_length=250)
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/contratos"
@@ -255,6 +264,17 @@ class Contract(models.Model):
         return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.sector}" 
     class Meta:
         ordering: ['-date']
+        
+class Installment(models.Model):
+    contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    value = models.FloatField()
+    date = models.DateField()
+    paid_off = models.BooleanField()
+        
+class ServiceTag(models.Model):
+    name = models.CharField(max_length=50, null=False)
+    color = models.CharField(max_length=7, null=True, default="#000000")
+    
 class Service(models.Model):
     SYS = "Sistema"
     SITE = "Website"
@@ -267,7 +287,9 @@ class Service(models.Model):
     ELE = "Elétrico"
     CAP = "Captação"
     INC = "Incêndio"
-    MAP = "Mapeamento"
+    MAP = "Mapeamento de Processos"
+    EST = "Planejamento Estratégico"
+    NEG = "Plano de Negócios"
     SER = [
         (SYS, "Sistema Web"),
         (SITE, "Website"),
@@ -281,13 +303,16 @@ class Service(models.Model):
         (CAP, "Proj. de Captação"),
         (INC, "Proj. de Combate à Incêndio"),
         (MAP, "Mapeamento de Processos"),
+        (EST, "Planejamento Estratégico"),
+        (NEG, "Plano de Negócios"),
     ]
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
     contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    project = models.CharField(max_length=18, choices=SER)
+    tags = models.ManyToManyField(ServiceTag)
+    project = models.CharField(max_length=30, choices=SER)
+    consultants = models.PositiveSmallIntegerField()
     estimated_time = models.PositiveSmallIntegerField(null=False)
     actual_time = models.PositiveSmallIntegerField(null=True)
-    n_of_consultants = models.PositiveSmallIntegerField()
     price = models.FloatField()
     notes = models.CharField(max_length=100)
 
@@ -298,19 +323,42 @@ class Service(models.Model):
         return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.project}"
     
     class Meta:
-        ordering: ['-contract_id.date']
+        ordering: ['-contract_id.date']  
+        
+class Team(models.Model):
+    service_id = models.ForeignKey(Service, on_delete=models.CASCADE)
+    size = models.PositiveSmallIntegerField()
+    members = models.ManyToManyField(Member)    
+    
+class PostSales(models.Model):
+    TS = "Totalmente Satisfeito"
+    SA = "Satisfeito"
+    NE = "Neutro"
+    IN = "Insatisfeito"
+    TI = "Totalmente Insatisfeito"
+    SATISFACTION = [
+        (TS, "Totalmente Satisfeito"),
+        (SA, "Satisfeito"),
+        (NE, "Neutro"),
+        (IN, "Insatisfeito"),
+        (TI, "Totalmente Insatisfeito"),
+    ]
+    contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    csat = models.CharField(max_length=30, choices=SATISFACTION)
+    nps = models.PositiveSmallIntegerField()
+    treatment = models.PositiveSmallIntegerField()
     
 class CampaignMetric(models.Model):
-    TEC = "TEC"
-    CIV = "CIV"
-    CON = "CON"
+    TEC = "Tecnologia"
+    CIV = "Civil"
+    CON = "Consultoria"
     SECTORS = [
         (TEC, "Tecnologia"),
         (CIV, "Construção Civil"),
         (CON, "Consultoria"),
     ]
-    GOOGLE = "GOOGLEADS"
-    FCBK = "FBADS"
+    GOOGLE = "Google Ads"
+    FCBK = "Facebook Ads"
     PLATFORM = [
         (GOOGLE, "Google Ads"),
         (FCBK, "Facebook Ads"),
@@ -325,89 +373,66 @@ class CampaignMetric(models.Model):
         (LOW, "Fundo de Funil"),
         (ALL, "Geral")
     ]
-    id = models.BigAutoField(primary_key=True)
-    date = models.DateField(null=False, default=now)
-    platform = models.CharField(max_length=10, choices=PLATFORM)
-    campaign_sector = models.CharField(max_length=3, choices=SECTORS)
-    funnel_position = models.CharField(max_length=5, choices=POSITION)
+    date = models.DateField(default=now)
+    platform = models.CharField(max_length=20, choices=PLATFORM)
+    campaign_sector = models.CharField(max_length=30, choices=SECTORS)
+    funnel_position = models.CharField(max_length=10, choices=POSITION)
     clicks = models.IntegerField()
     conversions = models.IntegerField()
     weekly_cost = models.FloatField()
-    notes = models.CharField(max_length=100, default="-")
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/campanhas"
 
-    def __srt__(self):
+    def __str__(self):
         return f"{self.platform} - {self.date}"
     class Meta:
         ordering: ['-date']
    
 class SocialMediaMetric(models.Model):
-    INSTAGRAM = 'IG'
-    LINKEDIN = 'LI'
-    FACEBOOK = 'FC'
-    TIKTOK = 'TK'
+    INSTAGRAM = 'Instagram'
+    LINKEDIN = 'LinkedIn'
+    FACEBOOK = 'Facebook'
+    TIKTOK = 'TkTok'
     NETWORKS=[
         (INSTAGRAM, "Instagram"),
         (LINKEDIN, "LinkedIn"),
         (FACEBOOK, "Facebook"),
         (TIKTOK, "TikTok"),
     ]
-    id = models.BigAutoField(primary_key=True)
-    date = models.DateField(null=False, default=now)
-    network = models.CharField(max_length=2, choices=NETWORKS, null=False)
-    followers = models.PositiveIntegerField(null=False)
+    date = models.DateField(default=now)
+    network = models.CharField(max_length=15, choices=NETWORKS)
+    followers = models.PositiveIntegerField()
     impressions = models.PositiveIntegerField()
     reach = models.PositiveIntegerField()
-    engagement = models.PositiveIntegerField()
-    notes = models.CharField(max_length=100, default="-")
+    engagement = models.PositiveIntegerField(null=True)
+    notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):
         return "/redes-sociais"
 
-    def __srt__(self):
+    def __str__(self):
         return f"{self.network} - {self.date}"
 
     class Meta:
         ordering: ['-date']
 
+'''
+REMOVER QUANDO TERMINAR
+
 class CashMovement(models.Model):
-    """
-        Receita por Diretoria
-        Faturamento
-        
-        Relatório: (escolher por data)
-            Meta x O que foi alcançado
-            Indicadores ([
-                PMR
-                EPC
-                EBIT
-            ])
-            
-        gráficos: 
-            custo de servico X diretoria
-            pizza entrada e saida
-        
-    """
-    OUT = 'SAÍDA'
-    IN = 'ENTRADA'
+    OUT = 'Saída'
+    IN = 'Entrada'
     FLOW=[
         (OUT, "Saída"),
         (IN, "Entrada"),
     ]
-    EVENT = "EVENTO"
-    TRAINING = "CAPACITAÇÃO"
-    CATEGORIES = [
-        (EVENT, "Evento"),
-        (TRAINING, "Capacitação"),
-    ]
-    id = models.BigAutoField(primary_key=True)
     date = models.DateField(default=now)
     amount = models.FloatField()
     flow = models.CharField(max_length=10, choices=FLOW)
-    category = models.CharField(max_length=20, choices=CATEGORIES)
-    description = models.CharField(max_length=300, default="-")
+    category = models.CharField(max_length=40)
+    notes = models.CharField(max_length=300, default="...")
     
 class TurnOver(models.Model):
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -429,7 +454,7 @@ class MoodTrack(models.Model):
         (CIV, "Construção Civil"),
         (COM, "Comercial"),
         (RH, "Recursos Humanos"),
-        (ADMFIN, "Adiminstrativo Financeiro"),
+        (ADMFIN, "Adminstrativo Financeiro"),
         (CON, "Consultoria"),
     ]
     date = models.DateField(default=now)
@@ -437,4 +462,4 @@ class MoodTrack(models.Model):
     sector = models.CharField(max_length=3, choices=SECTORS)
     notes = models.CharField(max_length=100)
     
-    
+'''

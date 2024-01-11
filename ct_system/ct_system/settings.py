@@ -89,10 +89,10 @@ WSGI_APPLICATION = 'ct_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd7ld95l5bj8kn1',
-        'USER':'srlhqxzrmtvynk',
-        'PASSWORD':'300c04acc39144c19f61bb5c6fef4af2bc2df22df5f9541b0f87f7c600ecf179',
-        'HOST': 'ec2-52-4-153-146.compute-1.amazonaws.com',
+        'NAME': 'dmdjjmfn6tha5',
+        'USER':'qnnatdmhkeazxf',
+        'PASSWORD':'b113ecee3e136baff5c698a9b4216f0d9e68173b66f36c98faf7dcb4fcfc78dd',
+        'HOST': 'ec2-34-232-92-61.compute-1.amazonaws.com',
         'PORT': '5432',
         'OPTIONS': {
             'sslmode': 'require',
@@ -118,6 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'authentication.SystemUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

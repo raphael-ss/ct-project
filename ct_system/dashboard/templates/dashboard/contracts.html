@@ -45,7 +45,6 @@
         <th>N° de Serviços</th>
         <th>Data</th>
         <th>Link</th>
-        <th>Notas</th>
       </tr>
     </thead>
     <tbody>
@@ -57,8 +56,7 @@
           <td>{{ contract.total_value }}</td>
           <td>{{ contract.n_of_services }}</td>
           <td>{{ contract.date }}</td>
-          <td>{{ contract.link_of_contract }}</td>
-          <td>{{ contract.notes }}</td>
+          <td><a href="{{ contract.contract_link }}" target="_blank">Clique Aqui</a></td>
         </tr>
       {% endfor %}
     </tbody>
@@ -76,7 +74,6 @@
           <th>N° de Serviços</th>
           <th>Data</th>
           <th>Link</th>
-          <th>Notas</th>
         </tr>
       </thead>
       <tbody class="table-body">

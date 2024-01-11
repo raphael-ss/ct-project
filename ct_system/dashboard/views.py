@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead
-from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm, LeadCreateForm
+from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead, Diagnostic, PostSales, Proposition, ServiceTag, Installment, Team
+from .forms import SocialMediaMetricCreateForm, ClientCreateForm, ContractCreateForm, CampaignMetricCreateForm, CompanyCreateForm, ServiceCreateForm, MemberCreateForm, LeadCreateForm, DiagnosticCreateForm, PostSalesCreateForm, PropositionCreateForm, ServiceTagCreateForm, InstallmentCreateForm, TeamCreateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
@@ -40,6 +40,7 @@ def update_lead(request):
         except Lead.DoesNotExist:
             return JsonResponse({'error': 'Lead not found'}, status=404)
 
+#- SEARCH
 @csrf_exempt
 def search_lead(request):
    if request.method == "POST":
@@ -54,7 +55,7 @@ def search_lead(request):
          Q(phone__icontains=search_string) |
          Q(field_of_action__icontains=search_string) |
          Q(source__icontains=search_string) |
-         Q(date__icontains=search_string) |
+         Q(arrival_date__icontains=search_string) |
          Q(notes__icontains=search_string))
       
       data = leads.values()
@@ -220,13 +221,81 @@ def search_social_media(request):
 
         return JsonResponse(data, safe=False)
 
+@csrf_exempt   
+def search_project(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        projects = Service.objects.filter(
+            Q(member_id__first_name__icontains=search_string) |
+            Q(contract_id__client_id__lead_id__first_name__icontains=search_string) |
+            Q(contract_id__client_id__cpf__icontains=search_string) |
+            Q(project__icontains=search_string) |
+            Q(price__icontains=search_string)
+        )
+
+        data = []
+        for project in projects:
+            project_info = {
+                'id': project.id,
+                'first_name': project.contract_id.client_id.lead_id.first_name,
+                'last_name': project.contract_id.client_id.lead_id.last_name,
+                'member_first_name': project.member_id.first_name,
+                'member_last_name': project.member_id.last_name,
+                'project': project.project,
+                'estimated_time': project.estimated_time,
+                'actual_time': project.actual_time,
+                'n_of_consultants': project.n_of_consultants,
+                'price': project.price,
+                'notes': project.notes,
+            }
+            data.append(project_info)
+
+        return JsonResponse(data, safe=False)
+    
+@csrf_exempt   
+def search_member(request):
+    if request.method == "POST":
+        search_string = json.loads(request.body).get("searchText")
+
+        members = Member.objects.filter(
+            Q(first_name__icontains=search_string) |
+            Q(last_name__icontains=search_string) |
+            Q(sector__icontains=search_string) |
+            Q(role__icontains=search_string) |
+            Q(professional_email__icontains=search_string) |
+            Q(academic_email__icontains=search_string) |
+            Q(phone__icontains=search_string) |
+            Q(cpf__icontains=search_string) |
+            Q(rg__icontains=search_string) |
+            Q(degree__icontains=search_string)
+        )
+
+        data = []
+        for member in members:
+            member_info = {
+                'id': member.id,
+                'first_name': member.first_name,
+                'last_name': member.last_name,
+                'sector': member.sector,
+                'role': member.role,
+                'professional_email': member.professional_email,
+                'phone': member.phone,
+                'degree': member.degree,
+                'date_of_entry': member.date_of_entry,
+                'notes': member.notes
+            }
+            data.append(member_info)
+
+        return JsonResponse(data, safe=False)
+
 class IndexView(LoginRequiredMixin, TemplateView):
   template_name = "dashboard/index.html"
 
   def get_context_data(self):
     context = super().get_context_data()
-    authenticated_username = self.request.user.username
-    context["name"] = authenticated_username.split(".")[0].title()
+    authenticated_username = self.request.user.full_name.split()[0]
+    context["name"] = authenticated_username
     context["clientes"] = Client.objects.all()
     context["empresas"] = Company.objects.all()
     context["contracts"] = Contract.objects.all()
@@ -244,24 +313,23 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context['total_leads'] = analysis_utils.total_leads()
     context['current_year'] = datetime.datetime.now().date().year
     
-    
     return context
 
 class Funnel(LoginRequiredMixin, ListView):
     model = Lead
     template_name = "dashboard/funnel.html"
-    queryset = Lead.objects.filter(date__year=datetime.datetime.now().year).order_by('-date')
+    queryset = Lead.objects.filter(arrival_date__year=datetime.datetime.now().year).order_by('-arrival_date')
     context_object_name = 'items'
 
     def get_queryset(self):
-        return Lead.objects.filter(date__year=datetime.datetime.now().year).order_by('-date')
+        return Lead.objects.filter(arrival_date__year=datetime.datetime.now().year).order_by('-arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
 
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['queryset'] = queryset
         context['current_year'] = datetime.datetime.now().year
         
@@ -270,12 +338,12 @@ class Funnel(LoginRequiredMixin, ListView):
 class LeadList(LoginRequiredMixin, ListView):
     model = Lead
     template_name = "dashboard/leads.html"
-    queryset = Lead.objects.all().order_by('-date')
+    queryset = Lead.objects.all().order_by('-arrival_date')
     context_object_name = 'items'
     paginate_by = 8 
 
     def get_queryset(self):
-        return Lead.objects.all().order_by('-date')
+        return Lead.objects.all().order_by('-arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -292,8 +360,8 @@ class LeadList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['leads_per_source'] = analysis_utils.leads_per_source()
         context['leads_over_time'] = analysis_utils.leads_per_time()
         context['leads'] = analysis_utils.total_leads()
@@ -319,7 +387,7 @@ class ClientList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Client.objects.order_by('-lead_id__date')
+        return Client.objects.order_by('-lead_id__arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -336,8 +404,8 @@ class ClientList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['cac'] = analysis_utils.cac()
         context['client_education_distribution'] = analysis_utils.client_education_distribution()
         context['client_income_distribution'] = analysis_utils.client_income_distribution()
@@ -358,7 +426,7 @@ class CompanyList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Company.objects.order_by('-client_id__lead_id__date')
+        return Company.objects.order_by('-client_id__lead_id__arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -375,8 +443,8 @@ class CompanyList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['average_company_revenue'] = analysis_utils.average_company_revenue()
         context['average_company_size'] = analysis_utils.average_company_size()
         context['most_frequent_sector_for_companies'] = analysis_utils.most_frequent_sector_for_companies()
@@ -393,7 +461,7 @@ class ContractList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return Contract.objects.order_by('-client_id__lead_id__date')
+        return Contract.objects.order_by('-client_id__lead_id__arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -410,8 +478,8 @@ class ContractList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['avg_ticket'] = analysis_utils.average_ticket()
         context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="TEC")
         context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="CIV")
@@ -431,7 +499,7 @@ class CampaignMetricList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return CampaignMetric.objects.all()
+        return CampaignMetric.objects.order_by('date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -449,8 +517,8 @@ class CampaignMetricList(LoginRequiredMixin, ListView):
 
         context['items'] = items
         context['cpc'] = analysis_utils.cpc()
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['conversion'] = analysis_utils.conversion_rate_campaign()
         context['most_efficient_platform'] = analysis_utils.most_efficient_platform()
         context['avg_weekly_cost'] = analysis_utils.avg_weekly_cost()
@@ -487,8 +555,8 @@ class ServiceList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['mean_delay'] = analysis_utils.mean_delay()
         context['real_mean_deadline'] = analysis_utils.real_mean_deadline()
         context['projects_on_time'] = analysis_utils.projects_on_time()
@@ -519,8 +587,8 @@ class MemberList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         return context
 
 class SocialMediaMetricList(LoginRequiredMixin, ListView):
@@ -531,7 +599,7 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
     paginate_by = 8 
 
     def get_queryset(self):
-        return SocialMediaMetric.objects.all()
+        return SocialMediaMetric.objects.order_by('date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -548,8 +616,8 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
             items = paginator.page(paginator.num_pages)
 
         context['items'] = items
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
         context['total_followers'] = analysis_utils.total_followers()
         context['social_media_growth'] = analysis_utils.social_media_growth()
         context['mean_engagement'] = analysis_utils.mean_engagement()
@@ -587,92 +655,371 @@ class LeadCreate(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        authenticated_username = self.request.user.username
-        context["name"] = authenticated_username.split(".")[0].title()
-        context['members'] = Member.objects.filter(sector="COM", date_of_leave__year=datetime.datetime.now().date().year)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['members'] = Member.objects.filter(sector="Comercial")          
         context['current_year'] = datetime.datetime.now().date().year
         return context
 
+class DiagnosticCreate(LoginRequiredMixin, CreateView):
+    model = Diagnostic
+    template_name = "dashboard/add_diagnostic.html"
+    form_class = DiagnosticCreateForm
+    success_url = reverse_lazy('leads')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Diagnóstico adicionado com sucesso.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o diagnóstico. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        context['leads'] = Lead.objects.all()
+        return context
+    
+class PropositionCreate(LoginRequiredMixin, CreateView):
+    model = Proposition
+    template_name = "dashboard/add_proposition.html"
+    form_class = PropositionCreateForm
+    success_url = reverse_lazy('leads')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Proposta adicionada com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a proposta. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        context['leads'] = Lead.objects.all()
+        return context
+    
 class ClientCreate(LoginRequiredMixin, CreateView):
    model = Client
    template_name = 'dashboard/add_client_data.html'
    form_class = ClientCreateForm
+   success_url = reverse_lazy('clients')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Cliente adicionado com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o cliente. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        context['closed_leads'] = Lead.objects.filter(status="CONTRATO FECHADO", arrival_date__year=datetime.datetime.now().date().year)
+        return context
+    
 class CompanyCreate(LoginRequiredMixin, CreateView):
    model = Company
    template_name = 'dashboard/add_company_data.html'
    form_class = CompanyCreateForm
+   success_url = reverse_lazy('companies')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Empresa adicionada com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a empresa. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ContractCreate(LoginRequiredMixin, CreateView):
    model = Contract
    template_name = 'dashboard/add_contract_data.html'
    form_class = ContractCreateForm
+   success_url = reverse_lazy('contracts')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Contrato adicionado com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o contrato. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
 
+class InstallmentCreate(LoginRequiredMixin, CreateView):
+    model = Installment
+    template_name = "dashboard/add_installment.html"
+    form_class = InstallmentCreateForm
+    success_url = reverse_lazy('contracts')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Parcelas adicionadas com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar as parcelas. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class CampaignMetricCreate(LoginRequiredMixin, CreateView):
    model = CampaignMetric
    template_name = 'dashboard/add_campaign_metric.html'
    form_class = CampaignMetricCreateForm
+   success_url = reverse_lazy('campaigns')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Métrica adicionada com sucesso.')
         return response
 
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a campanha. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class ServiceTagCreate(LoginRequiredMixin, CreateView):
+    model = ServiceTag
+    template_name = "dashboard/add_servicetag.html"
+    form_class = ServiceTagCreateForm
+    success_url = reverse_lazy('services')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Tag adicionada com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a tag. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ServiceCreate(LoginRequiredMixin, CreateView):
    model = Service
    template_name = 'dashboard/add_service_data.html'
    form_class = ServiceCreateForm
+   success_url = reverse_lazy('services')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Serviço adicionado com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o projeto. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class TeamCreate(LoginRequiredMixin, CreateView):
+    model = Team
+    template_name = "dashboard/add_team.html"
+    form_class = TeamCreateForm
+    success_url = reverse_lazy('services')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Equipe adicionada com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a equipe. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class PostSalesCreate(LoginRequiredMixin, CreateView):
+    model = PostSales
+    template_name = "dashboard/add_postsales.html"
+    form_class = PostSalesCreateForm
+    success_url = reverse_lazy('contracts')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Pós-venda adicionado com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o pós-venda. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class MemberCreate(LoginRequiredMixin, CreateView):
    model = Member
    template_name = 'dashboard/add_member_data.html'
    form_class = MemberCreateForm
+   success_url = reverse_lazy('members')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Membro adicionado com sucesso.')
         return response
 
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar o membro. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class SocialMediaMetricCreate(LoginRequiredMixin, CreateView):
    model = SocialMediaMetric
    template_name = 'dashboard/add_sm_metric.html'
    form_class = SocialMediaMetricCreateForm
+   success_url = reverse_lazy('sm-metrics')
 
    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Métrica adicionada com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao adicionar a métrica. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+    
 #-UPDATE DATA
 class LeadUpdate(LoginRequiredMixin, UpdateView):
-   model = Lead
-   template_name = 'dashboard/update_lead.html'
-   form_class = LeadCreateForm
+    model = Lead
+    template_name = 'dashboard/update_lead.html'
+    form_class = LeadCreateForm
+    success_url = reverse_lazy('leads')
 
-   def form_valid(self, form):
+    def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, 'Lead atualizado com sucesso.')
         return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o lead. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['members'] = Member.objects.filter(sector="Comercial")          
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class DiagnosticUpdate(LoginRequiredMixin, UpdateView):
+    model = Diagnostic
+    template_name = "dashboard/update_diagnostic.html"
+    form_class = DiagnosticCreateForm
+    success_url = reverse_lazy('leads')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Diagnóstico atualizado com sucesso.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o diagnóstico. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        context['leads'] = Lead.objects.all()
+        return context
+    
+class PropositionUpdate(LoginRequiredMixin, UpdateView):
+    model = Proposition
+    template_name = "dashboard/update_proposition.html"
+    form_class = PropositionCreateForm
+    success_url = reverse_lazy('leads')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Proposta atualizada com sucesso.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a proposta. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        context['leads'] = Lead.objects.all()
+        return context
     
 class ClientUpdate(LoginRequiredMixin, UpdateView):
    model = Client
@@ -683,7 +1030,18 @@ class ClientUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Cliente atualizado com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o cliente. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class CompanyUpdate(LoginRequiredMixin, UpdateView):
    model = Company
    template_name = 'dashboard/update_company_data.html'
@@ -693,7 +1051,18 @@ class CompanyUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Empresa atualizada com sucesso.')
         return response
-
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a empresa. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ContractUpdate(LoginRequiredMixin, UpdateView):
    model = Contract
    template_name = 'dashboard/update_contract_data.html'
@@ -703,7 +1072,39 @@ class ContractUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Contrato atualizado com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o contrato. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class InstallmentUpdate(LoginRequiredMixin, UpdateView):
+   model = Installment
+   template_name = 'dashboard/update_installment.html'
+   form_class = InstallmentCreateForm
 
+   def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Parcelas atualizadas com sucesso.')
+        return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a parcela. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class CampaignMetricUpdate(LoginRequiredMixin, UpdateView):
    model = CampaignMetric
    template_name = 'dashboard/update_campaign_metric.html'
@@ -713,6 +1114,34 @@ class CampaignMetricUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Métrica atualizada com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a campanha. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+
+class ServiceTagUpdate(LoginRequiredMixin, UpdateView):
+   model = ServiceTag
+   template_name = 'dashboard/update_servicetag.html'
+   form_class = ServiceTagCreateForm
+
+   def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Tag atualizada com sucesso.')
+        return response
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
 
 class ServiceUpdate(LoginRequiredMixin, UpdateView):
    model = Service
@@ -723,7 +1152,61 @@ class ServiceUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Serviço atualizado com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o serviço. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+    
+class TeamUpdate(LoginRequiredMixin, UpdateView):
+   model = Team
+   template_name = 'dashboard/update_team.html'
+   form_class = TeamCreateForm
 
+   def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Equipe atualizada com sucesso.')
+        return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a equipe. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class PostSalesUpdate(LoginRequiredMixin, UpdateView):
+   model = PostSales
+   template_name = 'dashboard/update_postsales.html'
+   form_class = PostSalesCreateForm
+
+   def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Pós-venda atualizado com sucesso.')
+        return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar o pós-venda. Verifique os campos e tente novamente.')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class MemberUpdate(LoginRequiredMixin, UpdateView):
    model = Member
    template_name = 'dashboard/update_member_data.html'
@@ -733,7 +1216,13 @@ class MemberUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Membro atualizado com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
    model = SocialMediaMetric
    template_name = 'dashboard/update_sm_metric.html'
@@ -743,7 +1232,14 @@ class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Métrica atualizada com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+    
 #-DELETE DATA
 class LeadDelete(LoginRequiredMixin, DeleteView):
    model = Lead
@@ -754,7 +1250,48 @@ class LeadDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Lead deletado com sucesso.')
         return response
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class DiagnosticDelete(LoginRequiredMixin, DeleteView):
+   model = Diagnostic
+   template_name = 'dashboard/delete_diagnostic.html'
+   success_url = "/leads"
 
+   def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        messages.success(self.request, 'Diagnóstico deletado com sucesso.')
+        return response
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
+class PropositionDelete(LoginRequiredMixin, DeleteView):
+   model = Proposition
+   template_name = 'dashboard/delete_proposition.html'
+   success_url = "/leads"
+
+   def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        messages.success(self.request, 'Proposta deletado com sucesso.')
+        return response
+    
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ClientDelete(LoginRequiredMixin, DeleteView):
    model = Client
    template_name = 'dashboard/delete_client_data.html'
@@ -764,7 +1301,13 @@ class ClientDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Cliente deletado com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class CompanyDelete(LoginRequiredMixin, DeleteView):
    model = Company
    template_name = 'dashboard/delete_company_data.html'
@@ -774,7 +1317,13 @@ class CompanyDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Empresa deletada com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ContractDelete(LoginRequiredMixin, DeleteView):
    model = Contract
    template_name = 'dashboard/delete_contract_data.html'
@@ -784,7 +1333,13 @@ class ContractDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Contrato deletado com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class CampaignMetricDelete(LoginRequiredMixin, DeleteView):
    model = CampaignMetric
    template_name = 'dashboard/delete_campaign_metric.html'
@@ -794,7 +1349,13 @@ class CampaignMetricDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Métrica deletada com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class ServiceDelete(LoginRequiredMixin, DeleteView):
    model = Service
    template_name = 'dashboard/delete_service_data.html'
@@ -804,7 +1365,13 @@ class ServiceDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Serviço deletado com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class MemberDelete(LoginRequiredMixin, DeleteView):
    model = Member
    template_name = 'dashboard/delete_member_data.html'
@@ -814,7 +1381,13 @@ class MemberDelete(LoginRequiredMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, 'Membro deletado com sucesso.')
         return response
-
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
+    
 class SocialMediaMetricDelete(LoginRequiredMixin, DeleteView):
    model = SocialMediaMetric
    template_name = 'dashboard/delete_sm_metric.html'
@@ -825,14 +1398,48 @@ class SocialMediaMetricDelete(LoginRequiredMixin, DeleteView):
         messages.success(self.request, 'Métrica deletada com sucesso.')
         return response
     
+   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        return context
     
-#-DETAIL VIEWS
+    
+#- DETAIL VIEWS
 class LeadDetail(LoginRequiredMixin, DetailView):
     model = Lead
     template_name = 'dashboard/lead_detail.html'
     context_object_name = 'lead'
+  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        diagnostic = self.object.diagnostic_set.all()
+        context['diagnostic'] = diagnostic[0] if diagnostic else None
+        proposition = self.object.proposition_set.all()
+        context['proposition'] = proposition[0] if proposition else None
+        return context  
+    
+class ClientDetail(LoginRequiredMixin, DetailView):
+    model = Client
+    template_name = 'dashboard/client_detail.html'
+    context_object_name = 'client'
+  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        authenticated_username = self.request.user.full_name.split()[0]
+        context["name"] = authenticated_username
+        context['current_year'] = datetime.datetime.now().date().year
+        diagnostic = self.object.lead_id.diagnostic_set.all()
+        context['diagnostic'] = diagnostic[0] if diagnostic else None
+        print(diagnostic)
+        return context  
+
      
-#-CSV
+#- CSV
 def export_leads_csv(request):
    response = HttpResponse(content_type="text/csv")
    response['Content-Disposition'] = 'attachment; filename=Leads-'+ str(datetime.datetime.now())+ '.csv'
@@ -852,7 +1459,7 @@ def export_leads_csv(request):
          lead.email,
          lead.phone,
          lead.field_of_action,
-         lead.date,
+         lead.arrival_date,
          lead.notes,
       ])
       
@@ -881,7 +1488,7 @@ def export_clients_csv(request):
          client.lead_id.email,
          client.lead_id.phone,
          client.lead_id.field_of_action,
-         client.lead_id.date,
+         client.lead_id.arrival_date,
          client.cpf,
          client.birth_date,
          client.education,
@@ -1085,28 +1692,33 @@ def export_services_csv(request):
    return response
 
 
+#- REPORTS
 class SalesReports(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/reports_sales.html"
     
     def get_context_data(self):
         context = super().get_context_data()
-        authenticated_username = self.request.user.username
+        authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username.split(".")[0].title()
         
         
         return context
     
+
+#- HELP
 class LearnMore(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/learn_more.html"
     
     def get_context_data(self):
         context = super().get_context_data()
-        authenticated_username = self.request.user.username
+        authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username.split(".")[0].title()
         
         
         return context
 
+
+#- ANALYSIS
 def generate_target_analysis(request):
     chart_configs:list = [
     {

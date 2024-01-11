@@ -1,0 +1,202 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="py-2"></div>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'leads' %}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Adicionar Diagnóstico</li>
+    </ol>
+  </nav>
+
+{% include 'authentication/partials/_messages.html' %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+<h3>Adicionar <strong>Diagnóstico</strong></h3>
+</div>
+
+<div class="py-2"></div>
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'add_diagnostic' %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <label for="leadDataList" class="form-label">Lead</label>
+      <input class="form-control" list="leadOptions" id="leadDataList" placeholder="Digite para pesquisar..." oninput="setLeadId(this.value)">
+      <input type="hidden" id="leadId" name="lead_id">
+      <datalist id="leadOptions">
+        {% for lead in leads %}
+          <option data-value="{{lead.id}}" value="{{lead.first_name}} {{lead.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setLeadId(value) {
+        var options = document.querySelectorAll('#leadOptions option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('leadId').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="budget" class="form-label"><strong>Orçamento do Lead</strong></label>
+            <select id="budget" name="budget" class="form-control form-select" required>
+                <option>"O Lead tem capital para investir?"</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+          </div>
+        </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="authority" class="form-label"><strong>Autoridade do Lead</strong></label>
+              <select id="authority" name="authority" class="form-control form-select" required>
+                  <option>"O Lead é o tomador de decisão?"</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="need" class="form-label"><strong>Necessidade do Lead</strong></label>
+              <select id="need" name="need" class="form-control form-select" required>
+                  <option>"O Lead realmente precisa da solução para resolver a dor?"</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col">
+            <div class="form-group">
+              <label for="timing" class="form-label"><strong>Timing do Lead</strong></label>
+              <select id="timing" name="timing" class="form-control form-select" required>
+                  <option>"O Lead tem data para adquirir a solução?"</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="time_to_respond" class="form-label"><strong>Tempo de Resposta do Lead</strong></label>
+              <select id="time_to_respond" name="time_to_respond" class="form-control form-select" required>
+                  <option>"O Lead responde rapidamente?"</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="behavior" class="form-label"><strong>Comportamento do Lead</strong></label>
+              <select id="behavior" name="behavior" class="form-control form-select" required>
+                  <option>"O Lead responde educadamente?"</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="estimated_price" class="form-label"><strong>Precificação</strong></label>
+            <input type="floatformat" id="estimated_price" name="estimated_price" placeholder="Valor total sem vírgulas (ex.: 5000)" class="form-control"/>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="date" class="form-label"><strong>Data</strong></label>
+            <input type="date" id="date" name="date" class="form-control" required>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" placeholder="Notas e descrições... (máx. 150 caracteres)" class="form-control" rows="2"></textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+  </form>
+</div>
+
+{% endblock %}

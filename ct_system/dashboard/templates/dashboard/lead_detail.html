@@ -39,6 +39,52 @@
         width: 100%;
         border-bottom: 1px dashed #000;
     }    
+
+    .btn-outline-orange {
+        color: #FFA500;
+        border-color: #FFA500;
+    }
+    
+    .btn-outline-orange:hover {
+        color: #fff;
+        background-color: #FFA500;
+        border-color: #FFA500;
+    }
+
+    .btn-outline-dark-cyan {
+        color: #008B8B;
+        border-color: #008B8B;
+    }
+    
+    .btn-outline-dark-cyan:hover {
+        color: #fff;
+        background-color: #008B8B;
+        border-color: #008B8B;
+    }
+
+    .btn-orange {
+        color: #fff;
+        background-color: #FFA500;
+        border-color: #FFA500;
+    }
+    
+    .btn-orange:hover {
+        color: #FFA500;
+        background-color: #fff;
+        border-color: #FFA500;
+    }
+
+    .btn-dark-cyan {
+        color: #fff;
+        background-color: #008B8B;
+        border-color: #008B8B;
+    }
+    
+    .btn-dark-cyan:hover {
+        color: #008B8B;
+        background-color: #fff;
+        border-color: #008B8B;
+    }
     
 </style>
 
@@ -57,6 +103,16 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
   <h3 class="d-inline"><strong>Lead:</strong> {{ lead.first_name }} {{ lead.last_name }}, de {{lead.get_sector_display}}</h3>
   <div class="btn-group" role="group">
+    {% if not diagnostic %}
+    <a href="{% url 'add_diagnostic' %}" class="btn btn-outline-orange" role="btn">Adicionar Diagnóstico</a>
+    {% else %}
+    <a href="{% url 'update_diagnostic' pk=diagnostic.id %}" class="btn btn-orange" role="btn">Atualizar Diagnóstico</a>
+    {% endif %}
+    {% if not proposition %}
+    <a href="{% url 'add_proposition' %}" class="btn btn-outline-dark-cyan" role="btn">Adicionar Proposta</a>
+    {% else %}
+    <a href="{% url 'update_proposition' pk=proposition.id %}" class="btn btn-dark-cyan" role="btn">Atualizar Proposta</a>
+    {% endif %}
     <a href="{% url 'update_lead' pk=object.pk %}" class="btn btn-outline-primary" role="btn">Atualizar</a>
     <a href="{% url 'delete_lead' pk=object.pk %}" class="btn btn-outline-danger" role="btn">Deletar</a>
   </div>
@@ -75,6 +131,12 @@
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#identification"/></svg>Nome:</strong></h5>
                             <div class="py-1"></div>
                             <span class="dashed">{{lead.first_name}} {{lead.last_name}}</span>
+
+                            <div class="py-3"></div>
+
+                            <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#people"/></svg>Vendedor:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">{{lead.member_id.first_name}} {{lead.member_id.last_name}}</span>
 
                             <div class="py-3"></div>
 
@@ -124,7 +186,7 @@
 
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#calendar3"/></svg>Data de Chegada:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.date}}</span>
+                            <span class="dashed">{{lead.arrival_date}}</span>
 
                             <div class="py-3"></div>
 
@@ -137,26 +199,34 @@
                     </div>
                     <div class="py-3"></div>
 
-                    <h3 class="gradient-text-1"><strong>Lead Scoring: ({{lead.score}})</strong></h3>
+                    {% if diagnostic %}
+
+                    <h3 class="gradient-text-1"><svg class="bi pe-none me-2" style="width: 25px; height: 25px; horizontal-align: middle"><use xlink:href="#check-circle-fill"/></svg><strong>Diagnóstico: (Score: {{diagnostic.score}})</strong></h3>
                     <div class="py-2"></div>
                     <div class="row">
                         <div class="col">
                     
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#money"/></svg>Orçamento:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.budget}}</span>
+                            <span class="dashed">{{diagnostic.budget}}</span>
 
                             <div class="py-3"></div>
 
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#index-finger"/></svg>Autoridade:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.authority}}</span>
+                            <span class="dashed">{{diagnostic.authority}}</span>
 
                             <div class="py-3"></div>
 
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#realization"/></svg>Necessidade:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.need}}</span>
+                            <span class="dashed">{{diagnostic.need}}</span>
+
+                            <div class="py-3"></div>
+
+                            <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#money"/></svg>Precificação:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">R${{diagnostic.estimated_price}}</span>
 
                         </div>
 
@@ -164,23 +234,67 @@
                         <div class="col">
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#hourglass"/></svg>Timing:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.timing}}</span>
+                            <span class="dashed">{{diagnostic.timing}}</span>
 
                             <div class="py-3"></div>
 
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#watch"/></svg>Tempo de Resposta:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.time_to_respond}}</span>
+                            <span class="dashed">{{diagnostic.time_to_respond}}</span>
 
                             <div class="py-3"></div>
 
                             <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#smiley"/></svg>Comportamento:</strong></h5>
                             <div class="py-1"></div>
-                            <span class="dashed">{{lead.behavior}}</span>
+                            <span class="dashed">{{diagnostic.behavior}}</span>
+
+                            <div class="py-3"></div>
+
+                            <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#calendar3"/></svg>Data do Diagnóstico:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">{{diagnostic.date}}</span>
 
                         </div>
                     </div>
 
+                    <div class="py-3"></div>
+
+                    <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#sticky-note"/></svg>Notas:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">{{diagnostic.notes}}</span>
+
+                    <div class="py-3"></div>
+
+                    {% endif %}
+                    {% if proposition %}
+
+
+                    <h3 class="gradient-text-1"><strong>Proposta:</strong></h3>
+                    <div class="py-2"></div>
+                    <div class="row">
+                        <div class="col">
+                    
+                            <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#calendar3"/></svg>Data da Proposta:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">{{proposition.date}}</span>
+
+                        </div>
+
+                        <div class="col">
+                            <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#index-finger"/></svg>Link da Proposta:</strong></h5>
+                            <div class="py-1"></div>
+                            <a href="{{proposition.link}}" target="_blank"><span class="dashed">Clique Aqui</span></a>
+
+                        </div>
+                    </div>
+
+                    <div class="py-2"></div>
+
+                    <h5 class="big-label"><strong><svg class="bi pe-none me-2" style="width: 20px; height: 20px; horizontal-align: middle;"><use xlink:href="#sticky-note"/></svg>Notas:</strong></h5>
+                            <div class="py-1"></div>
+                            <span class="dashed">{{proposition.notes}}</span>
+
+                    {% endif %}
 
 
                 </div>

@@ -46,7 +46,6 @@
         <th>Telefone</th>
         <th>Curso</th>
         <th>Data de Entrada</th>
-        <th>Notas</th>
       </tr>
     </thead>
     <tbody>
@@ -56,11 +55,10 @@
           <td>{{ member.first_name }} {{ member.last_name }}</td>
           <td>{{ member.get_sector_display }}</td>
           <td>{{ member.get_role_display }}</td>
-          <td>{{ member.email }}</td>
+          <td>{{ member.professional_email }}</td>
           <td>{{ member.phone }}</td>
           <td>{{ member.degree }}</td>
           <td>{{ member.date_of_entry }}</td>
-          <td>{{ member.notes }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -79,7 +77,6 @@
             <th>Telefone</th>
             <th>Curso</th>
             <th>Data de Entrada</th>
-            <th>Notas</th>
           </tr>
         </thead>
         <tbody class="table-body">
@@ -131,6 +128,7 @@
 
   <div class="py-3"></div>
 
+  <!-- RETIRAR QUANDO TERMINAR
   <div class="grey-bg container-fluid">
     <section id="minimal-statistics">
       <div class="row">
@@ -208,6 +206,6 @@
         </div>
       </div>
     </section>
-  </div>
+  </div>-->
 
 {% endblock %}

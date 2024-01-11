@@ -37,7 +37,6 @@ searchField.addEventListener("keyup", (e)=>{
             <td>${item.phone}</td>
             <td>${item.score}</td>
             <td>${item.funnel_time}</td>
-            <td>${item.notes}</td>
             </tr>`
                 });
             }

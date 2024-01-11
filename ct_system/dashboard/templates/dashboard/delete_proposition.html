@@ -1,25 +1,28 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 <div class="py-2"></div>
 
 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'clients' %}">Membros</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Deletar Dados - Membro</li>
+      <li class="breadcrumb-item"><a href="{% url 'leads' %}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Deletar Diagnóstico</li>
     </ol>
   </nav>
 
 {% include 'authentication/partials/_messages.html' %}
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-<h3>Deletar Dados de <strong>Membro</strong>: {{ object }}</h3>
+<h3>Deletar <strong>Diagnóstico</strong></h3>
 </div>
 
 <div class="py-2"></div>
 
-  <form method="post" action="{% url 'delete_member_data' object.id %}">
+<div class="text-center align-items-center">
+  <form method="post" action="{% url 'delete_proposition' object.id %}">
     {% csrf_token %}
 
     <p>Tem certeza que quer deletar o registro de "{{ object }}"?</p>
@@ -28,6 +31,11 @@
 
   </form>
 
-  <a href="{% url 'members' %}">Voltar</a>
+  <div class="py-2"></div>
+
+  <a href="{% url 'clients' %}">Voltar</a>
+
+</div>
+
 
 {% endblock %}

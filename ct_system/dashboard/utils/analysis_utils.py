@@ -1,4 +1,4 @@
-from ..models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead
+from ..models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead, Diagnostic, PostSales, Proposition, ServiceTag, Installment, Team
 from datetime import datetime
 import numpy as np
 import pandas as pd
@@ -10,11 +10,11 @@ def revenue_per_sector():
     tec_total = 0
     con_total = 0
       
-    for contract in Contract.objects.filter(sector="CIV", date__year=current_year):
+    for contract in Contract.objects.filter(sector="Civil", date__year=current_year):
       civil_total += contract.total_value
-    for contract in Contract.objects.filter(sector="TEC", date__year=current_year):
+    for contract in Contract.objects.filter(sector="Tecnologia", date__year=current_year):
       tec_total += contract.total_value
-    for contract in Contract.objects.filter(sector="CON", date__year=current_year):
+    for contract in Contract.objects.filter(sector="Consultoria", date__year=current_year):
       con_total += contract.total_value
       
     return [tec_total, civil_total, con_total]
@@ -22,8 +22,8 @@ def revenue_per_sector():
 def total_leads():
     df = pd.DataFrame.from_records(Lead.objects.values())
     if not df.empty:
-        if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'])
+        if 'arrival_date' in df.columns:
+            df['date'] = pd.to_datetime(df['arrival_date'])
             current_year_leads = df[df['date'].dt.year == datetime.now().year].shape[0]
             return current_year_leads
     return 0
@@ -45,7 +45,7 @@ def leads_per_time():
         
     for month in months:
         sum = 0
-        leads_in_month = Lead.objects.filter(date__month=month)
+        leads_in_month = Lead.objects.filter(arrival_date__month=month)
         if leads_in_month.count() == 0:
             if leads_over_time:
                 leads_over_time.append(leads_over_time[-1])
@@ -88,17 +88,17 @@ def average_ticket(sector=None):
             inplace=True)
             df = services.merge(contracts, how="inner", on="contract_id_id")
             if sector == "TEC":
-                tec = df.loc[df.sector == "TEC"].shape[0]
+                tec = df.loc[df.sector == "Tecnologia"].shape[0]
                 avg_ticket = df.loc[df.sector == "TEC"].price.sum() / tec if tec != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CIV":
-                civ = df.loc[df.sector == "CIV"].shape[0]
+                civ = df.loc[df.sector == "Civil"].shape[0]
                 avg_ticket = df.loc[df.sector == "CIV"].price.sum() / civ if civ != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CON":
-                con = df.loc[df.sector == "CON"].shape[0]
+                con = df.loc[df.sector == "Consultoria"].shape[0]
                 avg_ticket = df.loc[df.sector == "CON"].price.sum() / con if con != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
@@ -108,34 +108,75 @@ def leads_per_sector():
     df = pd.DataFrame.from_records(Lead.objects.values())
     if not df.empty:
         leads_by_sector = df.groupby('sector').first_name.count().reset_index()
-        leads = list(leads_by_sector.first_name)
+        try:
+            civ = list(leads_by_sector.loc[leads_by_sector.sector == "Civil"].first_name)[0]
+        except IndexError:
+            civ = 0
+            
+        try:
+            con = list(leads_by_sector.loc[leads_by_sector.sector == "Consultoria"].first_name)[0]
+        except IndexError:
+            con = 0
+            
+        try:
+            tec = list(leads_by_sector.loc[leads_by_sector.sector == "Tecnologia"].first_name)[0]
+        except IndexError:
+            tec = 0
+        leads = [civ, con, tec]
         return leads
-    return 0
+    return [0,0,0]
 
 def leads_per_source():
     df = pd.DataFrame.from_records(Lead.objects.values())
     if not df.empty:
-        leads_by_sector = df.groupby('source').first_name.count().reset_index()
-        leads = list(leads_by_sector.first_name)
-        leads_by_sector.sort_values(by=['source'])
+        leads_by_source = df.groupby('source').first_name.count().reset_index()
+        
+        try:
+            ativa = list(leads_by_source.loc[leads_by_source.source == "Ativa"].first_name)[0]
+        except IndexError:
+            ativa = 0
+            
+        try:
+            passiva = list(leads_by_source.loc[leads_by_source.source == "Passiva"].first_name)[0]
+        except IndexError:
+            passiva = 0
+            
+        try:
+            google = list(leads_by_source.loc[leads_by_source.source == "Google Ads"].first_name)[0]
+        except IndexError:
+            google = 0
+            
+        try:
+            face = list(leads_by_source.loc[leads_by_source.source == "Facebook Ads"].first_name)[0]
+        except IndexError:
+            face = 0
+            
+        try:
+            indicacao = list(leads_by_source.loc[leads_by_source.source == "Indicação"].first_name)[0]
+        except:
+            indicacao = 0
+            
+        leads = [ativa,face,google,indicacao,passiva]
         return leads
-    return 0
+    return [0,0,0,0,0]
 
 def cpl():
     campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not campaigns.empty and not leads.empty:
-        cost_per_lead = campaigns.weekly_cost.sum() / leads.loc[(leads.source == "GOOGLEADS") | (leads.source == "FBADS")].shape[0]
-        return round(cost_per_lead, 1)
-    return 0
+        traffic_leads = leads.loc[(leads.source == "GOOGLEADS") | (leads.source == "FBADS")]
+        if not traffic_leads.empty:
+            cost_per_lead = campaigns.weekly_cost.sum() / traffic_leads.shape[0]
+            return round(cost_per_lead, 1)
+    return '-'
 
 def most_frequent_lead_score():
-    lead_df = pd.DataFrame.from_records(Lead.objects.values())
-    if not lead_df.empty:
-        scores = lead_df['score'].value_counts()
+    diagnostics = pd.DataFrame.from_records(Diagnostic.objects.values())
+    if not diagnostics.empty:
+        scores = diagnostics['score'].value_counts()
         most_frequent_score = scores.idxmax()
         return most_frequent_score
-    return 0
+    return "-"
 
 def most_frequent_lead_source():
     lead_df = pd.DataFrame.from_records(Lead.objects.values())
@@ -148,8 +189,8 @@ def most_frequent_lead_source():
 def conversion_rate_diagnostic_to_proposition():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG") | (leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
-        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA")].shape[0]
+        diagnostic = leads.shape[0]
+        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "CONTRATO FECHADO") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
         if diagnostic > 0:
             return round(proposition/diagnostic, 1)*100
     return 0
@@ -229,18 +270,21 @@ def lead_scoring(object):
     if 8.5 < score <= 10:
         return 'A'
     
-    elif 7 < score <= 8.5:
+    elif 7.5 < score <= 8.5:
         return 'B'
     
-    elif 6 < score <= 7:
+    elif 6.5 < score <= 7.5:
         return 'C'
     
-    else:
+    elif 5 < score <= 6.5:
         return 'D'
+    
+    else:
+        return 'F'
          
 def sales_funnel():
     
-    leads = pd.DataFrame.from_records(Lead.objects.values())
+    leads = pd.DataFrame.from_records(Lead.objects.filter(arrival_date__year=current_year).values())
     if not leads.empty:
         pre_diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
         pre_proposition = leads.loc[(leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
@@ -252,13 +296,14 @@ def sales_funnel():
     
 def leads_per_score():
     
-    leads = pd.DataFrame.from_records(Lead.objects.values())
-    if not leads.empty:
-        a_score = leads.loc[leads.score == "A"].shape[0]
-        b_score = leads.loc[leads.score == "B"].shape[0]
-        c_score = leads.loc[leads.score == "C"].shape[0]
-        d_score = leads.loc[leads.score == "D"].shape[0]
-        return [a_score, b_score, c_score, d_score]
+    diagnostics = pd.DataFrame.from_records(Diagnostic.objects.values())
+    if not diagnostics.empty:
+        a_score = diagnostics.loc[diagnostics.score == "A"].shape[0]
+        b_score = diagnostics.loc[diagnostics.score == "B"].shape[0]
+        c_score = diagnostics.loc[diagnostics.score == "C"].shape[0]
+        d_score = diagnostics.loc[diagnostics.score == "D"].shape[0]
+        f_score = diagnostics.loc[diagnostics.score == "F"].shape[0]
+        return [a_score, b_score, c_score, d_score, f_score]
     return 0
 
 def client_education_distribution():
@@ -333,7 +378,7 @@ def client_mean_funnel_time():
     return 0
 
 def client_count():
-    clients_df = pd.DataFrame.from_records(Client.objects.filter(lead_id__date__year=current_year).values())
+    clients_df = pd.DataFrame.from_records(Client.objects.filter(lead_id__arrival_date__year=current_year).values())
     
     if not clients_df.empty:
         return clients_df.shape[0]
@@ -344,7 +389,7 @@ def conversion_rate_general():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     
     if not leads.empty:
-        all_statuses = leads.loc[(leads.status != "CONTRATO FECHADO")].shape[0]
+        all_statuses = leads.shape[0]
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
         
         if all_statuses > 0:
@@ -394,8 +439,8 @@ def most_frequent_sector_for_companies():
             if most_frequent_sector == 'CON':
                 return "Consultoria"
         
-        return ""
-    return ""
+        return "-"
+    return "-"
 
 def most_frequent_company_field():
     companies = pd.DataFrame.from_records(Company.objects.values())
@@ -405,36 +450,38 @@ def most_frequent_company_field():
         most_frequent_field = fields.idxmax()
         return most_frequent_field.lower().title()
     
-    return ""
+    return "-"
 
 def most_frequent_area_in_closing_leads():
     clients = pd.DataFrame.from_records(Client.objects.values())
     leads = pd.DataFrame.from_records(Lead.objects.values())
-    leads.rename(columns={
-        'id': 'lead_id_id'},
-        inplace=True)
-    df = clients.merge(leads, how="left", on='lead_id_id')
+    if not leads.empty and not clients.empty:
+        leads.rename(columns={
+            'id': 'lead_id_id'},
+            inplace=True)
+        df = clients.merge(leads, how="left", on='lead_id_id')
 
-    if not df.empty:
-        field = df['field_of_action'].value_counts()
-        most_frequent_fields = field.head(3).index.tolist()
-        most_frequent_fields = [area.lower().title() for area in most_frequent_fields]
-        return most_frequent_fields
+        if not df.empty:
+            field = df['field_of_action'].value_counts()
+            most_frequent_fields = field.head(3).index.tolist()
+            most_frequent_fields = [area.lower().title() for area in most_frequent_fields]
+            return most_frequent_fields
     
     return []
 
 def most_frequent_area_in_closing_leads_count():
     clients = pd.DataFrame.from_records(Client.objects.values())
     leads = pd.DataFrame.from_records(Lead.objects.values())
-    leads.rename(columns={
-        'id': 'lead_id_id'},
-        inplace=True)
-    df = clients.merge(leads, how="left", on='lead_id_id')
+    if not leads.empty and not clients.empty:
+        leads.rename(columns={
+            'id': 'lead_id_id'},
+            inplace=True)
+        df = clients.merge(leads, how="left", on='lead_id_id')
 
-    if not df.empty:
-        field = df['field_of_action'].value_counts()
-        counts_of_most_frequent_areas = field.head(3).tolist()
-        return counts_of_most_frequent_areas
+        if not df.empty:
+            field = df['field_of_action'].value_counts()
+            counts_of_most_frequent_areas = field.head(3).tolist()
+            return counts_of_most_frequent_areas
     
     return []
 
@@ -544,14 +591,14 @@ def most_efficient_platform():
             if facebook.empty:
                 return "Google"
             elif google.empty:
-                return "Facebook"
+                return "Face"
         conversion_google = google.conversions.sum() / google.clicks.sum()
         conversion_face = facebook.conversions.sum() / facebook.clicks.sum()
         if conversion_google > conversion_face:
             return "Google"
         else:
             return "Face"
-    return 0
+    return "-"
 
 def avg_weekly_cost():
     campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
@@ -570,7 +617,7 @@ def google_clicks_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS", date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS", date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -589,7 +636,7 @@ def fb_clicks_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS", date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS", date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -608,7 +655,7 @@ def google_conversion_rate_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -631,7 +678,7 @@ def fb_conversion_rate_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -654,7 +701,7 @@ def google_cpc_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -677,7 +724,7 @@ def fb_cpc_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -760,7 +807,7 @@ def most_impact_network():
             return "TikTok"
         elif most_impact == facebook:
             return "Facebook"
-    return ""
+    return "-"
 
 def ig_followers_over_time():
     value = []
@@ -771,7 +818,7 @@ def ig_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -791,7 +838,7 @@ def face_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FC",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FC",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -811,7 +858,7 @@ def linkedin_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -831,7 +878,7 @@ def tiktok_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -851,7 +898,7 @@ def ig_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -871,7 +918,7 @@ def face_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -891,7 +938,7 @@ def linkedin_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -911,7 +958,7 @@ def tiktok_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -931,7 +978,7 @@ def ig_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -951,7 +998,7 @@ def face_engagament_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -971,7 +1018,7 @@ def linkedin_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -991,7 +1038,7 @@ def tiktok_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
