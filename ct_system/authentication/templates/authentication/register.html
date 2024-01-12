@@ -23,15 +23,22 @@
 
 
                 {% include 'authentication/partials/_messages.html' %}
+                {% if form_errors %}
+                    <ul class="errorlist">
+                        {% for error in form_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
                     <div class="form-group py-2">
-                        <input type="text" name="full_name" id="full_name" placeholder="Nome (ex.: João Silveira)" class="form-control form-control-sm" value="{{fieldValues.name}}"/>
+                        <input type="text" name="full_name" id="full_name" placeholder="Nome (ex.: João Silveira)" class="form-control form-control-sm"/>
                     </div>
                     <div class="form-group py-2">
-                        <input type="text" name="cpf" id="cpf" placeholder="CPF (ex.: 120.210.321-01)" class="form-control form-control-sm" value="{{fieldValues.cpf}}"/>
+                        <input type="text" name="cpf" id="cpf" placeholder="CPF (ex.: 120.210.321-01)" class="form-control form-control-sm" />
                     </div>
                     <div class="form-group py-2">
-                        <input type="text" name="rg" id="rg" placeholder="RG (ex.: 1.123.321)" class="form-control form-control-sm" value="{{fieldValues.rg}}"/>
+                        <input type="text" name="rg" id="rg" placeholder="RG (ex.: 1.123.321)" class="form-control form-control-sm" />
                     </div>
 
                     <div class="form-group py-2">
@@ -65,7 +72,6 @@
                             id="username" 
                             placeholder="Nome de Usuário"
                             class="form-control form-control-sm"
-                            value="{{fieldValues.username}}"
                          />
                     </div>
                     <div class="invalid-feedback invalid_feedback" style="display:none">
@@ -79,7 +85,6 @@
                             id="email" 
                             placeholder="Email"
                             class="form-control form-control-sm"
-                            value="{{fieldValues.email}}"
                          />
                     </div>
                     <div class="invalid-feedback emailFeedbackArea" style="display:none">

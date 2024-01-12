@@ -34,5 +34,5 @@ class SystemUser(AbstractUser):
     full_name = models.CharField(max_length=100, null=False)
     cpf = models.CharField(max_length=14, null=False)
     rg = models.CharField(max_length=9, null=False)
-    role = models.CharField(max_length=20, choices=ROLE)
-    sector = models.CharField(max_length=20, choices=SECTORS)
+    role = models.CharField(max_length=40, choices=ROLE)
+    sector = models.CharField(max_length=40, choices=SECTORS)

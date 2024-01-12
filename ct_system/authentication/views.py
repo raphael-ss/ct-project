@@ -19,6 +19,7 @@ class Registration(View):
 
     def post(self, request):     
         form = RegistrationForm(request.POST)
+        context = {'form': form}
         if form.is_valid():
  
             name = form.cleaned_data['full_name']
@@ -63,7 +64,9 @@ class Registration(View):
                             messages.error(request, "Dados pessoais (CPF ou RG) não estão cadastrados!")
                             return render(request, 'authentication/register.html', context=context)
 
-
+        else:
+            context['form_errors'] = form.errors
+            print('Form is invalid')
         return render(request, 'authentication/register.html')
     
 class ValidateUsername(View):
