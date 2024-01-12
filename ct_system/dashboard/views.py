@@ -322,7 +322,7 @@ class Funnel(LoginRequiredMixin, ListView):
     context_object_name = 'items'
 
     def get_queryset(self):
-        return Lead.objects.filter(arrival_date__year=datetime.datetime.now().year).order_by('-arrival_date')
+        return Lead.objects.order_by('-arrival_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
