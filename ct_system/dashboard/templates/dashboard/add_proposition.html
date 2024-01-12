@@ -24,10 +24,10 @@
   <form action="{% url 'add_proposition' %}" method="POST" style="margin: 45px;">
       {% csrf_token %}
 
-      <label for="leadDataList" class="form-label">Lead</label>
-      <input class="form-control" list="leadOptions" id="leadDataList" placeholder="Digite para pesquisar..." oninput="setLeadId(this.value)">
-      <input type="hidden" id="leadId" name="lead_id">
-      <datalist id="leadOptions">
+      <label for="propleadDataList" class="form-label">Lead</label>
+      <input class="form-control" list="propleadOptions" id="propleadDataList" placeholder="Digite para pesquisar..." oninput="setLeadId(this.value)">
+      <input type="hidden" id="lead_id" name="lead_id">
+      <datalist id="propleadOptions">
         {% for lead in leads %}
           <option data-value="{{lead.id}}" value="{{lead.first_name}} {{lead.last_name}}"></option>
         {% endfor %}
@@ -35,10 +35,10 @@
 
       <script>
       function setLeadId(value) {
-        var options = document.querySelectorAll('#leadOptions option');
+        var options = document.querySelectorAll('#propleadOptions option');
         for (var i = 0; i < options.length; i++) {
           if (options[i].value === value) {
-            document.getElementById('leadId').value = options[i].dataset.value;
+            document.getElementById('lead_id').value = options[i].dataset.value;
             break;
           }
         }
