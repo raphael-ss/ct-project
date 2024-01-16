@@ -429,7 +429,7 @@
           </div>
         <div class="card-body">
               {% for lead in queryset %}
-                {% if lead.status == 'PERDIDO PRÉ-DIAG' and lead.arrival_date__year == current_year %}
+                {% if lead.status == 'PERDIDO PRÉ-DIAG'  %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card yellow-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
@@ -456,7 +456,7 @@
           </div>
         <div class="card-body">
               {% for lead in queryset %}
-                {% if lead.status == 'PERDIDO PRÉ-PROP' and lead.arrival_date__year == current_year %}
+                {% if lead.status == 'PERDIDO PRÉ-PROP' %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card orange-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
@@ -483,7 +483,7 @@
           </div>
         <div class="card-body">
               {% for lead in queryset %}
-                {% if lead.status == 'PERDIDO PÓS-PROP' and lead.arrival_date__year == current_year %}
+                {% if lead.status == 'PERDIDO PÓS-PROP' %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
                     <div id="{{ lead.id }}" class="card kanban-lead-card red-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
