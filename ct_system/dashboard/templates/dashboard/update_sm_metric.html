@@ -41,22 +41,22 @@
             
               <div class="form-check form-check-inline">
                 <label for="ig" class="form-check-label">Instagram</label>
-                <input type="radio" id="ig" name="network" value="Instagram" class="form-check-input" {% if {{form.network.value}} == "Instagram"  %}checked{%endif%}>
+                <input type="radio" id="ig" name="network" value="Instagram" class="form-check-input" {% if form.network.value == "Instagram"  %}checked{%endif%}>
               </div>
     
               <div class="form-check form-check-inline">
                 <label for="li">LinkedIn</label>
-                <input type="radio" id="li" name="network" value="LinkedIn" class="form-check-input" {% if {{form.network.value}} == "LinkedIn"  %}checked{%endif%}>
+                <input type="radio" id="li" name="network" value="LinkedIn" class="form-check-input" {% if form.network.value == "LinkedIn"  %}checked{%endif%}>
               </div>
     
               <div class="form-check form-check-inline">
                 <label for="fb">Facebook</label>
-                <input type="radio" id="fb" name="network" value="Facebook" class="form-check-input" {% if {{form.network.value}} == "Facebook"  %}checked{%endif%}>
+                <input type="radio" id="fb" name="network" value="Facebook" class="form-check-input" {% if form.network.value == "Facebook"  %}checked{%endif%}>
               </div>
 
               <div class="form-check form-check-inline">
                 <label for="tk">TikTok</label>
-                <input type="radio" id="tk" name="network" value="TikTok" class="form-check-input" {% if {{form.network.value}} == "TikTok"  %}checked{%endif%}>
+                <input type="radio" id="tk" name="network" value="TikTok" class="form-check-input" {% if form.network.value == "TikTok"  %}checked{%endif%}>
               </div>
           </div>
         </div>

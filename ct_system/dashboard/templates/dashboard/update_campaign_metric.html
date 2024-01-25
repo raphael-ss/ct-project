@@ -48,12 +48,12 @@
             
               <div class="form-check form-check-inline">
                 <label for="ga" class="form-check-label">Google Ads</label>
-                <input type="radio" id="ga" name="platform" value="Google Ads" class="form-check-input" {% if {{form.platform.value}} == "Google Ads"  %}checked{%endif%}>
+                <input type="radio" id="ga" name="platform" value="Google Ads" class="form-check-input" {% if form.platform.value == "Google Ads"  %}checked{%endif%}>
               </div>
     
               <div class="form-check form-check-inline">
                 <label for="fa">Facebook Ads</label>
-                <input type="radio" id="fa" name="platform" value="Facebook Ads" class="form-check-input" {% if {{form.platform.value}} == "Facebook Ads"  %}checked{%endif%}>
+                <input type="radio" id="fa" name="platform" value="Facebook Ads" class="form-check-input" {% if form.platform.value == "Facebook Ads"  %}checked{%endif%}>
               </div>
     
           </div>
@@ -69,17 +69,17 @@
                 
                   <div class="form-check form-check-inline">
                     <label for="tec" class="form-check-label">Tecnologia</label>
-                    <input type="radio" id="tec" name="campaign_sector" value="Tecnologia" class="form-check-input" {% if {{form.campaign_sector.value}} == "Tecnologia"  %}checked{%endif%}>
+                    <input type="radio" id="tec" name="campaign_sector" value="Tecnologia" class="form-check-input" {% if form.campaign_sector.value == "Tecnologia"  %}checked{%endif%}>
                   </div>
         
                   <div class="form-check form-check-inline">
                     <label for="civ">Construção Civil</label>
-                    <input type="radio" id="civ" name="campaign_sector" value="Civil" class="form-check-input" {% if {{form.campaign_sector.value}} == "Civil"  %}checked{%endif%}>
+                    <input type="radio" id="civ" name="campaign_sector" value="Civil" class="form-check-input" {% if form.campaign_sector.value == "Civil"  %}checked{%endif%}>
                   </div>
         
                   <div class="form-check form-check-inline">
                     <label for="con">Consultoria</label>
-                    <input type="radio" id="con" name="campaign_sector" value="Consultoria" class="form-check-input" {% if {{form.campaign_sector.value}} == "Consultoria"  %}checked{%endif%}>
+                    <input type="radio" id="con" name="campaign_sector" value="Consultoria" class="form-check-input" {% if form.campaign_sector.value == "Consultoria"  %}checked{%endif%}>
                   </div>
               </div>
             </div>
@@ -90,12 +90,12 @@
                 
                   <div class="form-check form-check-inline">
                     <label for="sales" class="form-check-label">Vendas</label>
-                    <input type="radio" id="sales" name="objective" value="Vendas" class="form-check-input" {% if {{form.objective.value}} == "Vendas"  %}checked{%endif%}>
+                    <input type="radio" id="sales" name="objective" value="Vendas" class="form-check-input" {% if form.objective.value == "Vendas"  %}checked{%endif%}>
                   </div>
         
                   <div class="form-check form-check-inline">
                     <label for="exp" class="form-check-label">Exposição da Marca</label>
-                    <input type="radio" id="exp" name="objective" value="Exposição" class="form-check-input" {% if {{form.objective.value}} == "Exposição"  %}checked{%endif%}>
+                    <input type="radio" id="exp" name="objective" value="Exposição" class="form-check-input" {% if form.objective.value == "Exposição"  %}checked{%endif%}>
                   </div>
               </div>
             </div>
