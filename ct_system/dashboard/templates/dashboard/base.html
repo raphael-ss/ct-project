@@ -401,11 +401,31 @@
     display: inline-block;
     }
 
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9); /* Adjust opacity as needed */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;  /* Make sure this value is high enough to overlay other elements */
+  }
+
+  .spinner {
+    color: #ff6600;
+  }
+  
+  
+
 </style>
 
-
+<!---
 <header style="background: linear-gradient(to right, rgba(0, 153, 153, 0.55) 0%, rgba(0, 153, 153, 0.30) 100%);">
-
+-->
+<header style="background-color: rgba(0, 153, 153, 0.75)">
   <div class="py-1"></div>
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
@@ -461,18 +481,45 @@
     <div class="py-1"></div>
 </header>
 
+<div id="loading-overlay">
+  <div class="spinner-border spinner" role="status">
+      <span class="visually-hidden">Carregando... </span>
+  </div>
+</div>
+
 
 <div class="container-fluid" style="background-color: #f7f7ff;">
   <div class="row">
     {% include 'dashboard/partials/_sidebar.html' %}
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5">
       <!--Aqui, o bloco será substituído por algum arquivo html-->
+      <div id="page-content">
       {% block content %}
       {% endblock %}
+      </div>
     </main>
   </div>
 
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Hide loading overlay on page load
+      document.getElementById("loading-overlay").style.display = "none";
+
+      // Show loading overlay when a link is clicked, excluding specific buttons
+      document.querySelectorAll('a, button').forEach(function (element) {
+          element.addEventListener('click', function (event) {
+              // Check if the button has a specific class or other criteria
+              if (!element.classList.contains('exclude-loading-overlay')) {
+                  document.getElementById("loading-overlay").style.display = "flex";
+              }
+          });
+      });
+  });
+</script>
+
+
 </body>
 
 <footer class="bg-body-tertiary text-center text-lg-start">

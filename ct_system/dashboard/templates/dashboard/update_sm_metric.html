@@ -22,16 +22,100 @@
 
 <div class="py-2"></div>
 
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'update_sm_metric' pk=object.pk %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <div class="row g-3">
+
+        <div class="col">
+          <div class="form-group">
+            <label for="date" class="form-label"><strong>Data</strong></label>
+            <input class="form-control" type="date" id="date" name="date">
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="network" class="form-label"><strong>Rede Social</strong></label><br>
+            
+              <div class="form-check form-check-inline">
+                <label for="ig" class="form-check-label">Instagram</label>
+                <input type="radio" id="ig" name="network" value="Instagram" class="form-check-input" {% if {{form.network.value}} == "Instagram"  %}checked{%endif%}>
+              </div>
+    
+              <div class="form-check form-check-inline">
+                <label for="li">LinkedIn</label>
+                <input type="radio" id="li" name="network" value="LinkedIn" class="form-check-input" {% if {{form.network.value}} == "LinkedIn"  %}checked{%endif%}>
+              </div>
+    
+              <div class="form-check form-check-inline">
+                <label for="fb">Facebook</label>
+                <input type="radio" id="fb" name="network" value="Facebook" class="form-check-input" {% if {{form.network.value}} == "Facebook"  %}checked{%endif%}>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <label for="tk">TikTok</label>
+                <input type="radio" id="tk" name="network" value="TikTok" class="form-check-input" {% if {{form.network.value}} == "TikTok"  %}checked{%endif%}>
+              </div>
+          </div>
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="row g-3">
+
+          <div class="col">
+            <div class="form-group">
+              <label for="followers" class="form-label"><strong>Seguidores</strong></label>
+              <input class="form-control" type="number" id="followers" value="{{form.followers.value}}" name="followers">
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="impressions" class="form-label"><strong>Impressões</strong></label>
+              <input class="form-control" type="number" id="impressions" value="{{form.impressions.value}}" name="impressions">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="row g-3">
+
+          <div class="col">
+            <div class="form-group">
+              <label for="reach" class="form-label"><strong>Alcance</strong></label>
+              <input class="form-control" type="number" id="reach" value="{{form.reach.value}}" name="reach">
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="engagement" class="form-label"><strong>Engajamento</strong></label>
+              <input class="form-control" type="number" id="engagement" value="{{form.engagement.value}}" name="engagement">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="form-group">
+          <label for="notes" class="form-label"><strong>Notas</strong></label>
+          <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
+        </div>
+
+
+      <div class="py-2"></div>
+
       <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
       </div>
-    </div>
-  </div>
+
 </form>
+<div>
 
 {% endblock %}

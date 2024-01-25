@@ -363,20 +363,17 @@ class CampaignMetric(models.Model):
         (GOOGLE, "Google Ads"),
         (FCBK, "Facebook Ads"),
     ]
-    LOW = "FUNDO"    
-    MEDIUM = "MEIO"
-    HIGH = "TOPO"
-    ALL = "GERAL"
-    POSITION = [
-        (HIGH, "Topo de Funil"),
-        (MEDIUM, "Meio de Funil"),
-        (LOW, "Fundo de Funil"),
-        (ALL, "Geral")
+    
+    EXPOSURE = "Exposição"    
+    SALES = "Vendas"
+    OBJECTIVE = [
+        (EXPOSURE, "Exposição de Marca"),
+        (SALES, "Vendas"),
     ]
     date = models.DateField(default=now)
     platform = models.CharField(max_length=20, choices=PLATFORM)
     campaign_sector = models.CharField(max_length=30, choices=SECTORS)
-    funnel_position = models.CharField(max_length=10, choices=POSITION)
+    objective = models.CharField(max_length=20, choices=OBJECTIVE, default="Vendas")
     clicks = models.IntegerField()
     conversions = models.IntegerField()
     weekly_cost = models.FloatField()
@@ -394,7 +391,7 @@ class SocialMediaMetric(models.Model):
     INSTAGRAM = 'Instagram'
     LINKEDIN = 'LinkedIn'
     FACEBOOK = 'Facebook'
-    TIKTOK = 'TkTok'
+    TIKTOK = 'TikTok'
     NETWORKS=[
         (INSTAGRAM, "Instagram"),
         (LINKEDIN, "LinkedIn"),

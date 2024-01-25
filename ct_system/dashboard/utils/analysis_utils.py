@@ -585,8 +585,8 @@ def conversion_rate_campaign():
 def most_efficient_platform():
     campaigns = pd.DataFrame.from_records(CampaignMetric.objects.values())
     if not campaigns.empty:
-        google = campaigns.loc[campaigns.platform == "GOOGLEADS"]
-        facebook = campaigns.loc[campaigns.platform == "FBADS"]
+        google = campaigns.loc[campaigns.platform == "Google Ads"]
+        facebook = campaigns.loc[campaigns.platform == "Facebook Ads"]
         if (facebook.empty) or (google.empty):
             if facebook.empty:
                 return "Google"
@@ -617,7 +617,7 @@ def google_clicks_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS", date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Google Ads", date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -636,7 +636,7 @@ def fb_clicks_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS", date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Facebook Ads", date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -655,7 +655,7 @@ def google_conversion_rate_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Google Ads",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -678,7 +678,7 @@ def fb_conversion_rate_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Facebook Ads",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -701,7 +701,7 @@ def google_cpc_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="GOOGLEADS",date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Google Ads",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -724,7 +724,7 @@ def fb_cpc_over_time():
     for month in months:
         sum = 0
         num = 0
-        campaigns_in_month = CampaignMetric.objects.filter(platform="FBADS",date__month=month, date__year=current_year)
+        campaigns_in_month = CampaignMetric.objects.filter(platform="Facebook Ads",date__month=month, date__year=current_year)
         if campaigns_in_month.count() == 0:
             value.append(0)
         else:
@@ -744,10 +744,10 @@ def total_followers():
     sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
     total = 0
     if not sm_metrics.empty:
-        instagram = sm_metrics.loc[sm_metrics.network == "IG"].followers.values
-        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].followers.values
-        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].followers.values
-        facebook = sm_metrics.loc[sm_metrics.network == "FC"].followers.values
+        instagram = sm_metrics.loc[sm_metrics.network == "Instagram"].followers.values
+        linkedin = sm_metrics.loc[sm_metrics.network == "LinkedIn"].followers.values
+        tiktok = sm_metrics.loc[sm_metrics.network == "TikTok"].followers.values
+        facebook = sm_metrics.loc[sm_metrics.network == "Facebook"].followers.values
         network_list = [instagram, linkedin, tiktok, facebook]
         followers = [net[-1] for net in network_list if net.any()]
         for value in followers:
@@ -760,10 +760,10 @@ def social_media_growth():
     growth = []
     mean_growth = 0
     if not sm_metrics.empty:
-        instagram = sm_metrics.loc[sm_metrics.network == "IG"].reach.values
-        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].reach.values
-        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].reach.values
-        facebook = sm_metrics.loc[sm_metrics.network == "FC"].reach.values
+        instagram = sm_metrics.loc[sm_metrics.network == "Instagram"].reach.values
+        linkedin = sm_metrics.loc[sm_metrics.network == "LinkedIn"].reach.values
+        tiktok = sm_metrics.loc[sm_metrics.network == "TikTok"].reach.values
+        facebook = sm_metrics.loc[sm_metrics.network == "Facebook"].reach.values
         network_list = [instagram, linkedin, tiktok, facebook]
         current_reachs = [net[-1] for net in network_list if net.any()]
         last_reachs = []
@@ -780,7 +780,7 @@ def social_media_growth():
         for percent in growth:
             mean_growth += percent
             
-        return round(mean_growth/len(growth), 2)*100
+        return round(mean_growth/len(growth), 2)*100 if len(growth) > 0 else 0
     return 0
     
 def mean_engagement():
@@ -792,10 +792,10 @@ def mean_engagement():
 def most_impact_network():
     sm_metrics = pd.DataFrame.from_records(SocialMediaMetric.objects.values())
     if not sm_metrics.empty:
-        instagram = sm_metrics.loc[sm_metrics.network == "IG"].reach.sum()
-        linkedin = sm_metrics.loc[sm_metrics.network == "LI"].reach.sum()
-        tiktok = sm_metrics.loc[sm_metrics.network == "TK"].reach.sum()
-        facebook = sm_metrics.loc[sm_metrics.network == "FC"].reach.sum()
+        instagram = sm_metrics.loc[sm_metrics.network == "Instagram"].reach.sum()
+        linkedin = sm_metrics.loc[sm_metrics.network == "LinkedIn"].reach.sum()
+        tiktok = sm_metrics.loc[sm_metrics.network == "TikTok"].reach.sum()
+        facebook = sm_metrics.loc[sm_metrics.network == "Facebook"].reach.sum()
         network_list = [instagram, linkedin, tiktok, facebook]
         network_list.sort()
         most_impact = network_list[-1]
@@ -818,7 +818,7 @@ def ig_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -838,7 +838,7 @@ def face_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FC",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -858,7 +858,7 @@ def linkedin_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -878,7 +878,7 @@ def tiktok_followers_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -898,7 +898,7 @@ def ig_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -918,7 +918,7 @@ def face_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -938,7 +938,7 @@ def linkedin_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -958,7 +958,7 @@ def tiktok_reach_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -978,7 +978,7 @@ def ig_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="IG",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -998,7 +998,7 @@ def face_engagament_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="FB",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -1018,7 +1018,7 @@ def linkedin_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="LI",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:
@@ -1038,7 +1038,7 @@ def tiktok_engagement_over_time():
     for month in months:
         sum = 0
         num = 0
-        metrics_in_month = SocialMediaMetric.objects.filter(network="TK",date__month=month, date__year=current_year)
+        metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
         else:

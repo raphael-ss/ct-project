@@ -32,7 +32,7 @@ searchField.addEventListener("keyup", (e)=>{
                 <td><a href="${updateCampaignUrl.replace('PLACEHOLDER', item.id)}">${item.date}</a></td>
                 <td>${item.platform}</td>
                 <td>${item.campaign_sector}</td>
-                <td>${item.funnel_position}</td>
+                <td>${item.objective}</td>
                 <td>${item.clicks}</td>
                 <td>${item.cost}</td>
             </tr>`

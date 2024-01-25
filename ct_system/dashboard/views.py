@@ -184,7 +184,7 @@ def search_campaign(request):
                 'date': campaign.date,
                 'platform': campaign.platform,
                 'campaign_sector': campaign.campaign_sector,
-                'funnel_position': campaign.funnel_position,
+                'objective': campaign.objetive,
                 'clicks': campaign.clicks,
                 'cost': campaign.weekly_cost,
                 'notes': campaign.notes
@@ -932,7 +932,7 @@ class SocialMediaMetricCreate(LoginRequiredMixin, CreateView):
    model = SocialMediaMetric
    template_name = 'dashboard/add_sm_metric.html'
    form_class = SocialMediaMetricCreateForm
-   success_url = reverse_lazy('sm-metrics')
+   success_url = reverse_lazy('social_media')
 
    def form_valid(self, form):
         response = super().form_valid(form)

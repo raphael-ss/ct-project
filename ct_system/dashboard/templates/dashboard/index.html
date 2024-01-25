@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %} - Home{% endblock %}
 {% block content %}
+<div id="page-content">
 <div class="py-3"></div>
 
 {% include 'authentication/partials/_messages.html' %}
@@ -205,6 +206,6 @@ var donutChart = new Chart(ctx, {
   }
 });
 </script>
-
+</div>
 
 {% endblock %}

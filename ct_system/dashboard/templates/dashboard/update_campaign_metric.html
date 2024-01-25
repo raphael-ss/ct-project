@@ -23,16 +23,127 @@
 
 <div class="py-2"></div>
 
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h3>Adicionar Métrica de <strong>Campanha</strong></h3>
+</div>
+
+<div class="py-2"></div>
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'update_campaign_metric' pk=object.pk %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <div class="row g-3">
+
+        <div class="col">
+          <div class="form-group">
+            <label for="date" class="form-label"><strong>Data</strong></label>
+            <input class="form-control" type="date" id="date" name="date">
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="platform" class="form-label"><strong>Plataforma</strong></label><br>
+            
+              <div class="form-check form-check-inline">
+                <label for="ga" class="form-check-label">Google Ads</label>
+                <input type="radio" id="ga" name="platform" value="Google Ads" class="form-check-input" {% if {{form.platform.value}} == "Google Ads"  %}checked{%endif%}>
+              </div>
+    
+              <div class="form-check form-check-inline">
+                <label for="fa">Facebook Ads</label>
+                <input type="radio" id="fa" name="platform" value="Facebook Ads" class="form-check-input" {% if {{form.platform.value}} == "Facebook Ads"  %}checked{%endif%}>
+              </div>
+    
+          </div>
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="row g-3">
+
+            <div class="col">
+              <div class="form-group">
+                <label for="campaign_sector" class="form-label"><strong>Setor</strong></label><br>
+                
+                  <div class="form-check form-check-inline">
+                    <label for="tec" class="form-check-label">Tecnologia</label>
+                    <input type="radio" id="tec" name="campaign_sector" value="Tecnologia" class="form-check-input" {% if {{form.campaign_sector.value}} == "Tecnologia"  %}checked{%endif%}>
+                  </div>
+        
+                  <div class="form-check form-check-inline">
+                    <label for="civ">Construção Civil</label>
+                    <input type="radio" id="civ" name="campaign_sector" value="Civil" class="form-check-input" {% if {{form.campaign_sector.value}} == "Civil"  %}checked{%endif%}>
+                  </div>
+        
+                  <div class="form-check form-check-inline">
+                    <label for="con">Consultoria</label>
+                    <input type="radio" id="con" name="campaign_sector" value="Consultoria" class="form-check-input" {% if {{form.campaign_sector.value}} == "Consultoria"  %}checked{%endif%}>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="col">
+              <div class="form-group">
+                <label for="objective" class="form-label"><strong>Objetivo</strong></label><br>
+                
+                  <div class="form-check form-check-inline">
+                    <label for="sales" class="form-check-label">Vendas</label>
+                    <input type="radio" id="sales" name="objective" value="Vendas" class="form-check-input" {% if {{form.objective.value}} == "Vendas"  %}checked{%endif%}>
+                  </div>
+        
+                  <div class="form-check form-check-inline">
+                    <label for="exp" class="form-check-label">Exposição da Marca</label>
+                    <input type="radio" id="exp" name="objective" value="Exposição" class="form-check-input" {% if {{form.objective.value}} == "Exposição"  %}checked{%endif%}>
+                  </div>
+              </div>
+            </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="row g-3">
+
+          <div class="col">
+            <div class="form-group">
+              <label for="clicks" class="form-label"><strong>Cliques</strong></label>
+              <input class="form-control" type="number" id="clicks" name="clicks" value="{{form.clicks.value}}">
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="conversions" class="form-label"><strong>Conversões</strong></label>
+              <input class="form-control" type="number" id="conversions" name="conversions" value="{{form.conversions.value}}">
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="weekly_cost" class="form-label"><strong>Custo Semanal</strong></label>
+              <input class="form-control" type="number" step="0.01" id="weekly_cost" name="weekly_cost" value="{{form.weekly_cost.value}}">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+        <div class="form-group">
+          <label for="notes" class="form-label"><strong>Notas</strong></label>
+          <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
+        </div>
+
+
+      <div class="py-2"></div>
+
       <div class="form-group text-center">
-        <input type="submit" value="Atualizar Métrica" class="btn btn-block btn-secondary submit-btn" />
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
       </div>
-    </div>
-  </div>
+
 </form>
+<div>
 
 {% endblock %}
