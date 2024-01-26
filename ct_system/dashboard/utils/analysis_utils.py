@@ -89,17 +89,17 @@ def average_ticket(sector=None):
             df = services.merge(contracts, how="inner", on="contract_id_id")
             if sector == "TEC":
                 tec = df.loc[df.sector == "Tecnologia"].shape[0]
-                avg_ticket = df.loc[df.sector == "TEC"].price.sum() / tec if tec != 0 else 0
+                avg_ticket = df.loc[df.sector == "Tecnologia"].price.sum() / tec if tec != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CIV":
                 civ = df.loc[df.sector == "Civil"].shape[0]
-                avg_ticket = df.loc[df.sector == "CIV"].price.sum() / civ if civ != 0 else 0
+                avg_ticket = df.loc[df.sector == "Civil"].price.sum() / civ if civ != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
             elif sector == "CON":
                 con = df.loc[df.sector == "Consultoria"].shape[0]
-                avg_ticket = df.loc[df.sector == "CON"].price.sum() / con if con != 0 else 0
+                avg_ticket = df.loc[df.sector == "Consultoria"].price.sum() / con if con != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
     return 0
@@ -237,7 +237,8 @@ def revenue_per_month():
                 revenue.append(0)
         else:
             for contract in contracts_in_month:
-                sum = revenue[-1]
+                print(contract)
+                sum = revenue[-1] if revenue else 0
                 sum += contract.total_value
                 revenue.append(sum)
             
