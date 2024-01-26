@@ -23,12 +23,6 @@
 
 <div class="py-2"></div>
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-  <h3>Adicionar Métrica de <strong>Campanha</strong></h3>
-</div>
-
-<div class="py-2"></div>
-
 <div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
   <form action="{% url 'update_campaign_metric' pk=object.pk %}" method="POST" style="margin: 45px;">
       {% csrf_token %}

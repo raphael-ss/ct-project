@@ -111,7 +111,7 @@ class Lead(models.Model):
     phone = models.CharField(max_length=16, default="")
     field_of_action = models.CharField(max_length=30, default="", null=True)
     arrival_date = models.DateField()
-    notes = models.CharField(max_length=150, default="...")
+    notes = models.CharField(max_length=300, default="...")
     
     def get_absolute_url(self):
         return "/leads"
