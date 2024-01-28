@@ -45,7 +45,7 @@ def leads_per_time():
         
     for month in months:
         sum = 0
-        leads_in_month = Lead.objects.filter(arrival_date__month=month)
+        leads_in_month = Lead.objects.filter(arrival_date__month=month, arrival_date__year=current_year)
         if leads_in_month.count() == 0:
             if leads_over_time:
                 leads_over_time.append(leads_over_time[-1])
@@ -53,10 +53,12 @@ def leads_per_time():
                 leads_over_time.append(0)
         else:
             for lead in leads_in_month:
-                if leads_over_time: sum = leads_over_time[-1]
+                print(lead)
+                if leads_over_time: 
+                    sum = leads_over_time[-1]
                 sum += 1
-                leads_over_time.append(sum)    
-                
+            leads_over_time.append(sum)    
+    print(leads_over_time)
     return leads_over_time
      
 def leads_goal(goal:int):
@@ -237,7 +239,6 @@ def revenue_per_month():
                 revenue.append(0)
         else:
             for contract in contracts_in_month:
-                print(contract)
                 sum = revenue[-1] if revenue else 0
                 sum += contract.total_value
                 revenue.append(sum)
@@ -308,9 +309,9 @@ def leads_per_score():
     return 0
 
 def client_education_distribution():
-    EFCOMPLETE = "EF-COMPLETO"
-    EMCOMPLETE = "EM-COMPLETO"
-    ESCOMPLETE = "ES-COMPLETO"
+    EFCOMPLETE = "Fundamental Completo"
+    EMCOMPLETE = "Médio Completo"
+    ESCOMPLETE = "Superior Completo"
     clients_df = pd.DataFrame.from_records(Client.objects.values())
     if not clients_df.empty:
         bin_1 = clients_df.loc[clients_df.education == EFCOMPLETE].shape[0]
@@ -334,11 +335,11 @@ def client_income_distribution():
     return 0
 
 def client_civil_state_distribution():
-    SINGLE = "SOLTEIRO"
-    MARRIED = "CASADO"
-    DIVORCED = "DIVORCIADO"
-    OTHER = "OUTRO"
-    DATING = "UNIÃO ESTÁVEL"
+    SINGLE = "Solteiro"
+    MARRIED = "Casado"
+    DIVORCED = "Divorciado"
+    OTHER = "Outro"
+    DATING = "União Estável"
     clients_df = pd.DataFrame.from_records(Client.objects.values())
     if not clients_df.empty:
         bin_1 = clients_df.loc[clients_df.marital_status == SINGLE].shape[0]
