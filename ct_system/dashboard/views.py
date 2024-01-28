@@ -414,7 +414,7 @@ class ClientList(LoginRequiredMixin, ListView):
         context['current_year'] = datetime.datetime.now().date().year
         context['mean_funnel_time'] = analysis_utils.client_mean_funnel_time()
         context['client_count'] = analysis_utils.client_count()
-        context['conversion_rate'] = analysis_utils.conversion_rate_general()
+        context['conversion_rate'] = analysis_utils.conversion_rate_general(string=True)
 
         return context
 

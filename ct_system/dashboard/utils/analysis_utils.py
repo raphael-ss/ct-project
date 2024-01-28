@@ -387,7 +387,7 @@ def client_count():
     
     return 0
 
-def conversion_rate_general():
+def conversion_rate_general(string:bool):
     leads = pd.DataFrame.from_records(Lead.objects.values())
     
     if not leads.empty:
@@ -395,7 +395,8 @@ def conversion_rate_general():
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
         
         if all_statuses > 0:
-            return round(closed / all_statuses, 1) * 100
+            if string: return str((closed / all_statuses) * 100)[:5]
+            else: return (closed / all_statuses) * 100
     
     return 0
 
