@@ -827,6 +827,8 @@ def ig_followers_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].followers)
         else:
             for i,metric in enumerate(metrics_in_month):
                 followers = metric.followers
