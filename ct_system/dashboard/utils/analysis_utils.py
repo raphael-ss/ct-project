@@ -776,7 +776,10 @@ def social_media_growth():
                     last_reachs.append(net[-2] if len(net) > 1 else net[-1])
                 except IndexError:
                     last_reachs.append(current_reachs[i])
-
+                    
+            else:
+                last_reachs.append(0)
+                
         for i, reach in enumerate(current_reachs):
             growth.append(1 - (reach / last_reachs[i]))
                 
