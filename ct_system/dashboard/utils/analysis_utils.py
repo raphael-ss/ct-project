@@ -781,7 +781,7 @@ def social_media_growth():
                 last_reachs.append(0)
                 
         for i, reach in enumerate(current_reachs):
-            growth.append(1 - (reach / last_reachs[i]))
+            growth.append(1 - (reach / last_reachs[i]) if last_reachs[i] != 0 else 0)
                 
         for percent in growth:
             mean_growth += percent
