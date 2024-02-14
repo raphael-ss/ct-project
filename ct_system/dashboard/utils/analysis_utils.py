@@ -129,7 +129,7 @@ def leads_per_sector():
     return [0,0,0]
 
 def leads_per_source():
-    df = pd.DataFrame.from_records(Lead.objects.values())
+    df = pd.DataFrame.from_records(Lead.objects.filter(arrival_date__year=current_year).values())
     if not df.empty:
         leads_by_source = df.groupby('source').first_name.count().reset_index()
         
@@ -768,17 +768,17 @@ def social_media_growth():
         tiktok = sm_metrics.loc[sm_metrics.network == "TikTok"].reach.values
         facebook = sm_metrics.loc[sm_metrics.network == "Facebook"].reach.values
         network_list = [instagram, linkedin, tiktok, facebook]
-        current_reachs = [net[-1] for net in network_list if net.any()]
+        current_reachs = [net[-1] if net.any() else 0 for net in network_list]
         last_reachs = []
-        for i,net in enumerate(network_list):
+        for i, net in enumerate(network_list):
             if net.any():
                 try:
-                    last_reachs.append(net[-2])
+                    last_reachs.append(net[-2] if len(net) > 1 else net[-1])
                 except IndexError:
                     last_reachs.append(current_reachs[i])
-                
+
         for i, reach in enumerate(current_reachs):
-                growth.append(1 - (reach / last_reachs[i]))
+            growth.append(1 - (reach / last_reachs[i]))
                 
         for percent in growth:
             mean_growth += percent
