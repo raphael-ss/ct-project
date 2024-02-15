@@ -81,7 +81,7 @@ def average_ticket(sector=None):
     services = pd.DataFrame.from_records(Service.objects.values())
     contracts = pd.DataFrame.from_records(Contract.objects.values())
     if not services.empty and not contracts.empty:
-        if sector == None:
+        if sector is None:
             avg_ticket = services.price.mean()
             return round(avg_ticket)
         else:
@@ -89,17 +89,17 @@ def average_ticket(sector=None):
             'id': 'contract_id_id'},
             inplace=True)
             df = services.merge(contracts, how="inner", on="contract_id_id")
-            if sector == "TEC":
+            if sector == "Tecnologia":
                 tec = df.loc[df.sector == "Tecnologia"].shape[0]
                 avg_ticket = df.loc[df.sector == "Tecnologia"].price.sum() / tec if tec != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
-            elif sector == "CIV":
+            elif sector == "Civil":
                 civ = df.loc[df.sector == "Civil"].shape[0]
                 avg_ticket = df.loc[df.sector == "Civil"].price.sum() / civ if civ != 0 else 0
                 if not pd.isna(avg_ticket):
                     return round(avg_ticket)
-            elif sector == "CON":
+            elif sector == "Consultoria":
                 con = df.loc[df.sector == "Consultoria"].shape[0]
                 avg_ticket = df.loc[df.sector == "Consultoria"].price.sum() / con if con != 0 else 0
                 if not pd.isna(avg_ticket):
@@ -238,9 +238,10 @@ def revenue_per_month():
                 revenue.append(0)
         else:
             for contract in contracts_in_month:
-                sum = revenue[-1] if revenue else 0
+                if revenue: 
+                    sum = revenue[-1]
                 sum += contract.total_value
-                revenue.append(sum)
+            revenue.append(sum)
             
     return revenue
 
@@ -410,9 +411,8 @@ def average_company_revenue():
 
 def average_company_size():
     companies = pd.DataFrame.from_records(Company.objects.values())
-    
     if not companies.empty:
-        avg = companies.n_of_employees.sum() / companies.shape[0]
+        avg = companies.employees.sum() / companies.shape[0]
         return round(avg)
     
     return 0
@@ -434,11 +434,11 @@ def most_frequent_sector_for_companies():
             sectors = df['sector'].value_counts()
             most_frequent_sector = sectors.idxmax()
             
-            if most_frequent_sector == 'TEC':
+            if most_frequent_sector == 'Tecnologia':
                 return "Tecnologia"
-            elif most_frequent_sector == 'CIV':
+            elif most_frequent_sector == 'Civil':
                 return "Civil"
-            if most_frequent_sector == 'CON':
+            if most_frequent_sector == 'Consultoria':
                 return "Consultoria"
         
         return "-"
@@ -558,10 +558,10 @@ def most_frequent_companies_areas_count():
 def company_size_distribution():
     companies = pd.DataFrame.from_records(Company.objects.values())
     if not companies.empty:
-        micro = companies.loc[companies.n_of_employees <= 9].shape[0]
-        small = companies.loc[(companies.n_of_employees <= 49) & (companies.n_of_employees > 9)].shape[0]
-        medium = companies.loc[(companies.n_of_employees <= 99) & (companies.n_of_employees > 49)].shape[0]
-        big = companies.loc[(companies.n_of_employees > 99)].shape[0]
+        micro = companies.loc[companies.employees <= 9].shape[0]
+        small = companies.loc[(companies.employees <= 49) & (companies.employees > 9)].shape[0]
+        medium = companies.loc[(companies.employees <= 99) & (companies.employees > 49)].shape[0]
+        big = companies.loc[(companies.employees > 99)].shape[0]
         return [micro, small, medium, big]
     
     return []

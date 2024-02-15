@@ -254,7 +254,7 @@ class Contract(models.Model):
     n_of_services = models.PositiveSmallIntegerField()
     date = models.DateField(default=now)
     deadline = models.DateField()
-    contract_link = models.CharField(max_length=250)
+    contract_link = models.CharField(max_length=300)
     notes = models.CharField(max_length=150, default="...")
 
     def get_absolute_url(self):

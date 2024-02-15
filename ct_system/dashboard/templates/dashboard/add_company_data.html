@@ -18,16 +18,117 @@
 </div>
 
 <div class="py-2"></div>
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'add_company_data' %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+      <div class="py-2"></div>
+
+      <label for="clientCompanyDataList" class="form-label">Cliente</label>
+      <input class="form-control" list="clientCompanyOptions" id="clientCompanyDataList" placeholder="Digite para pesquisar..." oninput="setClientId(this.value)">
+      <input type="hidden" id="client_id" name="client_id">
+      <datalist id="clientCompanyOptions">
+        {% for client in clients %}
+          <option data-value="{{client.id}}" value="{{client.lead_id.first_name}} {{client.lead_id.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setClientId(value) {
+        var options = document.querySelectorAll('#clientCompanyOptions option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('client_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+            <label for="company_name" class="form-label"><strong>Nome da Empresa</strong></label>
+            <input type="text" id="company_name" name="company_name" placeholder="Máx. 80 caracteres" class="form-control"/>
+        </div>
       </div>
-    </div>
-  </div>
-</form>
+  
+        <div class="col">
+        <div class="form-group">
+            <label for="cnpj" class="form-label"><strong>CNPJ:</strong></label>
+            <input type="text" id="cnpj" name="cnpj" placeholder="Ex.: 00.000.000/0001-00" class="form-control"/>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+          <div class="form-group">
+              <label for="field_of_action" class="form-label"><strong>Área de Atuação</strong></label>
+              <input type="text" id="field_of_action" name="field_of_action" placeholder="Ex.: Varejo" class="form-control"/>
+          </div>
+        </div>
+  
+        <div class="col">
+          <div class="form-group">
+              <label for="annual_revenue" class="form-label"><strong>Faturamento Anual</strong></label>
+              <input type="number" id="annual_revenue" name="annual_revenue" placeholder="Valor total sem vírgulas" class="form-control"/>
+          </div>
+        </div>
+
+        </div>
+
+        <div class="py-2"></div>
+
+
+        <div class="row g-3">
+
+          <div class="col">
+            <div class="form-group">
+                <label for="locations" class="form-label"><strong>Número de Filiais</strong></label>
+                <input type="number" id="locations" name="locations" placeholder="Ex.: 5" class="form-control"/>
+            </div>
+          </div>
+    
+          <div class="col">
+            <div class="form-group">
+                <label for="employees" class="form-label"><strong>Número de Funcionários</strong></label>
+                <input type="number" id="employees" name="employees" placeholder="Ex.: 72" class="form-control"/>
+            </div>
+          </div>
+  
+          </div>
+  
+          <div class="py-2"></div>
+
+          <div class="row g-3">
+            <div class="form-group">
+              <label for="registration_link" class="form-label"><strong>Link da Prova de Registro:</strong></label>
+              <input type="text" id="registration_link" name="registration_link" placeholder="Link do Documento no Drive" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="py-2"></div>
+
+          <div class="form-group">
+            <label for="notes" class="form-label"><strong>Notas</strong></label>
+            <textarea type="text" id="notes" name="notes" placeholder="Notas e descrições... (máx. 150 caracteres)" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="py-2"></div>
+
+          <div class="form-group text-center">
+              <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+          </div>
+
+    </form>
+</div>
 
 {% endblock %}

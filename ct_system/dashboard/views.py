@@ -481,9 +481,9 @@ class ContractList(LoginRequiredMixin, ListView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['avg_ticket'] = analysis_utils.average_ticket()
-        context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="TEC")
-        context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="CIV")
-        context['con_avg_ticket'] = analysis_utils.average_ticket(sector="CON")
+        context['tec_avg_ticket'] = analysis_utils.average_ticket(sector="Tecnologia")
+        context['civ_avg_ticket'] = analysis_utils.average_ticket(sector="Civil")
+        context['con_avg_ticket'] = analysis_utils.average_ticket(sector="Consultoria")
         context['contract_ticket_over_time'] = analysis_utils.contract_ticket_over_time()
         context['tec_contract_ticket_over_time'] = analysis_utils.tec_contract_ticket_over_time()
         context['civ_contract_ticket_over_time'] = analysis_utils.civ_contract_ticket_over_time()
@@ -750,6 +750,7 @@ class CompanyCreate(LoginRequiredMixin, CreateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['clients'] = Client.objects.all()
         return context
     
 class ContractCreate(LoginRequiredMixin, CreateView):
@@ -772,6 +773,7 @@ class ContractCreate(LoginRequiredMixin, CreateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['clients'] = Client.objects.all()
         return context
 
 class InstallmentCreate(LoginRequiredMixin, CreateView):
@@ -1061,6 +1063,7 @@ class CompanyUpdate(LoginRequiredMixin, UpdateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['clients'] = Client.objects.all()
         return context
     
 class ContractUpdate(LoginRequiredMixin, UpdateView):
@@ -1074,7 +1077,11 @@ class ContractUpdate(LoginRequiredMixin, UpdateView):
         return response
     
    def form_invalid(self, form):
-        messages.error(self.request, 'Houve um erro ao atualizar o contrato. Verifique os campos e tente novamente.')
+        messages.error(self.request, 'Houve um erro ao atualizar o contrato. Verifique os campos e tente novamente:')
+        errors = form.errors
+        for error in errors:
+            for e in errors[error]:
+                messages.warning(self.request, f'{error}: {e}')
         return self.render_to_response(self.get_context_data(form=form))
     
    def get_context_data(self, **kwargs):
@@ -1082,6 +1089,8 @@ class ContractUpdate(LoginRequiredMixin, UpdateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['selected_client'] = Contract.objects.get(pk=self.kwargs['pk']).client_id
+        context['clients'] = Client.objects.all()
         return context
     
 class InstallmentUpdate(LoginRequiredMixin, UpdateView):

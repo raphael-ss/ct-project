@@ -10,7 +10,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from . import chart_utils
 
-font_path = 'ct_system/dashboard/utils/font/Lato-Regular.ttf'
+font_path = 'dashboard/utils/font/Lato-Regular.ttf'
 pdfmetrics.registerFont(TTFont('Lato', font_path))
 
 def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):

@@ -18,16 +18,120 @@
 </div>
 
 <div class="py-2"></div>
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'add_contract_data' %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <label for="clientContractDataList" class="form-label">Cliente</label>
+      <input class="form-control" list="clientContractOptions" id="clientContractDataList" placeholder="Digite para pesquisar..." oninput="setClientId(this.value)">
+      <input type="hidden" id="client_id" name="client_id">
+      <datalist id="clientContractOptions">
+        {% for client in clients %}
+          <option data-value="{{client.id}}" value="{{client.lead_id.first_name}} {{client.lead_id.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setClientId(value) {
+        var options = document.querySelectorAll('#clientContractOptions option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('client_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+          <label for="sector" class="form-label"><strong>Setor</strong></label><br>
+          
+            <div class="form-check form-check-inline">
+              <label for="tec" class="form-check-label">Tecnologia</label>
+              <input type="radio" id="tec" name="sector" value="Tecnologia" class="form-check-input" checked>
+            </div>
+  
+            <div class="form-check form-check-inline">
+              <label for="civ" class="form-check-label">Construção Civil</label>
+              <input type="radio" id="civ" name="sector" value="Civil" class="form-check-input">
+            </div>
+  
+            <div class="form-check form-check-inline">
+              <label for="con" class="form-check-label">Consultoria</label>
+              <input type="radio" id="con" name="sector" value="Consultoria" class="form-check-input">
+            </div>
+        </div>
       </div>
-    </div>
+  
+        <div class="col">
+        <div class="form-group">
+            <label for="total_value" class="form-label"><strong>Valor Total</strong></label>
+            <input type="floatformat" id="total_value" name="total_value" placeholder="Valor total sem vírgulas (ex.: 5000)" class="form-control"/>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+            <label for="n_of_services" class="form-label"><strong>Número de Serviços Incluídos</strong></label>
+            <input type="number" id="n_of_services" name="n_of_services" placeholder="Ex.: 3" class="form-control"/>
+        </div>
+      </div>
+  
+        <div class="col">
+        <div class="form-group">
+          <label for="date" class="form-label"><strong>Data de Assinatura</strong></label>
+          <input type="date" id="date" name="date" class="form-control" required>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+            <label for="deadline" class="form-label"><strong>Prazo Final de Entrega</strong></label>
+            <input type="date" id="deadline" name="deadline" class="form-control" required>
+        </div>
+      </div>
+  
+        <div class="col">
+        <div class="form-group">
+          <label for="contract_link" class="form-label"><strong>Link do Contrato</strong></label>
+          <input type="text" id="contract_link" name="contract_link" class="form-control" required>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" placeholder="Notas e descrições... (máx. 150 caracteres)" class="form-control" rows="2"></textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+    </form>
   </div>
-</form>
 
 {% endblock %}

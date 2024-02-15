@@ -11,7 +11,7 @@ searchField.addEventListener("keyup", (e)=>{
     tbody.innerHTML = "";
     if (searchValue.trim().length > 0){
         paginationContainer.style.display = "none";
-        fetch("leads/pesquisar-leads", {
+        fetch("servicos/pesquisar-servicos", {
             body: JSON.stringify({searchText:searchValue}),
             method: "POST",
         })
@@ -29,13 +29,14 @@ searchField.addEventListener("keyup", (e)=>{
                     tbody.innerHTML += 
                 `
             <tr>
-            <td><a href="${updateLeadUrl.replace('PLACEHOLDER', item.id)}">${item.id}</a></td>
-              <td>${item.first_name} ${item.last_name}</td>
-              <td>${item.gender}</td>
-              <td>${item.status}</td>
-              <td>${item.source}</td>
-              <td>${item.email}</td>
-              <td>${item.phone}</td>
+            <td><a href="${updateServiceUrl.replace('PLACEHOLDER', item.id)}">${item.id}</a></td>
+            <td>${item.first_name} ${item.last_name}</td>
+            <td>${item.member_first_name} ${item.member_last_name}</td>
+            <td>${item.project}</td>
+            <td>${item.estimated_time}</td>
+            <td>${item.actual_time}</td>
+            <td>${item.n_of_consultants}</td>
+            <td>${item.price}</td>
             </tr>`
                 });
             }

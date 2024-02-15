@@ -11,7 +11,7 @@ searchField.addEventListener("keyup", (e)=>{
     tbody.innerHTML = "";
     if (searchValue.trim().length > 0){
         paginationContainer.style.display = "none";
-        fetch("leads/pesquisar-leads", {
+        fetch("contratos/pesquisar-contratos", {
             body: JSON.stringify({searchText:searchValue}),
             method: "POST",
         })
@@ -29,13 +29,13 @@ searchField.addEventListener("keyup", (e)=>{
                     tbody.innerHTML += 
                 `
             <tr>
-            <td><a href="${updateLeadUrl.replace('PLACEHOLDER', item.id)}">${item.id}</a></td>
-              <td>${item.first_name} ${item.last_name}</td>
-              <td>${item.gender}</td>
-              <td>${item.status}</td>
-              <td>${item.source}</td>
-              <td>${item.email}</td>
-              <td>${item.phone}</td>
+            <td><a href="${updateContractUrl.replace('PLACEHOLDER', item.id)}">${item.id}</a></td>
+            <td>${item.first_name} ${item.last_name}</td>
+            <td>${item.sector}</td>
+            <td>${item.total_value}</td>
+            <td>${item.n_of_services}</td>
+            <td>${item.date}</td>
+            <td>${item.link_of_contract}</td>
             </tr>`
                 });
             }
