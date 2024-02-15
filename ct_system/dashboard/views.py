@@ -727,7 +727,7 @@ class ClientCreate(LoginRequiredMixin, CreateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
-        context['closed_leads'] = Lead.objects.filter(status="CONTRATO FECHADO", arrival_date__year=datetime.datetime.now().date().year)
+        context['closed_leads'] = Lead.objects.filter(status="CONTRATO FECHADO")
         return context
     
 class CompanyCreate(LoginRequiredMixin, CreateView):

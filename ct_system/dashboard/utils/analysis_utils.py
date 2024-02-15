@@ -222,7 +222,6 @@ def projects_sold():
         projects += contract.n_of_services
     return projects
         
-
 def revenue_per_month():
     revenue = []
     months = ['01', '02', '03', '04', 
@@ -489,7 +488,7 @@ def most_frequent_area_in_closing_leads_count():
     return []
 
 def lead_scoring_radar_data():
-    all_leads = Lead.objects.all()
+    all_leads = Diagnostic.objects.all()
 
     if all_leads:
         # Calculate the mean of each lead scoring attribute
@@ -503,7 +502,7 @@ def lead_scoring_radar_data():
     return []
 
 def get_lead_scoring_data():
-    leads = Lead.objects.all()
+    leads = Diagnostic.objects.all()
 
     if leads:
         # Initialize lists to store attribute values
