@@ -849,6 +849,8 @@ def face_followers_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].followers)
         else:
             for i,metric in enumerate(metrics_in_month):
                 followers = metric.followers
@@ -869,6 +871,8 @@ def linkedin_followers_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].followers)
         else:
             for i,metric in enumerate(metrics_in_month):
                 followers = metric.followers
@@ -889,6 +893,8 @@ def tiktok_followers_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].followers)
         else:
             for i,metric in enumerate(metrics_in_month):
                 followers = metric.followers
@@ -909,6 +915,8 @@ def ig_reach_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].reach)
         else:
             for i,metric in enumerate(metrics_in_month):
                 reach = metric.reach
@@ -929,6 +937,8 @@ def face_reach_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].reach)
         else:
             for i,metric in enumerate(metrics_in_month):
                 reach = metric.reach
@@ -949,6 +959,8 @@ def linkedin_reach_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].reach)
         else:
             for i,metric in enumerate(metrics_in_month):
                 reach = metric.reach
@@ -969,6 +981,8 @@ def tiktok_reach_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].reach)
         else:
             for i,metric in enumerate(metrics_in_month):
                 reach = metric.reach
@@ -989,6 +1003,8 @@ def ig_engagement_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Instagram",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].engagement)
         else:
             for i,metric in enumerate(metrics_in_month):
                 engagement = metric.engagement
@@ -1009,6 +1025,8 @@ def face_engagament_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="Facebook",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].engagement)
         else:
             for i,metric in enumerate(metrics_in_month):
                 engagement = metric.engagement
@@ -1029,6 +1047,8 @@ def linkedin_engagement_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="LinkedIn",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].engagement)
         else:
             for i,metric in enumerate(metrics_in_month):
                 engagement = metric.engagement
@@ -1049,6 +1069,8 @@ def tiktok_engagement_over_time():
         metrics_in_month = SocialMediaMetric.objects.filter(network="TikTok",date__month=month, date__year=current_year)
         if metrics_in_month.count() == 0:
             value.append(0)
+        elif metrics_in_month.count() == 1:
+            value.append(metrics_in_month[0].engagement)
         else:
             for i,metric in enumerate(metrics_in_month):
                 engagement = metric.engagement
