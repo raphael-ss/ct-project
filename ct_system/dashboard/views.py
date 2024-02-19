@@ -1576,7 +1576,7 @@ def export_contracts_csv(request):
          contract.client_id.lead_id.email,
          contract.client_id.lead_id.phone,
          contract.client_id.lead_id.field_of_action,
-         contract.client_id.lead_id.date,
+         contract.client_id.lead_id.arrival_date,
          contract.client_id.cpf,
          contract.client_id.birth_date,
          contract.client_id.education,
