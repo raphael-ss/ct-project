@@ -42,7 +42,7 @@ usernameField.addEventListener("keyup", (e) => {
         usernameSuccessOutput.style.display='none';
         if (data.username_error) {
             submitBtn.disabled = true;
-            //usernameSuccessOutput.style.display='none';
+            usernameSuccessOutput.style.display='none';
             usernameField.classList.add("is-invalid");
             feedBackArea.style.display = "block";
             feedBackArea.innerHTML=`<p>${data.username_error}</p>`

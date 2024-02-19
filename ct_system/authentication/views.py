@@ -76,8 +76,8 @@ class ValidateUsername(View):
 
         username = data['username']
 
-        if not str(username).isascii():
-            return JsonResponse({'username_error': 'Nome de usuário só pode ser composto de caracteres ASCII!'}, status=400)
+        #if not str(username).isascii():
+            #return JsonResponse({'username_error': 'Nome de usuário só pode ser composto de caracteres ASCII!'}, status=400)
         if SystemUser.objects.filter(username=username).exists():
             return JsonResponse({'username_error': 'Nome de usuário já está em uso'}, status=409)
         return JsonResponse({'username_valid': True})
