@@ -1583,12 +1583,13 @@ def export_contracts_csv(request):
          contract.client_id.marital_status,
          contract.client_id.income,
          contract.client_id.funnel_time,
-         f"{contract.member_id.first_name} {contract.member_id.last_name}",
+         f"{contract.client_id.lead_id.member_id.first_name} {contract.client_id.lead_id.member_id.last_name}",
          contract.sector,
          contract.total_value,
          contract.n_of_services,
          contract.date,
-         contract.link_of_contract,
+         contract.deadline,
+         contract.contract_link,
          contract.notes
       ])
       
