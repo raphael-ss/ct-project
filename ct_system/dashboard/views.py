@@ -333,6 +333,7 @@ class Funnel(LoginRequiredMixin, ListView):
         context["name"] = authenticated_username
         context['queryset'] = queryset
         context['current_year'] = datetime.datetime.now().year
+        context['members'] = Member.objects.filter(sector="Comercial")
         
         return context
 
@@ -620,7 +621,7 @@ class SocialMediaMetricList(LoginRequiredMixin, ListView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['total_followers'] = analysis_utils.total_followers()
-        context['social_media_growth'] = analysis_utils.social_media_growth()
+        context['social_media_growth'] = round(analysis_utils.social_media_growth())
         context['mean_engagement'] = analysis_utils.mean_engagement()
         context['most_impact_network'] = analysis_utils.most_impact_network()
         context['ig_followers_over_time'] = analysis_utils.ig_followers_over_time()
@@ -925,6 +926,7 @@ class MemberCreate(LoginRequiredMixin, CreateView):
 
    def form_invalid(self, form):
         messages.error(self.request, 'Houve um erro ao adicionar o membro. Verifique os campos e tente novamente.')
+        
         return self.render_to_response(self.get_context_data(form=form))
     
    def get_context_data(self, **kwargs):
@@ -1242,7 +1244,12 @@ class MemberUpdate(LoginRequiredMixin, UpdateView):
         return response
     
    def form_invalid(self, form):
-        return super().form_invalid(form)   
+        messages.error(self.request, 'Houve um erro ao atualizar o membro. Verifique os campos e tente novamente.')
+        errors = form.errors
+        for error in errors:
+            for e in errors[error]:
+                messages.warning(self.request, f'{error}: {e}')
+        return self.render_to_response(self.get_context_data(form=form))
     
    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1264,6 +1271,15 @@ class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Métrica atualizada com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        messages.error(self.request, 'Houve um erro ao atualizar a métrica. Verifique os campos e tente novamente.')
+        errors = form.errors
+        for error in errors:
+            for e in errors[error]:
+                messages.warning(self.request, f'{error}: {e}')
+        return self.render_to_response(self.get_context_data(form=form))
+    
    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         authenticated_username = self.request.user.full_name.split()[0]

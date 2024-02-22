@@ -319,6 +319,7 @@ class Service(models.Model):
     estimated_time = models.PositiveSmallIntegerField(null=False)
     actual_time = models.PositiveSmallIntegerField(null=True)
     price = models.FloatField()
+    status = models.CharField(max_length=40, default="Não Iniciado")
     notes = models.CharField(max_length=100)
 
     def get_absolute_url(self):

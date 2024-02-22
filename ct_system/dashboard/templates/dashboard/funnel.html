@@ -283,6 +283,11 @@
       .kanban-column-card .card-body a {
         text-decoration: none;
     }
+
+    .kanban-column-card {
+      max-height: 600px; /* Set a fixed height for the column */
+      overflow-y: auto; /* Add a vertical scrollbar if the content exceeds the height */
+    }
   </style>
   
 
@@ -307,6 +312,38 @@
 
   <div class="py-3"></div>
 
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label for="memberFilter" class="form-label">Filtre por Assessor:</label>
+      <select id="memberFilter" class="form-select" onchange="applyMemberFilter()">
+        <option value="">Todos</option>
+        {% for member in members %}
+          <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <script>
+    function applyMemberFilter() {
+      var selectedMemberId = document.getElementById("memberFilter").value;
+      var leadCards = document.querySelectorAll(".kanban-lead-card");
+    
+      leadCards.forEach(function (leadCard) {
+        var memberId = leadCard.getAttribute("data-member-id");
+    
+        if (selectedMemberId === "" || selectedMemberId === memberId) {
+          leadCard.style.display = "block"; // Show the card
+        } else {
+          leadCard.style.display = "none"; // Hide the card
+        }
+      });
+    }
+    
+  </script>
+
+  <div class="py-2"></div>
+
   <div class="container mt-6" id="board">
     <div class="row">
 
@@ -320,7 +357,7 @@
             {% for lead in queryset %}
               {% if lead.status == 'PRÉ-DIAGNÓSTICO' %}
               <a href="{% url 'lead_detail' pk=lead.pk %}">
-                <div id="{{ lead.id }}" class="card kanban-lead-card cyan-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                <div id="{{ lead.id }}" class="card kanban-lead-card cyan-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                   <div class="card-body">
                     <h6 class="smaller-subtitle" style="color: #009999;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                     <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -347,7 +384,7 @@
                 {% for lead in queryset %}
                   {% if lead.status == 'PRÉ-PROPOSTA' %}
                   <a href="{% url 'lead_detail' pk=lead.pk %}">
-                  <div id="{{ lead.id }}" class="card kanban-lead-card blue-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                  <div id="{{ lead.id }}" class="card kanban-lead-card blue-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                     <div class="card-body">
                       <h6 class="smaller-subtitle" style="color: #2c7ac9;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                       <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -374,7 +411,7 @@
                 {% for lead in queryset %}
                   {% if lead.status == 'PÓS-PROPOSTA' %}
                   <a href="{% url 'lead_detail' pk=lead.pk %}">
-                  <div id="{{ lead.id }}" class="card kanban-lead-card purple-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                  <div id="{{ lead.id }}" class="card kanban-lead-card purple-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                     <div class="card-body">
                       <h6 class="smaller-subtitle" style="color: #4c0099;" >{{ lead.first_name }} {{ lead.last_name }}</h6>
                       <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -401,7 +438,7 @@
                 {% for lead in queryset %}
                   {% if lead.status == 'CONTRATO FECHADO' %}
                   <a href="{% url 'lead_detail' pk=lead.pk %}">
-                        <div id="{{ lead.id }}" class="card kanban-lead-card  green-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                        <div id="{{ lead.id }}" class="card kanban-lead-card  green-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                             <div class="card-body">
                             <h6 class="smaller-subtitle" style="color: #00cc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                             <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -431,7 +468,7 @@
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PRÉ-DIAG'  %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
-                    <div id="{{ lead.id }}" class="card kanban-lead-card yellow-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                    <div id="{{ lead.id }}" class="card kanban-lead-card yellow-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cccc00;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                         <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -458,7 +495,7 @@
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PRÉ-PROP' %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
-                    <div id="{{ lead.id }}" class="card kanban-lead-card orange-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                    <div id="{{ lead.id }}" class="card kanban-lead-card orange-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cc6600;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                         <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>
@@ -485,7 +522,7 @@
               {% for lead in queryset %}
                 {% if lead.status == 'PERDIDO PÓS-PROP' %}
                 <a href="{% url 'lead_detail' pk=lead.pk %}">
-                    <div id="{{ lead.id }}" class="card kanban-lead-card red-kanban-lead-card" draggable="true" ondragstart="dragStart(event)">
+                    <div id="{{ lead.id }}" class="card kanban-lead-card red-kanban-lead-card" data-member-id="{{ lead.member_id.id }}" draggable="true" ondragstart="dragStart(event)">
                         <div class="card-body">
                         <h6 class="smaller-subtitle" style="color: #cc0000;">{{ lead.first_name }} {{ lead.last_name }}</h6>
                         <h6 class="smaller-text">Setor: {{ lead.get_sector_display }}</h6>

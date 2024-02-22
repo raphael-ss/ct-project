@@ -137,6 +137,18 @@
 
     <div class="py-2"></div>
 
+    <div class="form-group">
+      <label for="status" class="form-label"><strong>Status</strong></label>
+      <select id="status" name="status" class="form-control form-select" required>
+        <option value="Não Iniciado" {% if form.status.value == 'Não Iniciado' %} selected {% endif %}>Não Iniciado</option>
+        <option value="Em Andamento" {% if form.status.value == 'Em Andamento' %} selected {% endif %}>Em Andamento</option>
+        <option value="Finalizado" {% if form.status.value == 'Finalizado' %} selected {% endif %}>Finalizado</option>
+        <option value="Congelado" {% if form.status.value == 'Congelado' %} selected {% endif %}>Congelado</option>
+      </select>
+    </div>
+
+    <div class="py-2"></div>
+
       <div class="form-group">
         <label for="notes" class="form-label"><strong>Notas</strong></label>
         <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
