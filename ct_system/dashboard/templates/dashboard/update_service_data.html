@@ -19,16 +19,136 @@
 </div>
 
 <div class="py-2"></div>
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Atualizar Dados" class="btn btn-block btn-primary submit-btn" />
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'update_service_data' pk=object.pk %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <label for="memberDataList2" class="form-label">Gerente do Projeto</label>
+      <input class="form-control" list="memberOptions2" id="memberDataList2" oninput="setMemberId(this.value)">
+      <input type="hidden" id="member_id" name="member_id">
+      <datalist id="memberOptions2">
+        {% for member in members %}
+          <option data-value="{{member.id}}" value="{{member.first_name}} {{member.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setMemberId(value) {
+        var options = document.querySelectorAll('#memberOptions2 option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('member_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+
+      <div class="py-2"></div>
+
+      <label for="contractDataList2" class="form-label">Contrato</label>
+      <input class="form-control" list="contractOptions2" id="contractDataList2" oninput="setContractId(this.value)">
+      <input type="hidden" id="contract_id" name="contract_id">
+      <datalist id="contractOptions2">
+        {% for contract in contracts %}
+          <option data-value="{{contract.id}}" value="{{contract.client_id.lead_id.first_name}} {{contract.client_id.lead_id.last_name}} - {{contract.sector}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setContractId(value) {
+        var options = document.querySelectorAll('#contractOptions2 option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('contract_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+          <label for="project" class="form-label"><strong>Projeto</strong></label>
+          <select id="project" name="project" class="form-control form-select" required>
+              <option value="Sistema" {% if form.project.value == 'Sistema' %} selected {% endif %}>Sistema Web</option>
+              <option value="Website" {% if form.project.value == 'Website' %} selected {% endif %}>Website Institucional</option>
+              <option value="Aplicativo" {% if form.project.value == 'Aplicativo' %} selected {% endif %}>Aplicativo</option>
+              <option value="Landing Page" {% if form.project.value == 'Landing Page' %} selected {% endif %}>Landing Page</option>
+              <option value="Protótipo" {% if form.project.value == 'Protótipo' %} selected {% endif %}>Protótipo</option>
+              <option value="E-Commerce" {% if form.project.value == 'E-Commerce' %} selected {% endif %}>E-Commerce</option>
+              <option value="Arquitetônico" {% if form.project.value == 'Arquitetônico' %} selected {% endif %}>Proj. Arquitetônico</option>
+              <option value="Hidrossanitário" {% if form.project.value == 'Hidrossanitário' %} selected {% endif %}>Proj. Hidrossanitário</option>
+              <option value="Elétrico" {% if form.project.value == 'Elétrico' %} selected {% endif %}>Proj. Elétrico</option>
+              <option value="Captação" {% if form.project.value == 'Captação' %} selected {% endif %}>Proj. de Captação</option>
+              <option value="Incêndio" {% if form.project.value == 'Incêndio' %} selected {% endif %}>Proj. de Incêndio</option>
+              <option value="Mapeamento de Processos" {% if form.project.value == 'Mapeamento de Processos' %} selected {% endif %}>Mapeamento de Processos</option>
+              <option value="Planejamento Estratégico" {% if form.project.value == 'Planejamento Estratégico' %} selected {% endif %}>Planejamento Estratégico</option>
+              <option value="Plano de Negócios" {% if form.project.value == 'Plano de Negócios' %} selected {% endif %}>Plano de Negócios</option>
+              <option value="Gestão de Marketing" {% if form.project.value == 'Gestão de Marketing' %} selected {% endif %}>Gestão de Marketing</option>
+              <option value="Gestão Financeira" {% if form.project.value == 'Gestão Financeira' %} selected {% endif %}>Gestão Financeira</option>
+              <option value="Gestão de Estoque" {% if form.project.value == 'Gestão de Estoque' %} selected {% endif %}>Gestão de Estoque</option>
+              <option value="Gestão Operacional" {% if form.project.value == 'Gestão Operacional' %} selected {% endif %}>Gestão Operacional</option>
+          </select>
+        </div>
+      </div>
+  
+      <div class="col">
+        <div class="form-group">
+          <label for="consultants" class="form-label"><strong>Número de Consultores</strong></label>
+           <input type="number" class="form-control" id="consultants" name="consultants" value="{{form.consultants.value}}" required>
+        </div>
       </div>
     </div>
-  </div>
-</form>
+  
+    <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+          <div class="form-group">
+            <label for="estimated_time" class="form-label"><strong>Tempo Estimado</strong></label>
+             <input type="number" class="form-control" id="estimated_time" name="estimated_time" value="{{form.estimated_time.value}}" required>
+          </div>
+        </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label for="actual_time" class="form-label"><strong>Tempo Real (Preencher no fim)</strong></label>
+          <input type="number" class="form-control" id="actual_time" name="actual_time" value="{{form.actual_time.value}}" required>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="py-2"></div>
+
+    <div class="form-group">
+      <label for="price" class="form-label"><strong>Preço</strong></label>
+      <input type="floatformat" class="form-control" id="price" name="price" value="{{price}}" required>
+    </div>
+
+    <div class="py-2"></div>
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+  </form>
+</div>
 
 {% endblock %}

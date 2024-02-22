@@ -19,16 +19,176 @@
 </div>
 
 <div class="py-2"></div>
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Atualizar Dados" class="btn btn-block btn-primary submit-btn" />
+
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'update_member_data' pk=object.pk %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+              <label for="first_name" class="form-label"><strong>Nome</strong></label>
+              <input type="text" id="first_name" name="first_name" value="{{form.first_name.value}}" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="last_name" class="form-label"><strong>Sobrenome</strong></label>
+            <input type="text" id="last_name" name="last_name" value="{{form.last_name.value}}" class="form-control" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+    <div class="row g-3">
+
+      <div class="col">
+      <div class="form-group">
+        <label for="sector" class="form-label"><strong>Setor</strong></label><br>
+        <select id="sector" name="sector" class="form-control form-select" required>
+          <option>Selecione...</option>
+          <option value="Adm-Fin" {% if form.sector.value == 'Adm-Fin' %} selected {% endif %}>Administrativo Financeiro</option>
+          <option value="Civil" {% if form.sector.value == 'Civil' %} selected {% endif %}>Construção Civil</option>
+          <option value="Consultoria" {% if form.sector.value == 'Consultoria' %} selected {% endif %}>Consultoria</option>
+          <option value="Comercial" {% if form.sector.value == 'Comercial' %} selected {% endif %}>Comercial</option>
+          <option value="Recursos Humanos" {% if form.sector.value == 'Recursos Humanos' %} selected {% endif %}>Recursos Humanos</option>
+          <option value="Tecnologia" {% if form.sector.value == 'Tecnologia' %} selected {% endif %}>Tecnologia</option>
+        </select>
+          
       </div>
     </div>
-  </div>
-</form>
+
+      <div class="col">
+      <div class="form-group">
+        <label for="role" class="form-label"><strong>Cargo</strong></label>
+        <select id="role" name="role" class="form-control form-select" required>
+            <option>Selecione...</option>
+            <option value="Assessor" {% if form.role.value == 'Assessor' %} selected {% endif %}>Assessor</option>
+            <option value="Consultor" {% if form.role.value == 'Consultor' %} selected {% endif %}>Consultor</option>
+            <option value="Gerente" {% if form.role.value == 'Gerente' %} selected {% endif %}>Gerente</option>
+            <option value="Diretor" {% if form.role.value == 'Diretor' %} selected {% endif %}>Diretor</option>
+            <option value="Presidente" {% if form.role.value == 'Presidente' %} selected {% endif %}>Presidente</option>
+        </select>
+      </div>
+    </div>
+    </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="date_of_entry" class="form-label"><strong>Data de Entrada</strong></label>
+            <input type="date" id="date_of_entry" name="date_of_entry"  value="{{date_of_entry}}" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="date_of_leave" class="form-label"><strong>Data de Saída</strong></label>
+            <input type="date" id="date_of_leave" name="date_of_leave" value="{{date_of_leave}}" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="professional_email" class="form-label"><strong>E-mail Profissional</strong></label>
+            <input type="email" id="professional_email" name="professional_email" value="{{form.professional_email.value}}" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="academic_email" class="form-label"><strong>E-mail Acadêmico</strong></label>
+            <input type="email" id="academic_email" name="academic_email" class="form-control" value="{{form.academic_email.value}}" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="phone" class="form-label"><strong>Telefone</strong></label>
+            <input type="phone" id="phone" name="phone" class="form-control" value="{{form.phone.value}}" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="cpf" class="form-label"><strong>CPF</strong></label>
+            <input type="text" id="cpf" name="cpf" class="form-control" value="{{form.cpf.value}}" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="rg" class="form-label"><strong>RG</strong></label>
+            <input type="text" id="rg" name="rg" class="form-control" value="{{form.rg.value}}"  required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="degree" class="form-label"><strong>Curso de Graduação</strong></label>
+            <select id="degree" name="degree" class="form-control form-select" required>
+              <option>Selecione...</option>
+              <option value="Engenharia de Produção" {% if form.degree.value == 'Engenharia de Produção' %} selected {% endif %}>Engenharia de Produção</option>
+              <option value="Engenharia Elétrica" {% if form.degree.value == 'Engenharia Elétrica' %} selected {% endif %}>Engenharia Elétrica</option>
+              <option value="Engenharia Civil" {% if form.degree.value == 'Engenharia Civil' %} selected {% endif %}>Engenharia Civil</option>
+              <option value="Engenharia Mecânica" {% if form.degree.value == 'Engenharia Mecânica' %} selected {% endif %}>Engenharia Mecânica</option>
+              <option value="Engenharia da Computação" {% if form.degree.value == 'Engenharia da Computação' %} selected {% endif %}>Engenharia da Computação</option>
+              <option value="Ciência da Computação" {% if form.degree.value == 'Ciência da Computação' %} selected {% endif %}>Ciência da Computação</option>
+              <option value="Engenharia Ambiental" {% if form.degree.value == 'Engenharia Ambiental' %} selected {% endif %}>Engenharia Ambiental</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+        <div class="col">
+          <div class="form-group">
+            <label for="date_of_birth" class="form-label"><strong>Data de Nascimento</strong></label>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="{{date_of_birth}}" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="address" class="form-label"><strong>Endereço</strong></label>
+            <input type="text" id="address" name="address" class="form-control" value="{{form.address.value}}" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" class="form-control" rows="2">{{form.notes.value}}</textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+  </form>
+</div>
 
 {% endblock %}

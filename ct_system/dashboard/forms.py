@@ -69,6 +69,7 @@ class ServiceCreateForm(BaseCreateForm):
     class Meta:
         model = Service
         fields = '__all__'
+        exclude = ['tags']
 
 class TeamCreateForm(BaseCreateForm): 
     class Meta:

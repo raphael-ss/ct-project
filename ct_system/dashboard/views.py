@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.forms import BaseModelForm
 from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import SocialMediaMetric, Client, Company, Contract, CampaignMetric, Service, Member, Lead, Diagnostic, PostSales, Proposition, ServiceTag, Installment, Team
@@ -245,7 +246,7 @@ def search_project(request):
                 'project': project.project,
                 'estimated_time': project.estimated_time,
                 'actual_time': project.actual_time,
-                'n_of_consultants': project.n_of_consultants,
+                'n_of_consultants': project.consultants,
                 'price': project.price,
                 'notes': project.notes,
             }
@@ -855,6 +856,7 @@ class ServiceCreate(LoginRequiredMixin, CreateView):
     
    def form_invalid(self, form):
         messages.error(self.request, 'Houve um erro ao adicionar o projeto. Verifique os campos e tente novamente.')
+        print(form.errors.as_data())
         return self.render_to_response(self.get_context_data(form=form))
     
    def get_context_data(self, **kwargs):
@@ -862,6 +864,8 @@ class ServiceCreate(LoginRequiredMixin, CreateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['members'] = Member.objects.all()
+        context['contracts'] = Contract.objects.all()
         return context
     
 class TeamCreate(LoginRequiredMixin, CreateView):
@@ -1156,6 +1160,7 @@ class ServiceUpdate(LoginRequiredMixin, UpdateView):
    model = Service
    template_name = 'dashboard/update_service_data.html'
    form_class = ServiceCreateForm
+   success_url = reverse_lazy('services')
 
    def form_valid(self, form):
         response = super().form_valid(form)
@@ -1164,13 +1169,23 @@ class ServiceUpdate(LoginRequiredMixin, UpdateView):
     
    def form_invalid(self, form):
         messages.error(self.request, 'Houve um erro ao atualizar o serviço. Verifique os campos e tente novamente.')
+        errors = form.errors
+        for error in errors:
+            for e in errors[error]:
+                messages.warning(self.request, f'{error}: {e}')
         return self.render_to_response(self.get_context_data(form=form))
+
     
    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['members'] = Member.objects.all()
+        context['contracts'] = Contract.objects.all()
+        context['current_member'] = Service.objects.get(pk=self.kwargs['pk']).member_id
+        context['current_contract'] = Service.objects.get(pk=self.kwargs['pk']).contract_id
+        context['price'] = round(Service.objects.get(pk=self.kwargs['pk']).price)
         return context
     
     
@@ -1225,11 +1240,19 @@ class MemberUpdate(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, 'Membro atualizado com sucesso.')
         return response
+    
+   def form_invalid(self, form):
+        return super().form_invalid(form)   
+    
    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
+        context['date_of_birth'] = self.object.date_of_birth.strftime('%Y-%m-%d')
+        context['date_of_entry'] = self.object.date_of_entry.strftime('%Y-%m-%d')
+        context['date_of_leave'] = self.object.date_of_leave.strftime('%Y-%m-%d')
+
         return context
     
 class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
@@ -1247,8 +1270,7 @@ class SocialMediaMetricUpdate(LoginRequiredMixin, UpdateView):
         context["name"] = authenticated_username
         context['current_year'] = datetime.datetime.now().date().year
         return context
-    
-    
+      
 #-DELETE DATA
 class LeadDelete(LoginRequiredMixin, DeleteView):
    model = Lead
@@ -1368,7 +1390,7 @@ class CampaignMetricDelete(LoginRequiredMixin, DeleteView):
 class ServiceDelete(LoginRequiredMixin, DeleteView):
    model = Service
    template_name = 'dashboard/delete_service_data.html'
-   success_url = "/servicos"
+   success_url = "/projetos"
 
    def delete(self, request, *args, **kwargs):
         response = super().delete(request, *args, **kwargs)

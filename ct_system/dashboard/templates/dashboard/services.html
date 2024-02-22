@@ -9,7 +9,7 @@
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Serviços</li>
+            <li class="breadcrumb-item active" aria-current="page">Projetos</li>
           </ol>
         </nav>
     </div>
@@ -54,10 +54,10 @@
           <td><a href="{% url 'update_service_data' pk=service.pk %}">{{ service.pk }}</a></td>
           <td>{{ service.contract_id.client_id.lead_id.first_name }} {{ service.contract_id.client_id.lead_id.last_name }}</td>
           <td>{{ service.member_id.first_name }} {{ service.member_id.last_name }}</td>
-          <td>{{ service.get_project_display }}</td>
+          <td>{{ service.project }}</td>
           <td>{{ service.estimated_time }}</td>
           <td>{{ service.actual_time }}</td>
-          <td>{{ service.n_of_consultants }}</td>
+          <td>{{ service.consultants }}</td>
           <td>{{ service.price }}</td>
         </tr>
       {% endfor %}
@@ -122,7 +122,7 @@
   </div>
 </div>
 
-  <script src={% static 'js/serviceSearchBar.js' %}></script>
+  <script src={% static 'js/serviceSearchbar.js' %}></script>
   <script>
       const updateServiceUrl = "{% url 'update_service_data' pk='PLACEHOLDER' %}";
   </script>

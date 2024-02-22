@@ -20,7 +20,7 @@
 <div class="py-2"></div>
 
 <div class="text-center align-items-center">
-  <form method="post" action="{% url 'delete_service_data' object.id %}">
+  <form method="post" action="{% url 'delete_service_data' pk=object.id %}">
     {% csrf_token %}
 
     <p>Tem certeza que quer deletar o projeto de "{{ object }}"?</p>

@@ -1083,7 +1083,7 @@ def mean_delay():
     projects = pd.DataFrame.from_records(Service.objects.values())
     if not projects.empty:
         projects['delay'] = projects.actual_time - projects.estimated_time
-        return round(projects.delay.mean(), 1)
+        return round(projects.delay.mean())
     return 0
 
 def real_mean_deadline():

@@ -18,16 +18,138 @@
 </div>
 
 <div class="py-2"></div>
-<form action="" method="POST">
-  {% csrf_token %}
-  <div class="card center">
-    <div class="card-body text-center">
-      {{ form.as_p }}
-      <div class="form-group text-center">
-        <input type="submit" value="Enviar" class="btn btn-block btn-primary submit-btn" />
+
+
+<div class="card" style="background: linear-gradient(to bottom, rgba(245, 245, 245, 0.80) 0%, rgba(210, 210, 225, 0.9) 100%);">
+  <form action="{% url 'add_service_data' %}" method="POST" style="margin: 45px;">
+      {% csrf_token %}
+
+      <label for="memberDataList1" class="form-label">Gerente do Projeto</label>
+      <input class="form-control" list="memberOptions1" id="memberDataList1" placeholder="Digite para pesquisar..." oninput="setMemberId(this.value)">
+      <input type="hidden" id="member_id" name="member_id">
+      <datalist id="memberOptions1">
+        {% for member in members %}
+          <option data-value="{{member.id}}" value="{{member.first_name}} {{member.last_name}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setMemberId(value) {
+        var options = document.querySelectorAll('#memberOptions1 option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('member_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+
+      <div class="py-2"></div>
+
+      <label for="contractDataList1" class="form-label">Contrato</label>
+      <input class="form-control" list="contractOptions1" id="contractDataList1" placeholder="Digite para pesquisar..." oninput="setContractId(this.value)">
+      <input type="hidden" id="contract_id" name="contract_id">
+      <datalist id="contractOptions1">
+        {% for contract in contracts %}
+          <option data-value="{{contract.id}}" value="{{contract.client_id.lead_id.first_name}} {{contract.client_id.lead_id.last_name}} - {{contract.sector}}"></option>
+        {% endfor %}
+      </datalist>
+
+      <script>
+      function setContractId(value) {
+        var options = document.querySelectorAll('#contractOptions1 option');
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].value === value) {
+            document.getElementById('contract_id').value = options[i].dataset.value;
+            break;
+          }
+        }
+      }
+      </script>
+
+
+      <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+        <div class="form-group">
+          <label for="project" class="form-label"><strong>Projeto</strong></label>
+          <select id="project" name="project" class="form-control form-select" required>
+              <option value="Sistema">Sistema Web</option>
+              <option value="Website">Website Institucional</option>
+              <option value="Aplicativo">Aplicativo</option>
+              <option value="Landing Page">Landing Page</option>
+              <option value="Protótipo">Protótipo</option>
+              <option value="E-Commerce">E-Commerce</option>
+              <option value="Arquitetônico">Proj. Arquitetônico</option>
+              <option value="Hidrossanitário">Proj. Hidrossanitário</option>
+              <option value="Elétrico">Proj. Elétrico</option>
+              <option value="Captação">Proj. de Captação</option>
+              <option value="Incêndio">Proj. de Incêndio</option>
+              <option value="Mapeamento de Processos">Mapeamento de Processos</option>
+              <option value="Planejamento Estratégico">Planejamento Estratégico</option>
+              <option value="Plano de Negócios">Plano de Negócios</option>
+              <option value="Gestão de Marketing">Gestão de Marketing</option>
+              <option value="Gestão Financeira">Gestão Financeira</option>
+              <option value="Gestão de Estoque">Gestão de Estoque</option>
+              <option value="Gestão Operacional">Gestão Operacional</option>
+          </select>
+        </div>
+      </div>
+  
+      <div class="col">
+        <div class="form-group">
+          <label for="consultants" class="form-label"><strong>Número de Consultores</strong></label>
+           <input type="number" class="form-control" id="consultants" name="consultants" required>
+        </div>
       </div>
     </div>
-  </div>
-</form>
+  
+    <div class="py-2"></div>
+
+      <div class="row g-3">
+
+        <div class="col">
+          <div class="form-group">
+            <label for="estimated_time" class="form-label"><strong>Tempo Estimado</strong></label>
+             <input type="number" class="form-control" id="estimated_time" name="estimated_time" required>
+          </div>
+        </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label for="actual_time" class="form-label"><strong>Tempo Real (Preencher no fim)</strong></label>
+          <input type="number" class="form-control" id="actual_time" name="actual_time" required>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="py-2"></div>
+
+    <div class="form-group">
+      <label for="price" class="form-label"><strong>Preço</strong></label>
+      <input type="floatformat" class="form-control" id="price" name="price" required>
+    </div>
+
+    <div class="py-2"></div>
+
+      <div class="form-group">
+        <label for="notes" class="form-label"><strong>Notas</strong></label>
+        <textarea type="text" id="notes" name="notes" placeholder="Notas e descrições... (máx. 150 caracteres)" class="form-control" rows="2"></textarea>
+      </div>
+
+      <div class="py-2"></div>
+
+      <div class="form-group text-center">
+          <input type="submit" value="Adicionar" class="btn btn-block btn-primary submit-btn"/>
+      </div>
+
+  </form>
+</div>
+
 
 {% endblock %}

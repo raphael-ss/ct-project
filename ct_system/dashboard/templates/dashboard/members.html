@@ -53,8 +53,8 @@
         <tr>
           <td><a href="{% url 'update_member_data' pk=member.pk %}">{{ member.pk }}</a></td>
           <td>{{ member.first_name }} {{ member.last_name }}</td>
-          <td>{{ member.get_sector_display }}</td>
-          <td>{{ member.get_role_display }}</td>
+          <td>{{ member.sector }}</td>
+          <td>{{ member.role}}</td>
           <td>{{ member.professional_email }}</td>
           <td>{{ member.phone }}</td>
           <td>{{ member.degree }}</td>

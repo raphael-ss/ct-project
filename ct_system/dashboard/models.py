@@ -29,10 +29,11 @@ class Member(models.Model):
         (ADMFIN, "Adminstrativo Financeiro"),
         (CON, "Consultoria"),
     ]
+    
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    sector = models.CharField(max_length=20, choices=SECTORS)
-    role = models.CharField(max_length=20, choices=ROLE)
+    sector = models.CharField(max_length=20)
+    role = models.CharField(max_length=20)
     date_of_entry = models.DateField(null=False)
     date_of_leave = models.DateField(null=True)
     professional_email = models.CharField(max_length=80)
@@ -290,6 +291,10 @@ class Service(models.Model):
     MAP = "Mapeamento de Processos"
     EST = "Planejamento Estratégico"
     NEG = "Plano de Negócios"
+    GEM = "Gestão de Marketing"
+    GEF = "Gestão Financeira"
+    GEE = "Gestão de Estoque"
+    GEO = "Gestão Operacional"
     SER = [
         (SYS, "Sistema Web"),
         (SITE, "Website"),
@@ -309,7 +314,7 @@ class Service(models.Model):
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
     contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
     tags = models.ManyToManyField(ServiceTag)
-    project = models.CharField(max_length=30, choices=SER)
+    project = models.CharField(max_length=40)
     consultants = models.PositiveSmallIntegerField()
     estimated_time = models.PositiveSmallIntegerField(null=False)
     actual_time = models.PositiveSmallIntegerField(null=True)
@@ -320,7 +325,7 @@ class Service(models.Model):
         return "/servicos"
 
     def __str__(self):
-        return f"{self.client_id.lead_id.first_name} {self.client_id.lead_id.last_name} - {self.project}"
+        return f"{self.contract_id.client_id.lead_id.first_name} {self.contract_id.client_id.lead_id.last_name} - {self.project}"
     
     class Meta:
         ordering: ['-contract_id.date']  
