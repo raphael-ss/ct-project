@@ -191,8 +191,8 @@ def most_frequent_lead_source():
 def conversion_rate_diagnostic_to_proposition():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        diagnostic = leads.shape[0]
-        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "CONTRATO FECHADO") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG") | (leads.status == "PRÉ-PROPOSTA")].shape[0]
+        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
         if diagnostic > 0:
             return round(proposition/diagnostic, 1)*100
     return 0
@@ -200,7 +200,7 @@ def conversion_rate_diagnostic_to_proposition():
 def conversion_rate_proposition_to_closed():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP") | (leads.status == "CONTRATO FECHADO")].shape[0]
+        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
         if proposition > 0:
             return round(closed/proposition, 1)*100
@@ -286,11 +286,11 @@ def lead_scoring(object):
          
 def sales_funnel():
     
-    leads = pd.DataFrame.from_records(Lead.objects.filter(arrival_date__year=current_year).values())
+    leads = pd.DataFrame.from_records(Lead.objects.all().values())
     if not leads.empty:
-        pre_diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
-        pre_proposition = leads.loc[(leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
-        post_proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        pre_diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO")].shape[0]
+        pre_proposition = leads.loc[(leads.status == "PRÉ-PROPOSTA")].shape[0]
+        post_proposition = leads.loc[(leads.status == "PÓS-PROPOSTA")].shape[0]
         closed = leads.loc[leads.status == "CONTRATO FECHADO"].shape[0]
         
         return [pre_diagnostic, pre_proposition, post_proposition, closed]
