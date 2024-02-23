@@ -5,7 +5,7 @@ import pandas as pd
 
 current_year = datetime.now().year
 
-def revenue_per_sector():
+def revenue_per_sector(goal=127000):
     civil_total = 0
     tec_total = 0
     con_total = 0
@@ -17,7 +17,30 @@ def revenue_per_sector():
     for contract in Contract.objects.filter(sector="Consultoria", date__year=current_year):
       con_total += contract.total_value
       
-    return [tec_total, civil_total, con_total]
+    total = goal - (civil_total + tec_total + con_total)
+      
+    return [tec_total, civil_total, con_total, total]
+
+def revenue_per_sector_legend(goal=127000):
+        revenue = {}
+        revenue['Civil'] = 0
+        revenue['Tecnologia'] = 0
+        revenue['Consultoria'] = 0
+        revenue['Em Falta'] = 0
+            
+        for contract in Contract.objects.filter(sector="Civil", date__year=current_year):
+            revenue['Civil'] += contract.total_value
+        for contract in Contract.objects.filter(sector="Tecnologia", date__year=current_year):
+            revenue['Tecnologia'] += contract.total_value
+        for contract in Contract.objects.filter(sector="Consultoria", date__year=current_year):
+            revenue['Consultoria'] += contract.total_value
+            
+        revenue['Em Falta'] = goal - (revenue['Civil'] + revenue['Tecnologia'] + revenue['Consultoria'])
+        
+        sorted_revenue = sorted(revenue.items(), key=lambda x: x[1], reverse=True)
+        sorted_keys = [item[0] for item in sorted_revenue]
+            
+        return sorted_keys
 
 def total_leads():
     df = pd.DataFrame.from_records(Lead.objects.values())
@@ -221,7 +244,63 @@ def projects_sold():
     for contract in contracts:
         projects += contract.n_of_services
     return projects
+
+def cumulative_contract_amount():
+    cumulative_amount = [0] * 365
+    contracts = Contract.objects.filter(date__year=current_year)
+    
+    previous_amount = 0
+    for contract in contracts:
+        day_of_year = contract.date.timetuple().tm_yday
+        cumulative_amount[day_of_year - 1] = previous_amount + contract.total_value
+        previous_amount = cumulative_amount[day_of_year - 1]
         
+    for i in range(1, len(cumulative_amount)):
+        if cumulative_amount[i] == 0:
+            cumulative_amount[i] = cumulative_amount[i-1]
+    
+    return cumulative_amount
+
+def goal():
+    year_revenue = [0] * 365
+    
+    year_revenue[30] = 8900
+    for i in range(30, 59):
+        year_revenue[i] = 8900
+    year_revenue[59] = 17800
+    for i in range(59, 90):
+        year_revenue[i] = 17800
+    year_revenue[90] = 26700
+    for i in range(90, 120):
+        year_revenue[i] = 26700
+    year_revenue[120] = 38700
+    for i in range(120, 151):
+        year_revenue[i] = 38700
+    year_revenue[151] = 50700
+    for i in range(151, 181):
+        year_revenue[i] = 50700
+    year_revenue[181] = 64200
+    for i in range(181, 212):
+        year_revenue[i] = 64200
+    year_revenue[212] = 76200
+    for i in range(212, 243):
+        year_revenue[i] = 76200
+    year_revenue[243] = 88200
+    for i in range(243, 273):
+        year_revenue[i] = 88200
+    year_revenue[273] = 101000
+    for i in range(273, 304):
+        year_revenue[i] = 101000
+    year_revenue[304] = 112000
+    for i in range(304, 334):
+        year_revenue[i] = 112000
+    year_revenue[334] = 120000
+    for i in range(334, 365):
+        year_revenue[i] = 120000  
+    year_revenue[364] = 127000
+        
+    return year_revenue
+   
 def revenue_per_month():
     revenue = []
     months = ['01', '02', '03', '04', 
@@ -491,7 +570,6 @@ def lead_scoring_radar_data():
     all_leads = Diagnostic.objects.all()
 
     if all_leads:
-        # Calculate the mean of each lead scoring attribute
         mean_scores = np.mean([
             [lead.budget, lead.authority, lead.need, lead.timing, lead.time_to_respond, lead.behavior]
             for lead in all_leads
@@ -1183,4 +1261,127 @@ def con_contract_ticket_over_time():
             value.append(sum)
     return value
     
+
+
+#-CHARTS
+
+def leads_per_sector_CHART():
+    df = pd.DataFrame.from_records(Lead.objects.values())
+    if not df.empty:
+        leads_by_sector = df.groupby('sector').first_name.count().reset_index()
+        try:
+            civ = list(leads_by_sector.loc[leads_by_sector.sector == "Civil"].first_name)[0]
+        except IndexError:
+            civ = 0
+            
+        try:
+            con = list(leads_by_sector.loc[leads_by_sector.sector == "Consultoria"].first_name)[0]
+        except IndexError:
+            con = 0
+            
+        try:
+            tec = list(leads_by_sector.loc[leads_by_sector.sector == "Tecnologia"].first_name)[0]
+        except IndexError:
+            tec = 0
+        leads = {'Civil': civ, 'Consultoria': con, 'Tecnologia': tec}
+        return leads.values()
+    return [0,0,0]
+
+def leads_per_sector_LEGEND():
+    df = pd.DataFrame.from_records(Lead.objects.values())
+    if not df.empty:
+        leads_by_sector = df.groupby('sector').first_name.count().reset_index()
+        try:
+            civ = list(leads_by_sector.loc[leads_by_sector.sector == "Civil"].first_name)[0]
+        except IndexError:
+            civ = 0
+            
+        try:
+            con = list(leads_by_sector.loc[leads_by_sector.sector == "Consultoria"].first_name)[0]
+        except IndexError:
+            con = 0
+            
+        try:
+            tec = list(leads_by_sector.loc[leads_by_sector.sector == "Tecnologia"].first_name)[0]
+        except IndexError:
+            tec = 0
+        leads = {'Civil': civ, 'Consultoria': con, 'Tecnologia': tec}
+        
+        sorted_leads = sorted(leads.items(), key=lambda x: x[1], reverse=True)
+        sorted_keys = [item[0] for item in sorted_leads]
+        
+        return sorted_keys
     
+    return [0, 0, 0]
+
+def leads_per_source_LEGEND():
+    df = pd.DataFrame.from_records(Lead.objects.values())
+    if not df.empty:
+        leads_by_source = df.groupby('source').first_name.count().reset_index()
+        try:
+            google = list(leads_by_source.loc[leads_by_source.source == "Google Ads"].first_name)[0]
+        except IndexError:
+            google = 0
+            
+        try:
+            facebook = list(leads_by_source.loc[leads_by_source.source == "Facebook Ads"].first_name)[0]
+        except IndexError:
+            facebook = 0
+            
+        try:
+            active = list(leads_by_source.loc[leads_by_source.source == "Ativa"].first_name)[0]
+        except IndexError:
+            active = 0
+            
+        try:
+            passive = list(leads_by_source.loc[leads_by_source.source == "Passiva"].first_name)[0]
+        except IndexError:
+            passive = 0
+
+        try:
+            referral = list(leads_by_source.loc[leads_by_source.source == "Indicação"].first_name)[0]
+        except IndexError:
+            referral = 0
+                        
+        leads = {'Google Ads': google, 'Facebook Ads': facebook, 'Prosp. Ativa': active, 'Prosp. Passiva': passive, 'Indicação': referral}
+        
+        sorted_leads = sorted(leads.items(), key=lambda x: x[1], reverse=True)
+        sorted_keys = [item[0] for item in sorted_leads]
+        
+        return sorted_keys
+    
+    return [0, 0, 0, 0]
+
+def sales_funnel_churn_rate():
+    leads = pd.DataFrame.from_records(Lead.objects.values())
+    if not leads.empty:
+        churn_rates = list()
+        pre_diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
+        lost_pre_diagnostic = leads.loc[(leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
+        if pre_diagnostic > 0:
+            churn_rates.append(round((lost_pre_diagnostic / pre_diagnostic) * 100, 2))
+        
+        pre_proposal = leads.loc[(leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
+        lost_pre_proposal = leads.loc[(leads.status == "PERDIDO PRÉ-PROP")].shape[0]
+        if pre_proposal > 0:
+            churn_rates.append(round((lost_pre_proposal / pre_proposal) * 100, 2))
+            
+        post_proposal = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        lost_post_proposal = leads.loc[(leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        if post_proposal > 0:
+            churn_rates.append(round((lost_post_proposal / post_proposal) * 100, 2))
+            
+        return churn_rates
+    
+    return 0
+
+
+
+
+
+
+
+
+
+
+

@@ -139,12 +139,59 @@
 </body>
 
 <script>
+  // Function to add leading zeros to a number
+function padNumber(num) {
+  return num.toString().padStart(2, '0');
+}
+
+// Array to store dates
+let dateArray = [];
+
+// Loop through each day of the year
+for (let day = 1; day <= 365; day++) {
+  // Get the month abbreviation based on the day
+  let month = (day <= 31) ? 'Jan' :
+              (day <= 60) ? 'Feb' :
+              (day <= 91) ? 'Mar' :
+              (day <= 121) ? 'Apr' :
+              (day <= 152) ? 'May' :
+              (day <= 182) ? 'Jun' :
+              (day <= 213) ? 'Jul' :
+              (day <= 244) ? 'Aug' :
+              (day <= 274) ? 'Sep' :
+              (day <= 305) ? 'Oct' :
+              (day <= 335) ? 'Nov' : 'Dec';
+
+  // Calculate the day within the month
+  let dayWithinMonth = (day <= 31) ? day :
+                       (day <= 60) ? day - 31 :
+                       (day <= 91) ? day - 60 :
+                       (day <= 121) ? day - 91 :
+                       (day <= 152) ? day - 121 :
+                       (day <= 182) ? day - 152 :
+                       (day <= 213) ? day - 182 :
+                       (day <= 244) ? day - 213 :
+                       (day <= 274) ? day - 244 :
+                       (day <= 305) ? day - 274 :
+                       (day <= 335) ? day - 305 : day - 335;
+
+  // Create a date string in the format "DD-Mon"
+  let date = padNumber(dayWithinMonth) + '-' + month;
+
+  // Add the date string to the array
+  dateArray.push(date);
+}
+
+// Print the result
+console.log(dateArray);
+
+
   var data = {
-      labels: ["Jan", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+      labels: dateArray,
       datasets: [
             {
               label: "Faturamento",
-              data: {{revenue}},
+              data: {{cumulative_revenue}},
               borderColor: 'rgba(75, 192, 128, 1)',
               fill: false
           },
@@ -182,11 +229,11 @@
 
 <script>
 var data = {
-  labels: ['Tecnologia', 'Construção Civil', 'Consultoria'],
+  labels: ['Tecnologia', 'Construção Civil', 'Consultoria', 'Em Falta'],
   datasets: [{
       data: {{ revenue_per_sector }},
-      backgroundColor: ['rgba(0, 153, 153, 0.7)','rgba(255, 128, 0, 0.7)', 'rgba(0, 102, 102, 0.7)'],
-      hoverBackgroundColor: ['rgba(153, 255, 255, 0.7)','rgba(255, 178, 102, 0.7)', 'rgba(0, 255, 255, 0.7)'],
+      backgroundColor: ['rgba(0, 153, 153, 0.7)','rgba(255, 128, 0, 0.7)', 'rgba(0, 102, 102, 0.7)', 'rgba(255, 100, 100, 0.7)'],
+      hoverBackgroundColor: ['rgba(153, 255, 255, 0.7)','rgba(255, 178, 102, 0.7)', 'rgba(0, 255, 255, 0.7)', 'rgba(255, 100, 100, 1)'],
   }]
 };
 
@@ -196,7 +243,8 @@ var donutChart = new Chart(ctx, {
   type: 'doughnut',
   data: data,
   options: {
-      cutout: '70%', // Adjust the cutout percentage for the donut hole
+      cutout: '65%',
+      rotation: 155,
       plugins: {
           legend: {
               display: true,

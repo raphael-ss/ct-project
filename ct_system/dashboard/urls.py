@@ -76,6 +76,7 @@ urlpatterns = [
     path('relatorios/comercial', views.SalesReports.as_view(), name='reports_sales'),
     
     path('gerar-analise-publico-alvo', views.generate_target_analysis, name='generate_target_analysis'),
+    path('gerar-analise-funil-de-vendas', views.generate_funnel_analysis, name='generate_funnel_analysis'),
     
     path('update_lead/', csrf_exempt(views.update_lead), name='update_lead'),
     path('get_lead_status/<int:lead_id>/', views.get_lead_status, name='get_lead_status'),

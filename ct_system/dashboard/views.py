@@ -12,7 +12,7 @@ import csv
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import datetime
-from .utils import analysis_utils, pdf_utils
+from .utils import analysis_utils, pdf_utils, metric_utils
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 
@@ -306,13 +306,14 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["rede-social"] = SocialMediaMetric.objects.all()
     context["projects_sold"] = analysis_utils.projects_sold()
     context["active_members"] = Member.objects.count()
-    context["goal"] = [8900, 17800, 26700, 38700, 50700, 64200, 76200, 88200, 101000, 112000, 120000, 127000]
+    context["goal"] = analysis_utils.goal()
     context["revenue"] = analysis_utils.revenue_per_month()  
     context['sum'] = analysis_utils.total_revenue()
     context['yearly_goal'] = 127000
     context["revenue_per_sector"] = analysis_utils.revenue_per_sector()
     context['total_leads'] = analysis_utils.total_leads()
     context['current_year'] = datetime.datetime.now().date().year
+    context['cumulative_revenue'] = analysis_utils.cumulative_contract_amount()
     
     return context
 
@@ -1749,7 +1750,6 @@ class SalesReports(LoginRequiredMixin, TemplateView):
         authenticated_username = self.request.user.full_name.split()[0]
         context["name"] = authenticated_username.split(".")[0].title()
         
-        
         return context
     
 
@@ -1772,25 +1772,17 @@ def generate_target_analysis(request):
     {
         'type': 'pie',
         'kwargs': {
-            'data': analysis_utils.revenue_per_sector(),
-            'labels': ['Tecnologia', 'Construção Civil', 'Consultoria'],
+            'data': sorted(analysis_utils.revenue_per_sector(), reverse=True),
+            'labels': analysis_utils.revenue_per_sector_legend(),
             'title': 'Faturamento por Diretoria',
         },
     },
     {
         'type': 'pie',
         'kwargs': {
-            'data': analysis_utils.leads_per_sector(),
-            'labels': ['Construção Civil', 'Consultoria', 'Tecnologia'],
+            'data': sorted(analysis_utils.leads_per_sector_CHART(), reverse=True),
+            'labels': analysis_utils.leads_per_sector_LEGEND(),
             'title': 'Leads por Diretoria',
-        },
-    },
-    {
-        'type': 'pie',
-        'kwargs': {
-            'data': analysis_utils.leads_per_source(),
-            'labels': ['Prospec. Ativa', 'Facebook Ads', 'Google Ads', 'Indicação', 'Prospec. Passiva'],
-            'title': 'Leads por Canal',
         },
     },
     {
@@ -1845,20 +1837,71 @@ def generate_target_analysis(request):
         'type': 'parallel',
         'kwargs': {
             'data': analysis_utils.get_lead_scoring_data(),
-            #'labels':  ['Orçamento', 'Autoridade', 'Necessidade', 'Timing', 'Tempo de Resposta', 'Comportamento'],
-            'title': 'Coordenadas Paralelas: Parametros do Lead Scoring',
+            'title': 'Coordenadas Paralelas: Parâmetros do Lead Scoring',
         },
     },
     ]
 
     buffer = pdf_utils.gen_target_analysis(chart_configs)
 
-    # Set the buffer's file pointer to the beginning of the buffer
     buffer.seek(0)
 
-    # Create an HTTP response with the PDF as the content
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=Público-Alvo-'+ str(datetime.datetime.today().date())+ '.pdf'
 
-    # Return the HTTP response
     return response
+
+def generate_funnel_analysis(request):
+    chart_configs:list = [
+    {
+        'type': 'pie',
+        'kwargs': {
+            'data': sorted(analysis_utils.leads_per_source(), reverse=True),
+            'labels': analysis_utils.leads_per_source_LEGEND(),
+            'title': 'Leads por Canal',
+        },
+    },
+    {
+        'type': 'barh',
+        'kwargs': {
+            'data': sorted(analysis_utils.sales_funnel()),
+            'labels': ['Contrato Fechado','Pós-Proposta','Pré-Proposta','Pré-Diagnóstico'],
+            'title': 'Funil de Vendas',
+            'xlabel': 'Leads',
+        },
+    },
+    ]
+    
+    metric_configs = [
+    {
+        'kwargs': {
+            'text': "Churn Rate do Pré-Diagnóstico: ",
+            'value': str(round(analysis_utils.sales_funnel_churn_rate()[0],3)),
+            'unit': '%\n',
+        },
+    },
+    {
+        'kwargs': {
+            'text': "Churn Rate do Diagnóstico: ",
+            'value': str(round(analysis_utils.sales_funnel_churn_rate()[1],3)),
+            'unit': '%\n',
+        },
+    },
+    {
+        'kwargs': {
+            'text': "Churn Rate da Proposta: ",
+            'value': str(round(analysis_utils.sales_funnel_churn_rate()[2],3)),
+            'unit': '%\n',
+        },
+    },
+    ]
+
+    buffer = pdf_utils.gen_funnel_analysis(chart_configs, metric_configs)
+
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Funil-de-Vendas-'+ str(datetime.datetime.today().date())+ '.pdf'
+
+    return response
+    
