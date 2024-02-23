@@ -43,7 +43,7 @@ def generate_chart(chart_configs:list):
     images = []
 
     for config in chart_configs:
-        fig, ax = plt.subplots(figsize=(80, 60))
+        fig, ax = plt.subplots(figsize=(50, 40))
         fig.patch.set_alpha(0)
         chart_type = config['type']
         kwargs = config.get('kwargs', {})
@@ -121,9 +121,7 @@ def generate_chart(chart_configs:list):
         # Specify the size of the image
         image._restrictSize(6 * inch, 5 * inch)
 
-        # Clear/remove the plot to avoid interference
-        plt.clf()
-        plt.close()
+        ax.clear()
 
         # Append the image to the list
         images.append(image)
