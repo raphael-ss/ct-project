@@ -75,10 +75,9 @@ def leads_per_time():
             else:
                 leads_over_time.append(0)
         else:
+            if leads_over_time: 
+                sum = leads_over_time[-1]
             for lead in leads_in_month:
-                print(lead)
-                if leads_over_time: 
-                    sum = leads_over_time[-1]
                 sum += 1
             leads_over_time.append(sum)    
     print(leads_over_time)
@@ -152,7 +151,7 @@ def leads_per_sector():
     return [0,0,0]
 
 def leads_per_source():
-    df = pd.DataFrame.from_records(Lead.objects.filter(arrival_date__year=current_year).values())
+    df = pd.DataFrame.from_records(Lead.objects.all().values())
     if not df.empty:
         leads_by_source = df.groupby('source').first_name.count().reset_index()
         
@@ -262,42 +261,35 @@ def cumulative_contract_amount():
     return cumulative_amount
 
 def goal():
+    monthly = [8900,8900,8900,12000,12000,13500,12000,12000,12800,11000,8000,7000]
     year_revenue = [0] * 365
     
-    year_revenue[30] = 8900
-    for i in range(30, 59):
-        year_revenue[i] = 8900
-    year_revenue[59] = 17800
-    for i in range(59, 90):
-        year_revenue[i] = 17800
-    year_revenue[90] = 26700
-    for i in range(90, 120):
-        year_revenue[i] = 26700
-    year_revenue[120] = 38700
-    for i in range(120, 151):
-        year_revenue[i] = 38700
-    year_revenue[151] = 50700
-    for i in range(151, 181):
-        year_revenue[i] = 50700
-    year_revenue[181] = 64200
-    for i in range(181, 212):
-        year_revenue[i] = 64200
-    year_revenue[212] = 76200
-    for i in range(212, 243):
-        year_revenue[i] = 76200
-    year_revenue[243] = 88200
-    for i in range(243, 273):
-        year_revenue[i] = 88200
-    year_revenue[273] = 101000
-    for i in range(273, 304):
-        year_revenue[i] = 101000
-    year_revenue[304] = 112000
-    for i in range(304, 334):
-        year_revenue[i] = 112000
-    year_revenue[334] = 120000
-    for i in range(334, 365):
-        year_revenue[i] = 120000  
-    year_revenue[364] = 127000
+    for i in range (0, 365):
+        if i < 31:
+            year_revenue[i] = monthly[0] / 31 * (i+1)
+        elif i <= 59:
+            year_revenue[i] = (monthly[1] / 29 * (i-30)) + monthly[0]
+        elif i <= 91:
+            year_revenue[i] = (monthly[2] / 31 * (i-59)) + monthly[1] + monthly[0]
+        elif i < 121:
+            year_revenue[i] = (monthly[3] / 30 * (i-90)) + monthly[2] + monthly[1] + monthly[0]
+        elif i < 152:
+            year_revenue[i] = (monthly[4] / 31 * (i-120)) + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 182:
+            year_revenue[i] = (monthly[5] / 30 * (i-151)) + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 213:
+            year_revenue[i] = (monthly[6] / 31 * (i-181)) + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 244:
+            year_revenue[i] = (monthly[7] / 31 * (i-212)) + monthly[6] + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 274:
+            year_revenue[i] = (monthly[8] / 30 * (i-243)) + monthly[7] + monthly[6] + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 305:
+            year_revenue[i] = (monthly[9] / 31 * (i-273)) + monthly[8] + monthly[7] + monthly[6] + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        elif i < 335:
+            year_revenue[i] = (monthly[10] / 30 * (i-304)) + monthly[9] + monthly[8] + monthly[7] + monthly[6] + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+        else:
+            year_revenue[i] = (monthly[11] / 31 * (i-334)) + monthly[10] + monthly[9] + monthly[8] + monthly[7] + monthly[6] + monthly[5] + monthly[4] + monthly[3] + monthly[2] + monthly[1] + monthly[0]
+            
         
     return year_revenue
    
@@ -1352,30 +1344,170 @@ def leads_per_source_LEGEND():
     
     return [0, 0, 0, 0]
 
-def sales_funnel_churn_rate():
+def sales_funnel_churn_rate(by_channel=False):
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        churn_rates = list()
-        pre_diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
-        lost_pre_diagnostic = leads.loc[(leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
-        if pre_diagnostic > 0:
-            churn_rates.append(round((lost_pre_diagnostic / pre_diagnostic) * 100, 2))
-        
-        pre_proposal = leads.loc[(leads.status == "PRÉ-PROPOSTA") | (leads.status == "PERDIDO PRÉ-PROP")].shape[0]
-        lost_pre_proposal = leads.loc[(leads.status == "PERDIDO PRÉ-PROP")].shape[0]
-        if pre_proposal > 0:
-            churn_rates.append(round((lost_pre_proposal / pre_proposal) * 100, 2))
+        if not by_channel:
+            churn_rates = list()
+            pre_diagnostic = leads.shape[0]
+            lost_pre_diagnostic = leads.loc[(leads.status == "PERDIDO PRÉ-DIAG")].shape[0]
+            if pre_diagnostic > 0:
+                churn_rates.append(round((lost_pre_diagnostic / pre_diagnostic) * 100, 2))
             
-        post_proposal = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
-        lost_post_proposal = leads.loc[(leads.status == "PERDIDO PÓS-PROP")].shape[0]
-        if post_proposal > 0:
-            churn_rates.append(round((lost_post_proposal / post_proposal) * 100, 2))
+            pre_proposal = leads.loc[(leads.status == "PRÉ-PROPOSTA") | (leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP") | (leads.status == "PERDIDO PRÉ-PROP") | (leads.status == "CONTRATO FECHADO")].shape[0]
+            lost_pre_proposal = leads.loc[(leads.status == "PERDIDO PRÉ-PROP")].shape[0]
+            if pre_proposal > 0:
+                churn_rates.append(round((lost_pre_proposal / pre_proposal) * 100, 2))
+                
+            post_proposal = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP") | (leads.status == "CONTRATO FECHADO")].shape[0]
+            lost_post_proposal = leads.loc[(leads.status == "PERDIDO PÓS-PROP")].shape[0]
+            if post_proposal > 0:
+                churn_rates.append(round((lost_post_proposal / post_proposal) * 100, 2))
+                
+            return churn_rates
+        else:
+            churn_rates_by_channel = dict()
+            leads_by_source = leads.groupby('source')
+            for source, group in leads_by_source:
+                pre_diagnostic = group.shape[0]
+                lost_pre_diagnostic = group.loc[(group.status == "PERDIDO PRÉ-DIAG")].shape[0]
+                if pre_diagnostic > 0:
+                    churn_rates_by_channel[source] = {'Pré-Diagnóstico':round((lost_pre_diagnostic / pre_diagnostic * 100), 2)} 
+                else:
+                    churn_rates_by_channel[source] = {'Pré-Diagnóstico': "SEM DADOS"}
+                
+                pre_proposal = group.loc[(group.status == "PRÉ-PROPOSTA") | (group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP") | (group.status == "PERDIDO PRÉ-PROP") | (group.status == "CONTRATO FECHADO")].shape[0]
+                lost_pre_proposal = group.loc[(group.status == "PERDIDO PRÉ-PROP")].shape[0]
+                
+                if pre_proposal > 0:
+                    if source in churn_rates_by_channel:
+                        churn_rates_by_channel[source].update({"Pré-Proposta": round((lost_pre_proposal / pre_proposal) * 100, 2)})
+                    else:
+                        churn_rates_by_channel[source] = {"Pré-Proposta": round((lost_pre_proposal / pre_proposal * 100), 2)}
+                else:
+                    churn_rates_by_channel[source].update({"Pré-Proposta": "SEM DADOS"})
+               
+                post_proposal = group.loc[(group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP") | (group.status == "CONTRATO FECHADO")].shape[0]
+                lost_post_proposal = group.loc[(group.status == "PERDIDO PÓS-PROP")].shape[0]
+                
+                if post_proposal > 0:
+                    churn_rates_by_channel[source].update({"Pós-Proposta":round((lost_post_proposal / post_proposal * 100), 2)})
+                else:
+                    churn_rates_by_channel[source].update({"Pós-Proposta": "SEM DADOS"})
             
-        return churn_rates
+            sorted_churn_rates = dict(sorted(churn_rates_by_channel.items(), key=lambda x: x[0]))
+            return list(sorted_churn_rates.values()),list(sorted_churn_rates.keys())
+        """
+        else:
+            churn_rates_by_channel = dict()
+            leads_by_source = leads.groupby('source')
+            for source, group in leads_by_source:
+                pre_diagnostic = group.loc[(group.status == "PRÉ-DIAGNÓSTICO") | (group.status == "PERDIDO PRÉ-DIAG")].shape[0]
+                lost_pre_diagnostic = group.loc[(group.status == "PERDIDO PRÉ-DIAG")].shape[0]
+                if pre_diagnostic > 0:
+                    churn_rates_by_channel[source] = {'Pré-Diagnóstico':round((lost_pre_diagnostic / pre_diagnostic * 100), 2)} 
+                else:
+                    churn_rates_by_channel[source] = {'Pré-Diagnóstico': "SEM DADOS"}
+                
+                pre_proposal = group.loc[(group.status == "PRÉ-PROPOSTA") | (group.status == "PERDIDO PRÉ-PROP")].shape[0]
+                lost_pre_proposal = group.loc[(group.status == "PERDIDO PRÉ-PROP")].shape[0]
+                
+                if pre_proposal > 0:
+                    if source in churn_rates_by_channel:
+                        churn_rates_by_channel[source].update({"Pré-Proposta": round((lost_pre_proposal / pre_proposal) * 100, 2)})
+                    else:
+                        churn_rates_by_channel[source] = {"Pré-Proposta": round((lost_pre_proposal / pre_proposal * 100), 2)}
+                else:
+                    churn_rates_by_channel[source].update({"Pré-Proposta": "SEM DADOS"})
+               
+                post_proposal = group.loc[(group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP")].shape[0]
+                lost_post_proposal = group.loc[(group.status == "PERDIDO PÓS-PROP")].shape[0]
+                
+                if post_proposal > 0:
+                    churn_rates_by_channel[source].update({"Pós-Proposta":round((lost_post_proposal / post_proposal * 100), 2)})
+                else:
+                    churn_rates_by_channel[source].update({"Pós-Proposta": "SEM DADOS"})
+            
+            sorted_churn_rates = dict(sorted(churn_rates_by_channel.items(), key=lambda x: x[0]))
+            return list(sorted_churn_rates.values()),list(sorted_churn_rates.keys())"""
     
     return 0
 
-
+def sales_funnel_conversion_rate(by_channel=False, by_salesman=False):
+    leads = pd.DataFrame.from_records(Lead.objects.values())
+    if not leads.empty:
+        if not by_channel and not by_salesman:
+            conversion_rates = list()
+            diagnostic = leads.loc[(leads.status == "PRÉ-DIAGNÓSTICO") | (leads.status == "PERDIDO PRÉ-DIAG") | (leads.status == "PRÉ-PROPOSTA") | (leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+            proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP") | (leads.status == "CONTRATO FECHADO")].shape[0]
+            if diagnostic > 0:
+                conversion_rates.append(round((proposition / diagnostic) * 100, 2))
+            
+            closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
+            
+            if proposition > 0:
+                conversion_rates.append(round((closed / proposition) * 100, 2))
+                
+            return conversion_rates
+        
+        elif by_salesman:
+            conversion_rates_by_salesman = dict()
+            members = pd.DataFrame.from_records(Member.objects.values())
+            members.drop(columns=['sector','role','date_of_entry','date_of_leave','professional_email','academic_email','phone','cpf','rg','degree','date_of_birth','address','notes'], inplace=True)
+            members.rename(columns={
+                'id': 'member_id_id'},
+                inplace=True)
+            leads_and_members = leads.merge(members, how="left", on='member_id_id')
+            print(leads_and_members.head())
+            leads_by_salesman = leads_and_members.groupby('first_name_y')
+            
+            for salesman, group in leads_by_salesman:
+                diagnostic = group.loc[(group.status == "PRÉ-DIAGNÓSTICO") | (group.status == "PERDIDO PRÉ-DIAG") | (group.status == "PRÉ-PROPOSTA") | (group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP")].shape[0]
+                proposition = group.loc[(group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP") | (group.status == "CONTRATO FECHADO")].shape[0]
+                if diagnostic > 0:
+                    conversion_rates_by_salesman[salesman] = {'Diagnóstico':round((proposition / diagnostic * 100), 2)} 
+                else:
+                    conversion_rates_by_salesman[salesman] = {'Diagnóstico': "SEM DADOS"}
+                
+                closed = group.loc[(group.status == "CONTRATO FECHADO")].shape[0]
+                
+                if proposition > 0:
+                    if salesman in conversion_rates_by_salesman:
+                        conversion_rates_by_salesman[salesman].update({"Proposta": round((closed / proposition) * 100, 2)})
+                    else:
+                        conversion_rates_by_salesman[salesman] = {"Proposta": round((closed / proposition * 100), 2)}
+                else:
+                    conversion_rates_by_salesman[salesman].update({"Proposta": "SEM DADOS"})
+            
+            leads_per_salesman_count = leads_and_members.groupby('first_name_y').id.count().reset_index()
+            
+            sorted_conversion_rates = dict(sorted(conversion_rates_by_salesman.items(), key=lambda x: x[0]))
+            
+            return list(sorted_conversion_rates.values()), list(sorted_conversion_rates.keys()), leads_per_salesman_count.first_name_y, leads_per_salesman_count.id
+                      
+        elif by_channel:
+            conversion_rates_by_channel = dict()
+            leads_by_source = leads.groupby('source')
+            for source, group in leads_by_source:
+                diagnostic = group.loc[(group.status == "PRÉ-DIAGNÓSTICO") | (group.status == "PERDIDO PRÉ-DIAG") | (group.status == "PRÉ-PROPOSTA") | (group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP")].shape[0]
+                proposition = group.loc[(group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP") | (group.status == "CONTRATO FECHADO")].shape[0]
+                if diagnostic > 0:
+                    conversion_rates_by_channel[source] = {'Diagnóstico':round((proposition / diagnostic * 100), 2)} 
+                else:
+                    conversion_rates_by_channel[source] = {'Diagnóstico': "SEM DADOS"}
+                
+                closed = group.loc[(group.status == "CONTRATO FECHADO")].shape[0]
+                
+                if proposition > 0:
+                    if source in conversion_rates_by_channel:
+                        conversion_rates_by_channel[source].update({"Proposta": round((closed / proposition) * 100, 2)})
+                    else:
+                        conversion_rates_by_channel[source] = {"Proposta": round((closed / proposition * 100), 2)}
+                else:
+                    conversion_rates_by_channel[source].update({"Proposta": "SEM DADOS"})
+            
+            sorted_churn_rates = dict(sorted(conversion_rates_by_channel.items(), key=lambda x: x[0]))
+            return list(sorted_churn_rates.values()),list(sorted_churn_rates.keys())
 
 
 

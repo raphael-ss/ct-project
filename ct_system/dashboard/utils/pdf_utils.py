@@ -82,23 +82,28 @@ def gen_funnel_analysis(chart_configs, metric_configs, date=datetime.datetime.no
         title_text = f"Relatório - Análise de Funil de Vendas: {date}"
         canvas.drawCentredString(letter[0] / 2, letter[1] - 50, title_text)
 
-    custom_style = ParagraphStyle(
-        'CustomStyle',
-        parent=getSampleStyleSheet()['BodyText'],
-        fontName='Lato',
-        fontSize=13,
-    )
+
     # Assuming metric_utils.generate_metrics() returns a list of strings
     metric_strings = metric_utils.generate_metrics(configs=metric_configs)
 
     # Create a list of Paragraph objects with bullet points
-    bullet_point_paragraphs = [Paragraph(f'&bull; {metric_str}', getSampleStyleSheet()['Normal']) for metric_str in metric_strings]
+    paragraphs = list()
+    
+    for metric_str in metric_strings:
+        if metric_str[-1] == ';':
+            paragraphs.append([Paragraph(f'&bull; {metric_str}', getSampleStyleSheet()['BodyText'])])
+        elif metric_str[-1] == ':':
+            paragraphs.append([Spacer(1,6),Paragraph(f'{metric_str}', getSampleStyleSheet()['Heading3']),Spacer(1, 6)])
+        else:
+            paragraphs.append([Spacer(1,3),Paragraph(f'{metric_str}', getSampleStyleSheet()['Normal']),Spacer(1, 3)])
+        
 
     # Add content to the document
-    content = [
-        *bullet_point_paragraphs,
+    content = [ 
+        Paragraph("Métricas Gerais e Relativas:", getSampleStyleSheet()['Heading2']),
+        *[phrase for sublist in paragraphs for phrase in sublist],
         Spacer(1, 12),
-        Paragraph("Visualizações das Distribuições, Frequências e Relações dos Dados:", getSampleStyleSheet()['Normal']),
+        Paragraph("Visualizações das Distribuições, Frequências e Relações dos Dados:", getSampleStyleSheet()['Heading2']),
         Spacer(1, 12),
         *chart_utils.generate_chart(chart_configs=chart_configs)
     ]

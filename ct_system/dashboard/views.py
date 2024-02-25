@@ -1871,30 +1871,511 @@ def generate_funnel_analysis(request):
         },
     },
     ]
+    churn_rate_per_source,churn_rate_sources = analysis_utils.sales_funnel_churn_rate(by_channel=True)
+    conversion_rate_per_source,conversion_rate_sources = analysis_utils.sales_funnel_conversion_rate(by_channel=True)
+    conversion_rate_per_salesman,conversion_rate_salesman, salesman, leads_per_salesman_count = analysis_utils.sales_funnel_conversion_rate(by_salesman=True)
+    conversion_rates = analysis_utils.sales_funnel_conversion_rate()
     
-    metric_configs = [
+    metric_configs = []
+
+    # Churn Rate
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': f"CHURN RATE GERAL",
+            'value': "",
+            'unit': ":",
+        },
+    })
+    metric_configs.append(
     {
         'kwargs': {
             'text': "Churn Rate do Pré-Diagnóstico: ",
-            'value': str(round(analysis_utils.sales_funnel_churn_rate()[0],3)),
-            'unit': '%\n',
+            'value': str(analysis_utils.sales_funnel_churn_rate()[0]),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': "Churn Rate do Diagnóstico: ",
+            'value': str(analysis_utils.sales_funnel_churn_rate()[1]),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': "Churn Rate da Proposta: ",
+            'value': str(analysis_utils.sales_funnel_churn_rate()[2]),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': f"CHURN RATE POR CANAL",
+            'value': "",
+            'unit': ":",
+        },
+    })
+    
+    for i, source in enumerate(churn_rate_sources):
+        metric_configs.append({
+            'kwargs': {
+                'text': f"{source}",
+                'value': "",
+                'unit': ':',
+            },
+        })
+        
+        for stage in ['Pré-Diagnóstico', 'Pré-Proposta', 'Pós-Proposta']:
+            metric_configs.append({
+                'kwargs': {
+                    'text': f"Churn Rate do {stage} - {source}: ",
+                    'value': str(churn_rate_per_source[i][stage]),
+                    'unit': '%;',
+                },
+            })
+
+
+    metric_configs.append(
+        {
+        'kwargs': {
+            'text': f"TAXA DE CONVERSÃO GERAL",
+            'value': "",
+            'unit': ":",
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': "Taxa de Conversão do Diagnóstico: ",
+            'value': str(conversion_rates[0]),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': "Taxa de Conversão da Proposta: ",
+            'value': str(conversion_rates[1]),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': "Taxa de Conversão Geral: ",
+            'value': str(((conversion_rates[0]/100) * (conversion_rates[1]/100)) * 100),
+            'unit': '%;',
+        },
+    })
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': f"TAXA DE CONVERSÃO POR CANAL",
+            'value': "",
+            'unit': ":",
+        },
+    })
+    
+    # Taxa de Conversão por Canal
+    for i, source in enumerate(conversion_rate_sources):
+        metric_configs.append({
+            'kwargs': {
+                'text': f"{source}",
+                'value': "",
+                'unit': ':',
+            },
+        })
+        for stage in ['Diagnóstico', 'Proposta']:
+            metric_configs.append({
+                'kwargs': {
+                    'text': f"Taxa de Conversão do {stage} - {source}: ",
+                    'value': str(conversion_rate_per_source[i][stage]),
+                    'unit': '%;',
+                },
+            })
+
+    metric_configs.append(
+    {
+        'kwargs': {
+            'text': f"CONTAGEM DE LEADS E TAXA DE CONVERSÃO POR VENDEDOR",
+            'value': "",
+            'unit': ":",
+        },
+    },
+    )
+    
+    # Contagem de Leads e Taxa de Conversão por Vendedor
+    for i, salesman_name in enumerate(salesman):
+        metric_configs.append({
+            'kwargs': {
+                'text': f"CONTAGEM: {salesman_name}",
+                'value': "",
+                'unit': ':',
+            },
+        })
+        metric_configs.append({
+            'kwargs': {
+                'text': f"{salesman_name} atendeu/está atendendo {leads_per_salesman_count[i]} leads",
+                'value': "",
+                'unit': ';',
+            },
+        })
+        
+    for i, salesman_name in enumerate(conversion_rate_salesman):
+        metric_configs.append({
+            'kwargs': {
+                'text': f"{salesman_name}",
+                'value': "",
+                'unit': ':',
+            },
+        })
+        for stage in ['Diagnóstico', 'Proposta']:
+            metric_configs.append({
+                'kwargs': {
+                    'text': f"Taxa de Conversão do {stage} - {salesman_name}: ",
+                    'value': str(conversion_rate_per_salesman[i][stage]),
+                    'unit': '%;',
+                },
+            })
+    
+
+    
+    """
+    metric_configs = [
+    {
+        'kwargs': {
+            'text': f"CHURN RATE GERAL",
+            'value': "",
+            'unit': ":",
+        },
+    },
+    {
+        'kwargs': {
+            'text': "Churn Rate do Pré-Diagnóstico: ",
+            'value': str(analysis_utils.sales_funnel_churn_rate()[0]),
+            'unit': '%;',
         },
     },
     {
         'kwargs': {
             'text': "Churn Rate do Diagnóstico: ",
-            'value': str(round(analysis_utils.sales_funnel_churn_rate()[1],3)),
-            'unit': '%\n',
+            'value': str(analysis_utils.sales_funnel_churn_rate()[1]),
+            'unit': '%;',
         },
     },
     {
         'kwargs': {
             'text': "Churn Rate da Proposta: ",
-            'value': str(round(analysis_utils.sales_funnel_churn_rate()[2],3)),
-            'unit': '%\n',
+            'value': str(analysis_utils.sales_funnel_churn_rate()[2]),
+            'unit': '%;',
         },
     },
-    ]
+    {
+        'kwargs': {
+            'text': f"CHURN RATE POR CANAL",
+            'value': "",
+            'unit': ":",
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{churn_rate_sources[0]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate do Pré-Diagnóstico - {churn_rate_sources[0]}: ",
+            'value': str(churn_rate_per_source[0]['Pré-Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pré-Proposta - {churn_rate_sources[0]}: ",
+            'value': str(churn_rate_per_source[0]['Pré-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pós-Proposta - {churn_rate_sources[0]}: ",
+            'value': str(churn_rate_per_source[0]['Pós-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{churn_rate_sources[1]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate do Pré-Diagnóstico - {churn_rate_sources[1]}: ",
+            'value': str(churn_rate_per_source[1]['Pré-Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pré-Proposta - {churn_rate_sources[1]}: ",
+            'value': str(churn_rate_per_source[1]['Pré-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pós-Proposta - {churn_rate_sources[1]}: ",
+            'value': str(churn_rate_per_source[1]['Pós-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{churn_rate_sources[2]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate do Pré-Diagnóstico - {churn_rate_sources[2]}: ",
+            'value': str(churn_rate_per_source[2]['Pré-Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pré-Proposta - {churn_rate_sources[2]}: ",
+            'value': str(churn_rate_per_source[2]['Pré-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pós-Proposta - {churn_rate_sources[2]}: ",
+            'value': str(churn_rate_per_source[2]['Pós-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{churn_rate_sources[3]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate do Pré-Diagnóstico - {churn_rate_sources[3]}: ",
+            'value': str(churn_rate_per_source[3]['Pré-Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pré-Proposta - {churn_rate_sources[3]}: ",
+            'value': str(churn_rate_per_source[3]['Pré-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pós-Proposta - {churn_rate_sources[3]}: ",
+            'value': str(churn_rate_per_source[3]['Pós-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{churn_rate_sources[4]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate do Pré-Diagnóstico - {churn_rate_sources[4]}: ",
+            'value': str(churn_rate_per_source[4]['Pré-Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pré-Proposta - {churn_rate_sources[4]}: ",
+            'value': str(churn_rate_per_source[4]['Pré-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Churn Rate da Pós-Proposta - {churn_rate_sources[4]}: ",
+            'value': str(churn_rate_per_source[4]['Pós-Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"TAXA DE CONVERSÃO GERAL",
+            'value': "",
+            'unit': ":",
+        },
+    },
+    {
+        'kwargs': {
+            'text': "Taxa de Conversão do Diagnóstico: ",
+            'value': str(conversion_rates[0]),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': "Taxa de Conversão da Proposta: ",
+            'value': str(conversion_rates[1]),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"TAXA DE CONVERSÃO POR CANAL",
+            'value': "",
+            'unit': ":",
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{conversion_rate_sources[0]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão do Diagnóstico - {conversion_rate_per_source[0]}: ",
+            'value': str(churn_rate_per_source[0]['Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão da Proposta - {conversion_rate_per_source[0]}: ",
+            'value': str(churn_rate_per_source[0]['Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{conversion_rate_sources[1]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão do Diagnóstico - {conversion_rate_per_source[1]}: ",
+            'value': str(churn_rate_per_source[1]['Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão da Proposta - {conversion_rate_per_source[1]}: ",
+            'value': str(churn_rate_per_source[1]['Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{conversion_rate_sources[2]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão do Diagnóstico - {conversion_rate_per_source[2]}: ",
+            'value': str(churn_rate_per_source[2]['Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão da Proposta - {conversion_rate_per_source[2]}: ",
+            'value': str(churn_rate_per_source[2]['Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{conversion_rate_sources[3]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão do Diagnóstico - {conversion_rate_per_source[3]}: ",
+            'value': str(churn_rate_per_source[3]['Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão da Proposta - {conversion_rate_per_source[3]}: ",
+            'value': str(churn_rate_per_source[3]['Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"{conversion_rate_sources[4]}",
+            'value': "",
+            'unit': ':',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão do Diagnóstico - {conversion_rate_per_source[4]}: ",
+            'value': str(churn_rate_per_source[4]['Diagnóstico']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"Taxa de Conversão da Proposta - {conversion_rate_per_source[4]}: ",
+            'value': str(churn_rate_per_source[4]['Proposta']),
+            'unit': '%;',
+        },
+    },
+    {
+        'kwargs': {
+            'text': f"CONTAGEM DE LEADS E TAXA DE CONVERSÃO POR VENDEDOR",
+            'value': "",
+            'unit': ":",
+        },
+    },
+        {
+            'kwargs': {
+                'text': f"CONTAGEM: {salesman[0]}",
+                'value': "",
+                'unit': ':',
+            },
+        },
+        {
+            'kwargs': {
+                'text': f"{salesman[0]} atendeu/está atendendo {leads_per_salesman_count[0]} leads",
+                'value': "",
+                'unit': ';',
+            },
+        },
+    ]"""
 
     buffer = pdf_utils.gen_funnel_analysis(chart_configs, metric_configs)
 

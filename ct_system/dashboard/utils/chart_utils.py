@@ -43,7 +43,7 @@ def generate_chart(chart_configs:list):
     images = []
 
     for config in chart_configs:
-        fig, ax = plt.subplots(figsize=(40, 35))
+        fig, ax = plt.subplots(figsize=(42, 30))
         fig.patch.set_alpha(0)
         chart_type = config['type']
         kwargs = config.get('kwargs', {})
@@ -51,27 +51,27 @@ def generate_chart(chart_configs:list):
         # Determine the chart type and plot accordingly
         if chart_type == 'line':
             ax.plot(kwargs.get('x_axis', []), kwargs.get('y_axis', []), marker=kwargs.get('marker', 'o'), linestyle=kwargs.get('linestyle', '-'))
-            plt.title(kwargs.get('title', ''), fontsize=120, fontstyle="oblique", weight="bold")
+            plt.title(kwargs.get('title', ''), fontsize=100, fontstyle="oblique", weight="bold")
             
         elif chart_type == 'pie':
             try:
                 ax.pie(kwargs.get('data', []), labels=kwargs.get('labels', []), colors=kwargs.get('colors'), autopct='%1.1f%%', pctdistance=0.85, explode=[0] * (len(kwargs.get('data', [])) -2) + [0.15] + [0.25], shadow=kwargs.get('shadow', True))
                 plt.legend(loc='upper right')
-                plt.title(kwargs.get('title', ''), fontsize=120, fontstyle="oblique", weight="bold")
+                plt.title(kwargs.get('title', ''), fontsize=100, fontstyle="oblique", weight="bold")
             except ValueError:
                 plt.title('ERRO AO GERAR GRÁFICO: DADOS INSUFICIENTES', fontsize=100, fontstyle="oblique", weight="bold")
                 
         elif chart_type == 'bar':
             ax.bar(kwargs.get('labels', []), kwargs.get('data', []), color=kwargs.get('colors'))
-            plt.title(kwargs.get('title', ''), fontsize=120, fontstyle="oblique", weight="bold")
+            plt.title(kwargs.get('title', ''), fontsize=100, fontstyle="oblique", weight="bold")
             
         elif chart_type == 'barh':
             ax.barh(kwargs.get('labels', []), kwargs.get('data', []), color=kwargs.get('colors'), align='center')
-            plt.title(kwargs.get('title', ''), fontsize=120, fontstyle="oblique", weight="bold")
+            plt.title(kwargs.get('title', ''), fontsize=100, fontstyle="oblique", weight="bold")
             
         elif chart_type == 'heatmap':
             sns.heatmap(kwargs.get('data', []), cbar=kwargs.get('cbar', True), cmap=kwargs.get('cmap', 'Oranges'), annot=kwargs.get('annot', False), ax=ax)
-            plt.title(kwargs.get('title', ''), fontsize=120, fontstyle="oblique", weight="bold")
+            plt.title(kwargs.get('title', ''), fontsize=100, fontstyle="oblique", weight="bold")
         
         elif chart_type == 'radar':
             labels = kwargs.get('labels', [])
@@ -119,7 +119,7 @@ def generate_chart(chart_configs:list):
         image = Image(buffer)
 
         # Specify the size of the image
-        image._restrictSize(5 * inch, 4 * inch)
+        image._restrictSize(6 * inch, 4 * inch)
 
         ax.clear()
 
