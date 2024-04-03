@@ -222,7 +222,7 @@ def conversion_rate_diagnostic_to_proposition():
 def conversion_rate_proposition_to_closed():
     leads = pd.DataFrame.from_records(Lead.objects.values())
     if not leads.empty:
-        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")].shape[0]
+        proposition = leads.loc[(leads.status == "PÓS-PROPOSTA") | (leads.status == "PERDIDO PÓS-PROP")|(leads.status == "CONTRATO FECHADO")].shape[0]
         closed = leads.loc[(leads.status == "CONTRATO FECHADO")].shape[0]
         if proposition > 0:
             return round(closed/proposition, 1)*100
