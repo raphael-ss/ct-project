@@ -244,19 +244,31 @@ def projects_sold():
         projects += contract.n_of_services
     return projects
 
-def cumulative_contract_amount():
+def cumulative_contract_amount(current_year):
+    # Initialize cumulative amounts to zero for each day of the year
     cumulative_amount = [0] * 365
-    contracts = Contract.objects.filter(date__year=current_year)
-    
+    # Get contracts for the specified year
+    contracts = Contract.objects.filter(date__year=current_year).order_by('date')
+
     previous_amount = 0
+    current_day = 0
+    
     for contract in contracts:
         day_of_year = contract.date.timetuple().tm_yday
-        cumulative_amount[day_of_year - 1] = previous_amount + contract.total_value
-        previous_amount = cumulative_amount[day_of_year - 1]
         
-    for i in range(1, len(cumulative_amount)):
-        if cumulative_amount[i] == 0:
-            cumulative_amount[i] = cumulative_amount[i-1]
+        # Update all days from the last updated day to the current contract day
+        while current_day < day_of_year:
+            cumulative_amount[current_day] = previous_amount
+            current_day += 1
+        
+        # Update the cumulative amount for the current contract day
+        previous_amount += contract.total_value
+        cumulative_amount[day_of_year - 1] = previous_amount
+    
+    # Fill the remaining days of the year with the last cumulative amount
+    while current_day < 365:
+        cumulative_amount[current_day] = previous_amount
+        current_day += 1
     
     return cumulative_amount
 
@@ -308,10 +320,11 @@ def revenue_per_month():
             else:
                 revenue.append(0)
         else:
+            if revenue:
+                sum = revenue[-1]
             for contract in contracts_in_month:
-                if revenue: 
-                    sum = revenue[-1]
                 sum += contract.total_value
+            
             revenue.append(sum)
             
     return revenue
@@ -1397,39 +1410,6 @@ def sales_funnel_churn_rate(by_channel=False):
             
             sorted_churn_rates = dict(sorted(churn_rates_by_channel.items(), key=lambda x: x[0]))
             return list(sorted_churn_rates.values()),list(sorted_churn_rates.keys())
-        """
-        else:
-            churn_rates_by_channel = dict()
-            leads_by_source = leads.groupby('source')
-            for source, group in leads_by_source:
-                pre_diagnostic = group.loc[(group.status == "PRÉ-DIAGNÓSTICO") | (group.status == "PERDIDO PRÉ-DIAG")].shape[0]
-                lost_pre_diagnostic = group.loc[(group.status == "PERDIDO PRÉ-DIAG")].shape[0]
-                if pre_diagnostic > 0:
-                    churn_rates_by_channel[source] = {'Pré-Diagnóstico':round((lost_pre_diagnostic / pre_diagnostic * 100), 2)} 
-                else:
-                    churn_rates_by_channel[source] = {'Pré-Diagnóstico': "SEM DADOS"}
-                
-                pre_proposal = group.loc[(group.status == "PRÉ-PROPOSTA") | (group.status == "PERDIDO PRÉ-PROP")].shape[0]
-                lost_pre_proposal = group.loc[(group.status == "PERDIDO PRÉ-PROP")].shape[0]
-                
-                if pre_proposal > 0:
-                    if source in churn_rates_by_channel:
-                        churn_rates_by_channel[source].update({"Pré-Proposta": round((lost_pre_proposal / pre_proposal) * 100, 2)})
-                    else:
-                        churn_rates_by_channel[source] = {"Pré-Proposta": round((lost_pre_proposal / pre_proposal * 100), 2)}
-                else:
-                    churn_rates_by_channel[source].update({"Pré-Proposta": "SEM DADOS"})
-               
-                post_proposal = group.loc[(group.status == "PÓS-PROPOSTA") | (group.status == "PERDIDO PÓS-PROP")].shape[0]
-                lost_post_proposal = group.loc[(group.status == "PERDIDO PÓS-PROP")].shape[0]
-                
-                if post_proposal > 0:
-                    churn_rates_by_channel[source].update({"Pós-Proposta":round((lost_post_proposal / post_proposal * 100), 2)})
-                else:
-                    churn_rates_by_channel[source].update({"Pós-Proposta": "SEM DADOS"})
-            
-            sorted_churn_rates = dict(sorted(churn_rates_by_channel.items(), key=lambda x: x[0]))
-            return list(sorted_churn_rates.values()),list(sorted_churn_rates.keys())"""
     
     return 0
 

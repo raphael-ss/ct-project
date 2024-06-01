@@ -313,7 +313,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
     context["revenue_per_sector"] = analysis_utils.revenue_per_sector()
     context['total_leads'] = analysis_utils.total_leads()
     context['current_year'] = datetime.datetime.now().date().year
-    context['cumulative_revenue'] = analysis_utils.cumulative_contract_amount()
+    context['cumulative_revenue'] = analysis_utils.cumulative_contract_amount(current_year=datetime.datetime.now().year)
     
     return context
 
