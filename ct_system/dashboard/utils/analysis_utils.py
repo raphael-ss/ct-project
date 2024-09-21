@@ -9,17 +9,23 @@ def revenue_per_sector(goal=127000):
     civil_total = 0
     tec_total = 0
     con_total = 0
-      
+    gp_total = 0
+    ko_total = 0
+    
     for contract in Contract.objects.filter(sector="Civil", date__year=current_year):
       civil_total += contract.total_value
     for contract in Contract.objects.filter(sector="Tecnologia", date__year=current_year):
       tec_total += contract.total_value
     for contract in Contract.objects.filter(sector="Consultoria", date__year=current_year):
       con_total += contract.total_value
+    for contract in Contract.objects.filter(sector="Gestão de Pessoas", date__year=current_year):
+      gp_total += contract.total_value
+    for contract in Contract.objects.filter(sector="Comercial", date__year=current_year):
+      ko_total += contract.total_value
       
-    total = goal - (civil_total + tec_total + con_total)
+    total = goal - (civil_total + tec_total + con_total + gp_total + ko_total)
       
-    return [tec_total, civil_total, con_total, total]
+    return [tec_total, civil_total, con_total, gp_total, ko_total, total]
 
 def revenue_per_sector_legend(goal=127000):
         revenue = {}
@@ -273,7 +279,7 @@ def cumulative_contract_amount(current_year):
     return cumulative_amount
 
 def goal():
-    monthly = [8900,8900,8900,12000,12000,13500,12000,12000,12800,11000,8000,7000]
+    monthly = [22000,22000,22000,22000,22000,22000,22000,22000,22000,22000,22000,22000]
     year_revenue = [0] * 365
     
     for i in range (0, 365):

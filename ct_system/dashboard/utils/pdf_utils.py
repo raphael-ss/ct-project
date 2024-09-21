@@ -12,9 +12,9 @@ from . import chart_utils, metric_utils
 from reportlab.platypus import ListItem
 
 #-testing:
-#-font_path = 'dashboard/utils/font/Lato-Regular.ttf'
+font_path = 'dashboard/utils/font/Lato-Regular.ttf'
 #-official:
-font_path = 'ct_system/dashboard/utils/font/Lato-Regular.ttf'
+#font_path = 'ct_system/dashboard/utils/font/Lato-Regular.ttf'
 pdfmetrics.registerFont(TTFont('Lato', font_path))
 
 def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):
@@ -26,9 +26,9 @@ def gen_target_analysis(chart_configs, date=datetime.datetime.now().date()):
 
         canvas.rect(10, 10, letter[0] - 20, letter[1] - 20)
         #-testing:
-        #-logo_path = 'ct_system/static/img/logo_verde.png'
+        logo_path = 'ct_system/static/img/logo_verde.png'
         #-official:
-        logo_path = 'ct_system/ct_system/static/img/logo_verde.png'
+        #logo_path = 'ct_system/ct_system/static/img/logo_verde.png'
         logo_width = 2.5 * inch
         logo_height = 2.5 * inch
         center_x = (letter[0] - logo_width) / 2
@@ -68,9 +68,9 @@ def gen_funnel_analysis(chart_configs, metric_configs, date=datetime.datetime.no
 
         canvas.rect(10, 10, letter[0] - 20, letter[1] - 20)
         #-testing:
-        #-logo_path = 'ct_system/static/img/logo_verde.png'
+        logo_path = 'ct_system/static/img/logo_verde.png'
         #-official:
-        logo_path = 'ct_system/ct_system/static/img/logo_verde.png'
+        #logo_path = 'ct_system/ct_system/static/img/logo_verde.png'
         logo_width = 2.5 * inch
         logo_height = 2.5 * inch
         center_x = (letter[0] - logo_width) / 2

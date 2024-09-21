@@ -244,13 +244,18 @@ class Contract(models.Model):
     TEC = "Tecnologia"
     CIV = "Civil"
     CON = "Consultoria"
+    GP = "Gestão de Pessoas"
+    KO = "Comercial"
     SECTORS = [
         (TEC, "Tecnologia"),
         (CIV, "Construção Civil"),
         (CON, "Consultoria"),
+        (GP, "Gestão de Pessoas"),
+        (KO, "Comercial"),
     ]
+    
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
-    sector = models.CharField(max_length=15, choices=SECTORS)
+    sector = models.CharField(max_length=40, choices=SECTORS)
     total_value = models.FloatField(null=False)
     n_of_services = models.PositiveSmallIntegerField()
     date = models.DateField(default=now)
